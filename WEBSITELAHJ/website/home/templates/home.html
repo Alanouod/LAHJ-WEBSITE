@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}الرئيسية{% endblock %}
+
+{% block content %}
+<head><style>
+  .service-box {
+    border: 2px solid #868660;
+    padding: 20px;
+    background-color: #86866096;
+    color: #fff; 
+    border-radius: 10px; 
+  }
+  .btn btn-primary{
+      font-size: 0.5rem;
+      background-color: #af7c857e; 
+      border-color: #AF7C85; 
+      color: #fff; 
+    }
+    
+    .btn-primary:hover {
+      background-color: #FFF0DB; 
+      border-color: #FFF0DB; 
+    
+  }
+
+  .feature {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .feature-img {
+    max-width: 100%; /* Ensure the image doesn't exceed its container */
+  }
+ 
+  
+</style>
+</head>
+<header class="masthead">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="masthead-subheading">اهلاً بك في لهج</div>
+        <div class="masthead-heading text-uppercase"> نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال  بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل. 
+          من خلال منصتنا يمكن لأصحاب المنازل استعراض أعمال المحترفين ،طرح الاستفسارات والتواصل وطلب الخدمات بكل سهولة .بينما يمكن المحترفين طرح مشاريعهم والرد والتواصل مع العملاء ،والتسويق لأعمالهم </div> 
+      </div>
+    </div>
+  </div>
+</header>
+
+      
+     <!-- Services -->
+<section class="page-section" id="services">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">خدماتنا</h2>
+    </div>
+    <div class="row text-center">
+      <!-- Service 1 -->
+      <div class="col-md-6 mb-4">
+        <div class="service-box">
+          <h4 class="my-3">تصفح الأنماط والمنتجات</h4>
+          <p class="text-muted">اسكتشف مختلف أنماط التصميم الداخلي والترميم. تصفح مجموعة واسعة من الأفكار والمشاريع التي قام بها محترفون موثوقون</p>
+          <a href="{% url 'services' %}" class="btn btn-primary">للمزيد</a>
+        </div>
+      </div>
+
+      <!-- Service 2 -->
+      <div class="col-md-6 mb-4">
+        <div class="service-box">
+          <h4 class="my-3">اطلب خدمة من محترف</h4>
+          <p class="text-muted">ابحث عن محترفين في مجالات متنوعة ومشاهدة أعمالهم السابقة. عندما تجد محترفاً يلبي احتياجك، اطلب خدمته من خلال إرسال رسالة </p>
+          <a href="{% url 'findPro' %}" class="btn btn-primary">للمزيد</a>
+        </div>
+      </div>
+
+      <!-- Service 3 -->
+      <div class="col-md-6 mb-4">
+        <div class="service-box">
+          <h4 class="my-3">احصل على الإلهام</h4>
+          <p class="text-muted">اطلع على معرض الصور والمشاريع التي قام بها المحترفين</p>
+          <a href="{% url 'inspiration' %}" class="btn btn-primary">للمزيد</a>
+        </div>
+      </div>
+
+      <!-- Service 4 -->
+      <div class="col-md-6 mb-4">
+        <div class="service-box">
+          <h4 class="my-3">استشارات ونصائح</h4>
+          <p class="text-muted">اتطلع على مقالات ونصائح ذات صلة بمجال التصميم والترميم</p>
+          <a href="{% url 'resource' %}" class="btn btn-primary">للمزيد</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Features Section -->
+<section id="features" class="page-section">
+  <div class="container">
+    <div class="text-center">
+      <h2 class="section-heading text-uppercase">مايميزنا</h2>
+    </div>
+    <div class="row text-center">
+      <!-- Feature 1 -->
+      <div class="col-md-4">
+        <div class="feature">
+          <div class="triangle"></div>
+          <img src="{% static 'images\triangle.png' %}" alt="Feature Image 1" class="feature-img">
+          <p class="text-muted">خدمات متنوعة </p>
+        </div>
+      </div> 
+      <!-- Feature 2 -->
+      <div class="col-md-4">
+        <div class="feature">
+          <div class="triangle"></div>
+          <img  src="{% static 'images\triangle.png' %}"  alt="Feature Image 2" class="feature-img">
+          <p class="text-muted">المصادر</p>
+        </div>
+      </div>
+      <!-- Feature 3 -->
+      <div class="col-md-4">
+        <div class="feature">
+          <div class="triangle"></div>
+          <img src="{% static 'images\triangle.png' %}" alt="Feature Image 3" class="feature-img">
+          <p class="text-muted">محترفين ذو كفاءة</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact-->
+<section class="page-section" id="contact">
+  <div class="container-fluid">
+      <div class="text-center">
+          <h2 class="section-heading text-uppercase">اتصل بنا</h2>
+      </div>
+      <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+          <div class="row align-items-stretch mb-5">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <!-- Name input-->
+                      <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
+                      <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                  </div>
+                  <div class="form-group">
+                      <!-- Email address input-->
+                      <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
+                      <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
+                      <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
+                  </div>
+                  <div class="form-group mb-md-0">
+                      <!-- Phone number input-->
+                      <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" data-sb-validations="required" />
+                      <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group form-group-textarea mb-md-0">
+                      <!-- Message input-->
+                      <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
+                      <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
+                  </div>
+              </div>
+          </div>
+          <div class="d-none" id="submitSuccessMessage">
+              <div class="text-center text-white mb-3">
+                  <div class="fw-bolder">تم إرسال النموذج بنجاح!</div>
+                  لتفعيل هذا النموذج قم بالتسجيل في
+                  <br />
+                  <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+              </div>
+          </div>
+          <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">خطأ في إرسال الرسالة!</div></div>
+          <!-- Submit Button-->
+          <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">أرسل رسالة</button></div>
+      </form>
+  </div>
+</section>
+
+   
+{% endblock %}

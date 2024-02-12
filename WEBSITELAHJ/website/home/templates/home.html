@@ -12,7 +12,7 @@
     color: #fff; 
     border-radius: 10px; 
   }
-  .btn btn-primary{
+  .btn.btn-primary {
       font-size: 0.5rem;
       background-color: #af7c857e; 
       border-color: #AF7C85; 
@@ -50,7 +50,7 @@
   </div>
 </header>
 
-      
+<body>   
      <!-- Services -->
 <section class="page-section" id="services">
   <div class="container">
@@ -130,8 +130,67 @@
     </div>
   </div>
 </section>
+<!--تصفح أشهر الأنماط-->
+<section id="browse-styles" class="mt-5">
+  <h2 class="text-center">تصفح أشهر الأنماط</h2>
+  <div class="text-center mb-4">
+      <a href="{% url 'resource' %}" class="btn btn-primary">المزيد</a>
+  </div>
 
-<!-- Contact-->
+  <div class="row">
+      <!--  1 -->
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title">
+                      <span class="style-name" data-toggle="popover" data-placement="bottom" title="اسم النمط 1" data-content="نبذة صغيرة عن النمط وميزاته.">
+                        البوهيمي
+                      </span>
+                      
+                    </h4>
+                </div>
+            </div>
+        </div>
+     <!--  2 -->
+     <div class="col-lg-3 col-md-6 mb-4">
+      <div class="card h-100">
+          <div class="card-body">
+              <h4 class="card-title">
+                  <span class="style-name" data-toggle="popover" data-placement="bottom" title="نبذة صغيرة عن النمط وميزاته.">
+                    النجدي
+                  </span>
+              </h4>
+          </div>
+      </div>
+  </div>
+   <!-- 3 -->
+   <div class="col-lg-3 col-md-6 mb-4">
+    <div class="card h-100">
+        <div class="card-body">
+            <h4 class="card-title">
+                <span class="style-name" data-toggle="popover" data-placement="bottom" title="نبذة صغيرة عن النمط وميزاته.">
+                  الكلاسيكي
+                </span>
+            </h4>
+        </div>
+    </div>
+</div>
+ <!-- 4 -->
+ <div class="col-lg-3 col-md-6 mb-4">
+  <div class="card h-100">
+      <div class="card-body">
+          <h4 class="card-title">
+              <span class="style-name" data-toggle="popover" data-placement="bottom" title="نبذة صغيرة عن النمط وميزاته.">
+                  العصري
+              </span>
+          </h4>
+      </div>
+  </div>
+</div>
+  </div>
+</section>
+
+<!-- تواصل-->
 <section class="page-section" id="contact">
   <div class="container-fluid">
       <div class="text-center">
@@ -179,6 +238,15 @@
       </form>
   </div>
 </section>
+<!--  Bootstrap  -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+</script>
 
+
+</body>
    
 {% endblock %}

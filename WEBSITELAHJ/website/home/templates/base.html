@@ -20,9 +20,24 @@
         #mainNav {
             background-color: #af7c857e;
         }
-        .footer {
-            background-color: #AF7C85; 
-        }
+       
+        body {
+            padding-bottom: 60px; 
+            margin-bottom: 60px; 
+          }
+          
+          .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #af7c8542;
+            text-align: center;
+            font-size: 0.9rem;
+            font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            padding: 1rem 0;
+            color: #000000;
+          }
+          
         .navbar-brand img {
             max-height: 80px;
         }
@@ -56,14 +71,15 @@
                         <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">الرئيسية</a></li>
                     </ul>
                 </div>
-                <a class="navbar-brand" href="#page-top"><img src="{% static 'images/LAHJ-LOGO.png' %}" alt="LAHJ-LOGO" style="max-height: 40px;" /></a>
+                <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'images/LAHJ-LOGO.png' %}" alt="LAHJ-LOGO" style="max-height: 40px;" /></a>
 
             </div>
         </nav>
         
-        <main class="container mt-4">
-            {% block content %}{% endblock %}
-        </main>
+        
+    <main class="container mt-4" style="padding-top: 100px;">
+        {% block content %}{% endblock %}
+    </main>
       
 <!-- Footer-->
 <footer class="footer py-4">

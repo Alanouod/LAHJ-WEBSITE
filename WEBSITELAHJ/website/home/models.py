@@ -44,4 +44,3 @@ class Message(models.Model):
     recipient = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE) 
     content = models.TextField() 
     date = models.DateTimeField(auto_now_add=True) 
-    

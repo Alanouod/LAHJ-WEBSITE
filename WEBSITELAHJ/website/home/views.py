@@ -1,6 +1,7 @@
 # home/views.py
 from django.shortcuts import render
 
+
 def home(request):
     return render(request, 'home.html')
 
@@ -24,3 +25,6 @@ def joinAsPro(request):
 
 def services(request):
     return render(request, 'services.html')
+
+def reso1(request):
+    return render(request, 'reso1.html')

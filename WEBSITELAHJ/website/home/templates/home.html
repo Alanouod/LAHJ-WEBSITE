@@ -6,22 +6,22 @@
 {% block content %}
 <head><style>
   .service-box {
-    border: 2px solid #868660;
+    border: 2px solid #dee2e6;
     padding: 20px;
-    background-color: #86866096;
+    background-color: #dee2e6;
     color: #fff; 
     border-radius: 10px; 
   }
   .btn.btn-primary {
       font-size: 0.5rem;
-      background-color: #af7c857e; 
-      border-color: #AF7C85; 
+      background-color: #1CAED0; 
+      border-color: #1CAED0; 
       color: #fff; 
     }
     
     .btn-primary:hover {
-      background-color: #FFF0DB; 
-      border-color: #FFF0DB; 
+      background-color: #1CAED0; 
+      border-color: #1CAED0; 
     
   }
 
@@ -32,9 +32,45 @@
   }
   
   .feature-img {
-    max-width: 100%; /* Ensure the image doesn't exceed its container */
+    max-width: 100%; 
   }
- 
+  .my-3 {
+    color: #000; 
+  }
+  .faq-item {
+    margin-bottom: 20px;
+}
+
+/* FAQ Styles */
+.faq-item {
+    margin-bottom: 20px;
+}
+
+.question-box {
+    padding: 15px;
+    border: 1px solid #1CAED0;
+    border-radius: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.question-box:hover {
+    background-color: #1CAED0;
+}
+
+.question {
+    font-weight: bold;
+    color: #1CAED0;
+}
+
+.answer {
+    display: none;
+    color: #fff;
+}
+
+.question-box:hover .answer {
+    display: block;
+}
+
   
 </style>
 </head>
@@ -43,8 +79,8 @@
     <div class="row">
       <div class="col-lg-6">
         <div class="masthead-subheading">اهلاً بك في لهج</div>
-        <div class="masthead-heading text-uppercase"> نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال  بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل. 
-          من خلال منصتنا يمكن لأصحاب المنازل استعراض أعمال المحترفين ،طرح الاستفسارات والتواصل وطلب الخدمات بكل سهولة .بينما يمكن المحترفين طرح مشاريعهم والرد والتواصل مع العملاء ،والتسويق لأعمالهم </div> 
+        <div class="masthead-heading"> نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال  بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل </div> 
+        <a class="btn btn-primary btn-xl text-uppercase" href="#services">اكتشف المزيد</a>
       </div>
     </div>
   </div>
@@ -63,7 +99,7 @@
         <div class="service-box">
           <h4 class="my-3">تصفح الأنماط والمنتجات</h4>
           <p class="text-muted">اسكتشف مختلف أنماط التصميم الداخلي والترميم. تصفح مجموعة واسعة من الأفكار والمشاريع التي قام بها محترفون موثوقون</p>
-          <a href="{% url 'services' %}" class="btn btn-primary">للمزيد</a>
+          <a href="{% url 'resource' %}" class="btn btn-primary">للمزيد</a>
         </div>
       </div>
 
@@ -130,65 +166,114 @@
     </div>
   </div>
 </section>
-<!--تصفح أشهر الأنماط-->
+<!-- تصفح أشهر الأنماط -->
 <section id="browse-styles" class="mt-5">
-  <h2 class="text-center">تصفح أشهر الأنماط</h2>
-  <div class="text-center mb-4">
-      <a href="{% url 'resource' %}" class="btn btn-primary">المزيد</a>
-  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 class="text-center">تصفح أشهر الأنماط</h2>
+      </div>
+      
+      
+    </div>
 
   <div class="row">
-      <!--  1 -->
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h4 class="card-title">
-                      <span class="style-name" data-toggle="popover" data-placement="bottom" title="اسم النمط 1" data-content="نبذة صغيرة عن النمط وميزاته.">
-                        البوهيمي
-                      </span>
-                      
-                    </h4>
-                </div>
-            </div>
-        </div>
-     <!--  2 -->
-     <div class="col-lg-3 col-md-6 mb-4">
-      <div class="card h-100">
-          <div class="card-body">
-              <h4 class="card-title">
-                  <span class="style-name" data-toggle="popover" data-placement="bottom" title="نبذة صغيرة عن النمط وميزاته.">
-                    النجدي
-                  </span>
-              </h4>
+
+<div class="col-lg-3">
+  <div class="card-body">
+      <div class="question-box">
+          <h4 class="style-name">العصري</h4>
+          <div class="answer">
+            شتهر نمط التصميم العصري باحتوائه على الألوان البسيطة والحيادية فغالباً ما يتم استخدام الأبيض والرمادي الفاتح للجدران بينما تتداخل الألوان الزاهية في باقي عناصر التصميم كاللون التّفاحي والفضي والوردي واللازوردي الفاتح
           </div>
       </div>
   </div>
-   <!-- 3 -->
-   <div class="col-lg-3 col-md-6 mb-4">
-    <div class="card h-100">
-        <div class="card-body">
-            <h4 class="card-title">
-                <span class="style-name" data-toggle="popover" data-placement="bottom" title="نبذة صغيرة عن النمط وميزاته.">
-                  الكلاسيكي
-                </span>
-            </h4>
-        </div>
-    </div>
 </div>
- <!-- 4 -->
- <div class="col-lg-3 col-md-6 mb-4">
-  <div class="card h-100">
-      <div class="card-body">
-          <h4 class="card-title">
-              <span class="style-name" data-toggle="popover" data-placement="bottom" title="نبذة صغيرة عن النمط وميزاته.">
-                  العصري
-              </span>
-          </h4>
+<div class="col-lg-3">
+  <div class="card-body">
+      <div class="question-box">
+          <h4 class="style-name">الكلاسيكي</h4>
+          <div class="answer">
+            يدور حول الأناقة والرقي الخالد. إنه أسلوب تقليدي تم استخدامه لعدة قرون، ولا يزال يتمتع بشعبية حتى اليوم. تتميز التصميمات الداخلية ذات الطراز الكلاسيكي بقطع أثاث بخطوط أنيقة ومواد كلاسيكية مثل الخشب والرخام والنسيج
+          </div>
       </div>
   </div>
 </div>
+<div class="col-lg-3">
+  <div class="card-body">
+      <div class="question-box">
+          <h4 class="style-name">النجدي</h4>
+          <div class="answer">
+            الفناء الداخلي في الطراز النجدي يعطي سكان المنزل درجة عالية من الخصوصية. المنازل المصممة بهذا الطراز تكون باردة نسبيا لأن المواد المستخدمة في بناءها تمثل عازل طبيعي للحرارة
+          </div>
+      </div>
+  </div>
+</div>
+<div class="col-lg-3">
+  <div class="card-body">
+      <div class="question-box">
+          <h4 class="style-name">البوهيمي</h4>
+          <div class="answer">
+            التصميم الاسكندنافي هو تصميم بسيط يجمع بين الوظيفة والجمال، يتميز بقطع الأثاث البسيطة والعملية في نفس الوقت، ويستخدم الاثاث لتكملة المساحات الخالية من الفوضى والمليئة بالضوء الطبيعي
+          </div>
+      </div>
+  </div>
+</div>
+
+
+</section>
+
+
+<!-- الاسئلة الشائعة -->
+<section class="page-section" id="faq">
+  <div class="container">
+      <div class="text-center">
+          <h2 class="section-heading text-uppercase">الأسئلة الشائعة</h2>
+      </div>
+      <div class="row">
+          <div class="col-lg-6">
+              <div class="faq-item">
+                  <div class="question-box">
+                      <h4 class="question">كيف تطلب خدمة من محترف ؟</h4>
+                      <div class="answer">
+                        <ul>سجل دخولك </ul>
+                        <ul> ابحث عن محترف</ul>
+                        <ul>تواصل معه برسالة </ul>
+                        <ul> شارك معه التفاصيل </ul>
+                        <ul> سيتم التواصل معك </ul>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="faq-item">
+                  <div class="question-box">
+                      <h4 class="question">ماهو لهج ؟</h4>
+                      <div class="answer">نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال  بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل. 
+                        من خلال منصتنا يمكن لأصحاب المنازل استعراض أعمال المحترفين ،طرح الاستفسارات والتواصل ،وطلب الخدمات بكل سهولة .بينما يمكن المحترفين طرح مشاريعهعم ،والرد والتواصل مع العملاء ،والتسويق لأعمالهم</div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="faq-item">
+                  <div class="question-box">
+                      <h4 class="question">كيف اقيم المحترف ؟ </h4>
+                      <div class="answer">إجابة ... </div>
+                  </div>
+              </div>
+          </div>
+          <div class="col-lg-6">
+              <div class="faq-item">
+                  <div class="question-box">
+                      <h4 class="question">كيف اتواصل مع المحترف ؟</h4>
+                      <div class="answer">إجابة ... </div>
+                  </div>
+              </div>
+          </div>
+      </div>
   </div>
 </section>
+
 
 <!-- تواصل-->
 <section class="page-section" id="contact">
@@ -196,54 +281,111 @@
       <div class="text-center">
           <h2 class="section-heading text-uppercase">اتصل بنا</h2>
       </div>
-      <form id="contactForm" data-sb-form-api-token="API_TOKEN">
+      <form id="contactForm" data-sb-form-api-token="API_TOKEN" data-sb-form>
           <div class="row align-items-stretch mb-5">
               <div class="col-md-6">
                   <div class="form-group">
                       <!-- Name input-->
                       <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
-                      <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                      <div class="invalid-feedback" data-sb-feedback="name:required">الاسم مطلوب</div>
                   </div>
                   <div class="form-group">
                       <!-- Email address input-->
                       <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
-                      <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
-                      <div class="invalid-feedback" data-sb-feedback="email:email">Email is not valid.</div>
+                      <div class="invalid-feedback" data-sb-feedback="email:required">ايميل مطلوب</div>
+                      <div class="invalid-feedback" data-sb-feedback="email:email">الايمسل غير صحيح</div>
                   </div>
                   <div class="form-group mb-md-0">
                       <!-- Phone number input-->
                       <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" data-sb-validations="required" />
-                      <div class="invalid-feedback" data-sb-feedback="phone:required">A phone number is required.</div>
+                      <div class="invalid-feedback" data-sb-feedback="phone:required">رقم الجوال مطلوب</div>
                   </div>
               </div>
               <div class="col-md-6">
                   <div class="form-group form-group-textarea mb-md-0">
                       <!-- Message input-->
                       <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
-                      <div class="invalid-feedback" data-sb-feedback="message:required">A message is required.</div>
+                      <div class="invalid-feedback" data-sb-feedback="message:required">رسالة مطلوبة </div>
                   </div>
               </div>
           </div>
-          <div class="d-none" id="submitSuccessMessage">
-              <div class="text-center text-white mb-3">
-                  <div class="fw-bolder">تم إرسال النموذج بنجاح!</div>
-                  لتفعيل هذا النموذج قم بالتسجيل في
-                  <br />
-                  <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
-              </div>
-          </div>
-          <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">خطأ في إرسال الرسالة!</div></div>
-          <!-- Submit Button-->
-          <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">أرسل رسالة</button></div>
-      </form>
-  </div>
+          <div class="text-center">
+            <button class="btn btn-primary btn-xl text-uppercase" id="submitButton" type="submit">أرسل رسالة</button>
+        </div>
+        <div class="d-none" id="submitSuccessMessage">
+            <div class="text-center text-white mb-3">
+                <div class="fw-bolder">تم إرسال النموذج بنجاح!</div>
+                لتفعيل هذا النموذج قم بالتسجيل في
+                <br />
+                <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+            </div>
+        </div>
+        <div class="d-none" id="submitErrorMessage">
+            <div class="text-center text-danger mb-3">خطأ في إرسال الرسالة!</div>
+        </div>
+    </form>
+</div>
 </section>
-<!--  Bootstrap  -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    $(document).ready(function () {
-        $('[data-toggle="popover"]').popover();
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+//  Bootstrap form validation
+(function () {
+    'use strict';
+
+    var forms = document.querySelectorAll('[data-sb-form]');
+
+    Array.from(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                setTimeout(function () {
+                    document.getElementById('submitSuccessMessage').classList.remove('d-none');
+                }, 1000);
+            }
+
+            form.classList.add('was-validated');
+        }, false);
     });
+})();
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      var faqItems = document.querySelectorAll('.faq-item');
+
+      faqItems.forEach(function (item) {
+          item.addEventListener('click', function () {
+              this.classList.toggle('active');
+          });
+      });
+  });
+</script>
+<script>
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  });
+</script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var styleBoxes = document.querySelectorAll('.style-box');
+
+    styleBoxes.forEach(function (box) {
+      var styleName = box.querySelector('.style-name');
+      var answerBox = box.querySelector('.answer');
+
+      styleName.addEventListener('mouseover', function () {
+        var answer = styleName.getAttribute('data-answer');
+        answerBox.textContent = answer;
+      });
+
+      styleName.addEventListener('mouseout', function () {
+        answerBox.textContent = '';
+      });
+    });
+  });
 </script>
 
 

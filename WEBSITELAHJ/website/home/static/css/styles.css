@@ -10983,15 +10983,15 @@ header.masthead::after {
 }
 
 header.masthead .masthead-subheading {
-  font-size: 1.5rem;
-  line-height: 1.5rem;
+  font-size: 2rem;
+  line-height: 2rem;
   margin-bottom: 25px;
   color: #000; 
 
 }
 
 header.masthead .masthead-heading {
-  font-size: 1rem;
+  font-size: 1.5rem;
   font-weight: 700;
   line-height: 3.25rem;
   margin-bottom: 2rem;

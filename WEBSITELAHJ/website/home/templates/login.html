@@ -23,7 +23,7 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 style="color: #AF7C85;" >تسجيل الدخول</h1>
+                                        <h1  >تسجيل الدخول</h1>
     
                                     </div>
                                     <!-- Messages -->
@@ -35,7 +35,7 @@
                                         {% endfor %}
                                     {% endif %}
                                     <!-- End Messages -->
-                                    <form class="user" method="POST" enctype="multipart/form-data">
+                                    <form class="user" method="POST" enctype="multipart/form-data" style="text-align: center;">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label class="form-control-label" for="input-username">البريد الإلكتروني</label>
@@ -47,14 +47,14 @@
                                         </div>
     
                                         
-                                        <input type="submit" value="تسجيل الدخول" class='btn btn-primary btn-block'style="background-color: #AF7C85; display: inline-block;">
+                                        <input type="submit" value="تسجيل الدخول" class='btn btn-primary btn-block'style="background-color: #000000; display: inline-block;">
                                       
                                     <hr>
                                     
                                         
                                     </div>
                                     <div class="text-center">
-                                        <a class="nav-link" href="{% url 'signup' %} " style="color:#868660" >التسجيل</a>
+                                        <a class="nav-link" href="{% url 'signup' %} " style="color:#000000" >التسجيل</a>
                                     </div>
                                 </div>
                             </div>

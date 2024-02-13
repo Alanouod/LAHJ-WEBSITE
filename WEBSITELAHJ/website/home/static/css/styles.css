@@ -11349,3 +11349,23 @@ section#contact form#contactForm :-ms-input-placeholder {
 #tit1{
   text-align: center;
 }
+
+<!-- Login-->
+.login-box {
+  margin-top: 150px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 40px;
+  text-align: center;
+}
+
+.form-group {
+  text-align: right;
+}
+
+.btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}

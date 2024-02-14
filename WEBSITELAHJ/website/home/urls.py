@@ -13,7 +13,7 @@ urlpatterns = [
     path('joinAsPro/', joinAsPro, name='joinAsPro'),
     path('services/', services, name='services'),
     path('reso1/', reso1, name='reso1'),
-    path('reso1/', refe, name='refe'),
+    path('refe/', refe, name='refe'),
 
 ]
 

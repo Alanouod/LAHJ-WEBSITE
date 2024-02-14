@@ -11385,3 +11385,15 @@ section#contact form#contactForm :-ms-input-placeholder {
  border: 1px solid #735C33;
  border-radius: 50px 0px 50px 50px;
 }
+
+#text{
+
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-size: 48px;
+  line-height: 58px;
+  
+  color: #000000;
+  }

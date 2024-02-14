@@ -9,15 +9,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>دليل الأثاث</title>
 
 <style>
+ #n1{
+    
+    width: 252px;
+    height: 290px;
+    left: 537px;
+    top: 179px;
 
+
+ }
+ #t1 {
+    font-family: 'Inter';
+   font-style: normal;
+   font-weight: 800;
+   font-size: 48px;
+   line-height: 58px;
+   text-align:center;
+   color: #000000;
+   width: 210px;
+   height: 58px;
+   left: 579px;
+   top: 377px;
+   transform: translate(10%, -70%)
+
+ }
+
+.forreso{
+   
+
+   box-sizing: border-box;
+
+
+   width: 234px;
+  height: 70px;
+   left: 565px;
+   top: 482px;
+
+  background: #1CAED0;
+  border: 1px solid #735C33;
+  border-radius: 50px 0px 50px 50px;
+ }
+ .num2{
+   
+  box-sizing: border-box;
+  width: 264px;
+  height: 314px;
+  right: 552px;
+  top: 161px;
+
+  border: 2px solid #000000;
+  border-radius: 31px;
+ }
+
+ .num3{
+   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+#t2{
+   font-family: 'Inter';
+   font-style: normal;
+   font-weight: 800;
+   font-size: 48px;
+   line-height: 58px;
+   text-align:center;
+   color: #000000;
+   display: flex;
+    justify-content: center;
+    align-items: center;
+   transform: translate(-2%, -58%)
+}
+
+#forreso1{
+   top: 161px;
+   box-sizing: border-box;
+   display: flex;justify-content: center;align-items: center;
+   width: 234px;
+  height: 70px;
+  background: #1CAED0;
+  border: 1px solid #735C33;
+  border-radius: 50px 0px 50px 50px;
+ }
+.num33{
+           /* Rectangle 4452 */
+   display: flex;justify-content: center;align-items: center;
+  box-sizing: border-box;
+  width: 265px;
+  height: 292px;
+  border: 2px solid #000000;;
+  border-radius: 31px;
+
+}
+
+ 
+  
 
 </style>
 </head>
 <body>
-    <img src="{% static 'images\photo.jpeg' %}" alt="Lahj Logo" >
+    <div class="num2">
+       <img id="n1" src="{% static 'images\photo1.jpeg' %}" alt="Lahj Logo" >
+       <h4 id="t1">ريفي</h4>
 
+    </div>
+   <br>
+   
+    <a href="{% url 'refe' %}" style="color:#000000 ; text-align: center; "><button class="forreso" >المزيد</button></a>
+
+    <div class="num3">
+      <div class="num33">
+      <img style="width: 252px; height: 290px;  " src="{% static 'images\photo2.jpeg' %}" alt="Lahj Logo" >
+      </div>
+      
+    </div>
+    <h4 id="t2"> كلاسيكي</h4>
+  
+    <a href="{% url 'signup' %}" style="color:#000000 ;display: flex;justify-content: center;align-items: center; "><button id="forreso1" >المزيد</button></a>
+    
+    
 </body>
+
+
+<br>
+<br>
+ 
 {% endblock %}

@@ -28,3 +28,7 @@ def services(request):
 
 def reso1(request):
     return render(request, 'reso1.html')
+
+def refe(request):
+    return render(request, 'refe.html')
+

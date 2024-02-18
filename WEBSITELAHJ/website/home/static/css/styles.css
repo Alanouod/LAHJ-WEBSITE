@@ -13239,24 +13239,23 @@ section#contact form#contactForm :-ms-input-placeholder {
   border-color: #000000;
 }
 
-<<<<<<< HEAD
-.forreso{
-   
+HEAD .forreso {
+
 
   box-sizing: border-box;
 
 
   width: 234px;
- height: 70px;
+  height: 70px;
   left: 565px;
   top: 482px;
 
- background: #1CAED0;
- border: 1px solid #735C33;
- border-radius: 50px 0px 50px 50px;
+  background: #1CAED0;
+  border: 1px solid #735C33;
+  border-radius: 50px 0px 50px 50px;
 }
 
-#text{
+#text {
 
 
   font-family: 'Inter';
@@ -13264,10 +13263,11 @@ section#contact form#contactForm :-ms-input-placeholder {
   font-weight: 800;
   font-size: 48px;
   line-height: 58px;
-  
+
   color: #000000;
-  }
-=======
+}
+
+
 /* Sign up professional form*/
 
 .timeline {
@@ -13293,4 +13293,7 @@ section#contact form#contactForm :-ms-input-placeholder {
   height: 1px;
   background-color: #ccc;
 }
->>>>>>> 7d2ecfb8e90cbee2a617c53405fe8990909a66fe
+
+.hidden {
+  display: none;
+}

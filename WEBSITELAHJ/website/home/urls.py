@@ -1,7 +1,7 @@
 # home/urls.py
 from django.urls import path
 from . import views
-from .views import home, resource, inspiration,findPro,signup,login,joinAsPro,services,reso1,refe
+from .views import home, resource, inspiration,findPro,signup,login,joinAsPro,services,reso1,refe,tips
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -14,6 +14,6 @@ urlpatterns = [
     path('services/', services, name='services'),
     path('reso1/', reso1, name='reso1'),
     path('refe/', refe, name='refe'),
-
+    path('tips/', tips, name='tips'),
 ]
 

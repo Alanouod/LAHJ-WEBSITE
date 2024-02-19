@@ -32,3 +32,7 @@ def reso1(request):
 def refe(request):
     return render(request, 'refe.html')
 
+
+def tips(request):
+    return render(request, 'tips.html')
+

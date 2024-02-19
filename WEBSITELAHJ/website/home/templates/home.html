@@ -4,103 +4,140 @@
 {% block title %}الرئيسية{% endblock %}
 
 {% block content %}
-<head><style>
-  .service-box {
-    border: 2px solid #dee2e6;
-    padding: 20px;
-    background-color: #dee2e6;
-    color: #fff; 
-    border-radius: 10px; 
+<style>
+  body {
+    font-family: system-ui;
+    font-weight: 400;
+    font-style: bold;
   }
-  .btn.btn-primary {
-      font-size: 0.5rem;
-      background-color: #1CAED0; 
-      border-color: #1CAED0; 
-      color: #fff; 
+
+  .section-heading {
+    font-size: 2rem; 
+    color: #495057;
+    font-weight: bold;
+  }
+  h4.my-3, h4.style-name {
+    font-size:  1.25rem; 
+    color: #495057;
+    font-weight: bold;
+  }
+  .text-muted{
+    font-size:  1.25rem; 
+    color: #495057;
+    font-weight: bold;}
+ 
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+  
+    .category-image {
+      max-width: 100%;
+      max-height: 100%;
+      height: 150px; 
+    object-fit: cover;
+      display: block;
+      margin: 0 auto;
+    }
+  
+    .card-body {
+      padding: 20px;
+      text-align: center;
+    }
+    .card-body a {
+      color: #495057;
+      text-decoration: none;
     }
     
-    .btn-primary:hover {
-      background-color: #1CAED0; 
-      border-color: #1CAED0; 
+    .card-body a:hover {
+      color: #1CAED0;
+    }
+  
+    .card-title a {
+      text-decoration: none;
+      color: #495057; 
+      font-size:  1.25rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+  
+    .card-title a:hover {
+      color: #1CAED0; 
+      text-decoration: none; 
+    }
     
-  }
-
-  .feature {
-    text-align: center;
-    margin-bottom: 30px;
-    position: relative;
-  }
+    .more-link {
+      text-decoration: underline;
+      color: #495057;
+      font-size: 0.9rem;
+    }
   
-  .feature-img {
-    max-width: 100%; 
+    .more-link:hover {
+      color: #1CAED0;
+    }
+    .question{
+      font-size:  1.25rem; 
+      color: #495057;
+      font-weight: bold;
+    }
+    .answer{
+      font-size:  1rem; 
+      color: #fff;
+    }
+    #contact {
+      margin-bottom: 0; 
+    }
+    
+    #contact .container-fluid {
+      padding-bottom: 0; 
+    }
+
+      #contactForm .row {
+        direction: rtl; 
+      }
+    
+      #contactForm .form-group {
+        text-align: left;
+      }
+    
+      #submitButton {
+        background-color: #fff; 
+        color: #495057; 
+        transition: color 0.3s ease, background-color 0.3s ease; 
+      }
+    
+      #submitButton:hover {
+        background-color: #1CAED0; 
+        color: #fff; //
+      }
+      p.text-muted, div.answer {
+    font-size: 1rem; 
   }
-  .my-3 {
-    color: #000; 
-  }
-  .faq-item {
-    margin-bottom: 20px;
-}
-
-.faq-item {
-    margin-bottom: 20px;
-}
-
-.question-box {
-    padding: 15px;
-    border: 1px solid #1CAED0;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
-}
-
-.question-box:hover {
-    background-color: #1CAED0;
-}
-
-.question {
-    font-weight: bold;
-    color: #1CAED0;
-}
-
-.answer {
-    display: none;
-    color: #fff;
-}
-
-.question-box:hover .answer {
-    display: block;
-}
-.text-muted{
-  font-size: 1.5rem;
-}
-#submitButton{
-  font-size: 1.5rem;
-  background-color: #dee2e6; 
-}
-
-  
 </style>
-</head>
 <header class="masthead">
   <div class="container">
-    <div class="row">
+    <div class="row align-items-center">
       <div class="col-lg-6">
-        <div class="masthead-subheading">اهلاً بك في لهج</div>
-        <div class="masthead-heading"> نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال  بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل </div> 
-        <a class="btn btn-primary btn-xl text-uppercase" href="#services">اكتشف المزيد</a>
+        <div class="masthead-subheading  text-end">اهلاً بك في لهج</div>
+        <div class="masthead-heading ">نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل </div>
+        <a class="btn btn-primary btn-xl text-uppercase" href="#services">ماذا نقدم</a>
+      </div>
+      <div class="col-lg-6 order-lg-last">
+        <img src="{% static 'images/headerLahj.png' %}" alt="Header Image" class="img-fluid">
       </div>
     </div>
   </div>
 </header>
-
 <body>   
-     <!-- Services -->
+     <!-- خدماتنا -->
 <section class="page-section" id="services">
   <div class="container">
     <div class="text-center">
-      <h2 class="section-heading text-uppercase">خدماتنا</h2>
+      <h2 class="section-heading">خدماتنا</h2>
     </div>
     <div class="row text-center">
-      <!-- Service 1 -->
+      <!--  1 -->
       <div class="col-md-6 mb-4">
         <div class="service-box">
           <h4 class="my-3">تصفح الأنماط والمنتجات</h4>
@@ -108,8 +145,7 @@
           <a href="{% url 'resource' %}" class="btn btn-primary">للمزيد</a>
         </div>
       </div>
-
-      <!-- Service 2 -->
+      <!--  2 -->
       <div class="col-md-6 mb-4">
         <div class="service-box">
           <h4 class="my-3">اطلب خدمة من محترف</h4>
@@ -117,8 +153,7 @@
           <a href="{% url 'findPro' %}" class="btn btn-primary">للمزيد</a>
         </div>
       </div>
-
-      <!-- Service 3 -->
+      <!--  3 -->
       <div class="col-md-6 mb-4">
         <div class="service-box">
           <h4 class="my-3">احصل على الإلهام</h4>
@@ -126,8 +161,7 @@
           <a href="{% url 'inspiration' %}" class="btn btn-primary">للمزيد</a>
         </div>
       </div>
-
-      <!-- Service 4 -->
+      <!--  4 -->
       <div class="col-md-6 mb-4">
         <div class="service-box">
           <h4 class="my-3">استشارات ونصائح</h4>
@@ -138,14 +172,15 @@
     </div>
   </div>
 </section>
-<!-- Features Section -->
+
+<!-- مايميزنا -->
 <section id="features" class="page-section">
   <div class="container">
     <div class="text-center">
-      <h2 class="section-heading text-uppercase">مايميزنا</h2>
+      <h2 class="section-heading">مايميزنا</h2>
     </div>
     <div class="row text-center">
-      <!-- Feature 1 -->
+      <!--  1 -->
       <div class="col-md-4">
         <div class="feature">
           <div class="triangle"></div>
@@ -153,7 +188,7 @@
           <p class="text-muted">خدمات متنوعة </p>
         </div>
       </div> 
-      <!-- Feature 2 -->
+      <!--  2 -->
       <div class="col-md-4">
         <div class="feature">
           <div class="triangle"></div>
@@ -161,7 +196,7 @@
           <p class="text-muted">المصادر</p>
         </div>
       </div>
-      <!-- Feature 3 -->
+      <!--  3 -->
       <div class="col-md-4">
         <div class="feature">
           <div class="triangle"></div>
@@ -172,74 +207,140 @@
     </div>
   </div>
 </section>
+
 <!-- تصفح أشهر الأنماط -->
-<section id="browse-styles" class="mt-5">
+<section id="browse-styles" class="page-section">
   <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <h2 class="text-center">تصفح أشهر الأنماط</h2>
-      </div>
-      
-      
+    <div class="text-center">
+      <h2 class="section-heading text-end">
+          تصفح أشهر الأنماط
+        <a href="{% url 'resource' %}" class="more-link">
+            للمزيد 
+        </a>
+      </h2>
     </div>
-
+  </div>
   <div class="row">
-
-<div class="col-lg-3">
+<div class="col-lg-3 text-end">
   <div class="card-body">
       <div class="question-box">
-          <h4 class="style-name">العصري</h4>
+          <h4 class="style-name">
+          <a href="{% url 'resource'  %}" >
+            العصري</a></h4>
           <div class="answer">
             شتهر نمط التصميم العصري باحتوائه على الألوان البسيطة والحيادية فغالباً ما يتم استخدام الأبيض والرمادي الفاتح للجدران بينما تتداخل الألوان الزاهية في باقي عناصر التصميم كاللون التّفاحي والفضي والوردي واللازوردي الفاتح
           </div>
       </div>
   </div>
 </div>
-<div class="col-lg-3">
+<div class="col-lg-3 text-end">
   <div class="card-body">
       <div class="question-box">
-          <h4 class="style-name">الكلاسيكي</h4>
+          <h4 class="style-name">
+            <a href="{% url 'resource'  %}" >
+              الكلاسيكي</a>
+          </h4>
           <div class="answer">
             يدور حول الأناقة والرقي الخالد. إنه أسلوب تقليدي تم استخدامه لعدة قرون، ولا يزال يتمتع بشعبية حتى اليوم. تتميز التصميمات الداخلية ذات الطراز الكلاسيكي بقطع أثاث بخطوط أنيقة ومواد كلاسيكية مثل الخشب والرخام والنسيج
           </div>
       </div>
   </div>
 </div>
-<div class="col-lg-3">
+<div class="col-lg-3 text-end">
   <div class="card-body">
       <div class="question-box">
-          <h4 class="style-name">النجدي</h4>
+          <h4 class="style-name">
+            <a href="{% url 'resource'  %}" >
+              النجدي</a>
+          </h4>
           <div class="answer">
             الفناء الداخلي في الطراز النجدي يعطي سكان المنزل درجة عالية من الخصوصية. المنازل المصممة بهذا الطراز تكون باردة نسبيا لأن المواد المستخدمة في بناءها تمثل عازل طبيعي للحرارة
           </div>
       </div>
   </div>
 </div>
-<div class="col-lg-3">
+<div class="col-lg-3 text-end">
   <div class="card-body">
       <div class="question-box">
-          <h4 class="style-name">البوهيمي</h4>
+          <h4 class="style-name">
+            <a href="{% url 'resource'  %}" >
+              البوهيمي</a>
+          </h4>
           <div class="answer">
             التصميم الاسكندنافي هو تصميم بسيط يجمع بين الوظيفة والجمال، يتميز بقطع الأثاث البسيطة والعملية في نفس الوقت، ويستخدم الاثاث لتكملة المساحات الخالية من الفوضى والمليئة بالضوء الطبيعي
           </div>
       </div>
+    </div>
+  </section>
+
+<!--ابحث عن محترف-->
+<section id="find-professional" class="page-section">
+  <div class="container">
+    <h2 class="section-heading text-end">ابحث عن محترف
+      <a href="{% url 'findPro' %}" class="more-link">
+        للمزيد 
+    </a>
+    </h2>
+    <div class="row">
+     
+      <div class="col-lg-3 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
+              مصممين داخليين</a></h4>
+              <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
+            </a>
+          </div>
+        </div>
+      </div>
+     
+      <div class="col-lg-3 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
+              مقاوليين</a></h4>
+              <img src="{% static 'images/contractor.jpg' %}" alt="Engineer Image" class="category-image">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="col-lg-3 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
+              شركات تنسيق حدائق</a></h4>
+              <img src="{% static 'images/garden.jpg' %}" alt="Engineer Image" class="category-image">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
+              مهندسين</a></h4>
+              <img src="{% static 'images/eng.jpg' %}" alt="Engineer Image" class="category-image">
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-</div>
-
-
 </section>
-
-
 <!-- الاسئلة الشائعة -->
 <section class="page-section" id="faq">
   <div class="container">
-      <div class="text-center">
-          <h2 class="section-heading text-uppercase">الأسئلة الشائعة</h2>
+      <div class="text-end">
+          <h2 class="section-heading text-center">الأسئلة الشائعة</h2>
       </div>
       <div class="row">
           <div class="col-lg-6">
               <div class="faq-item">
-                  <div class="question-box">
+                  <div class="question-box text-end">
                       <h4 class="question">كيف تطلب خدمة من محترف ؟</h4>
                       <div class="answer">
                         <ul>سجل دخولك </ul>
@@ -253,7 +354,7 @@
           </div>
           <div class="col-lg-6">
               <div class="faq-item">
-                  <div class="question-box">
+                  <div class="question-box text-end">
                       <h4 class="question">ماهو لهج ؟</h4>
                       <div class="answer">نسعى لبناء جسر إلكتروني يربط الأفراد بالخبراء لتحقيق تجربة مثيرة ومميزة من خلال  بيئة مبتكرة تجمع بين أصحاب المنازل والمحترفين في مجال ترميم وتصميم المنازل. 
                         من خلال منصتنا يمكن لأصحاب المنازل استعراض أعمال المحترفين ،طرح الاستفسارات والتواصل ،وطلب الخدمات بكل سهولة .بينما يمكن المحترفين طرح مشاريعهعم ،والرد والتواصل مع العملاء ،والتسويق لأعمالهم</div>
@@ -262,7 +363,7 @@
           </div>
           <div class="col-lg-6">
               <div class="faq-item">
-                  <div class="question-box">
+                  <div class="question-box text-end">
                       <h4 class="question">كيف اقيم المحترف ؟ </h4>
                       <div class="answer">إجابة ... </div>
                   </div>
@@ -270,7 +371,7 @@
           </div>
           <div class="col-lg-6">
               <div class="faq-item">
-                  <div class="question-box">
+                  <div class="question-box text-end">
                       <h4 class="question">كيف اتواصل مع المحترف ؟</h4>
                       <div class="answer">إجابة ... </div>
                   </div>
@@ -279,38 +380,36 @@
       </div>
   </div>
 </section>
-
-
 <!-- تواصل-->
 <section class="page-section" id="contact">
   <div class="container-fluid">
       <div class="text-center">
-          <h2 class="section-heading text-uppercase">اتصل بنا</h2>
+          <h2 class="section-heading">اتصل بنا</h2>
       </div>
       <form id="contactForm" data-sb-form-api-token="API_TOKEN" data-sb-form>
           <div class="row align-items-stretch mb-5">
               <div class="col-md-6">
                   <div class="form-group">
                       <!-- Name input-->
-                      <input class="form-control" id="name" type="text" placeholder="Your Name *" data-sb-validations="required" />
+                      <input class="form-control text-end" id="name" type="text" placeholder="*الاسم" data-sb-validations="required" />
                       <div class="invalid-feedback" data-sb-feedback="name:required">الاسم مطلوب</div>
                   </div>
                   <div class="form-group">
                       <!-- Email address input-->
-                      <input class="form-control" id="email" type="email" placeholder="Your Email *" data-sb-validations="required,email" />
+                      <input class="form-control text-end" id="email" type="email" placeholder="*الايميل" data-sb-validations="required,email" />
                       <div class="invalid-feedback" data-sb-feedback="email:required">ايميل مطلوب</div>
                       <div class="invalid-feedback" data-sb-feedback="email:email">الايمسل غير صحيح</div>
                   </div>
                   <div class="form-group mb-md-0">
                       <!-- Phone number input-->
-                      <input class="form-control" id="phone" type="tel" placeholder="Your Phone *" data-sb-validations="required" />
+                      <input class="form-control text-end" id="phone" type="tel" placeholder="*الجوال" data-sb-validations="required" />
                       <div class="invalid-feedback" data-sb-feedback="phone:required">رقم الجوال مطلوب</div>
                   </div>
               </div>
               <div class="col-md-6">
                   <div class="form-group form-group-textarea mb-md-0">
                       <!-- Message input-->
-                      <textarea class="form-control" id="message" placeholder="Your Message *" data-sb-validations="required"></textarea>
+                      <textarea class="form-control text-end" id="message" placeholder="*رسالتك" data-sb-validations="required"></textarea>
                       <div class="invalid-feedback" data-sb-feedback="message:required">رسالة مطلوبة </div>
                   </div>
               </div>
@@ -332,6 +431,9 @@
     </form>
 </div>
 </section>
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>

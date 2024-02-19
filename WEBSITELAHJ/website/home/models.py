@@ -14,7 +14,6 @@ class Homeowner(models.Model):
 class ProfessionalPhoto(models.Model):
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
 
-
 class orderRequest(models.Model):
     orderRequestID = models.OneToOneField(User, on_delete=models.CASCADE) 
     homeowner = models.ForeignKey(Homeowner, on_delete=models.CASCADE) 

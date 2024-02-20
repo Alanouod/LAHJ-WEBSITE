@@ -5,6 +5,12 @@ from django.shortcuts import render
 def home(request):
     return render(request, 'home.html')
 
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def terms_of_use(request):
+    return render(request, 'terms_of_use.html')
+
 def resource(request):
     return render(request, 'resource.html')
 

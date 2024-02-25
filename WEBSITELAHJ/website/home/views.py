@@ -38,7 +38,11 @@ def reso1(request):
 def refe(request):
     return render(request, 'refe.html')
 
-
 def tips(request):
     return render(request, 'tips.html')
 
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def terms_of_use(request):
+    return render(request, 'terms_of_use.html')

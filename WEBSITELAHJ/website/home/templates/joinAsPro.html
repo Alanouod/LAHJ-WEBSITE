@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}تسجيل محترف{% endblock %}
-
-
 
 <body>
     {% block content %}
@@ -94,29 +93,28 @@
                                             <h1>معلومات الحساب </h1>
                                         </div>
                                         <form class="user" method="POST" enctype="multipart/form-data">
-                                            {% csrf_token %} <div class="form-group">
-                                                <label class="form-control-label" for="input-bio">البريد
-                                                    الإلكتروني</label>
-                                                <input type="bio" class="form-control" id="input-bio" name="bio"
+                                            {% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="input-bio">نبذة مختصرة</label>
+                                                <input type="text" class="form-control" id="input-bio" name="bio"
                                                     required>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="input-phone">مجال عملك</label>
-                                                <input type="job" class="form-control" id="input-job" name="job"
+                                                <label class="form-control-label" for="input-job">مجال العمل</label>
+                                                <input type="text" class="form-control" id="input-job" name="job"
                                                     required>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-control-label" for="input-address">ادراج عمل
-                                                    سابق</label>
-                                                <input type="text" class="form-control" id="input-address"
-                                                    name="address" required>
+                                                <label class="form-control-label" for="input-previous-work">العمل
+                                                    السابق</label>
+                                                <input type="text" class="form-control" id="input-previous-work"
+                                                    name="previous_work" required>
                                             </div>
+                                        </form>
+                                        <input type="submit" value="ارسال" class='btn btn-primary btn-block'
+                                            style="background-color:#000000; display: inline-block;">
+                                        <hr>
                                     </div>
-                                    <input type="submit" value="ارسال" class='btn btn-primary btn-block'
-                                        style="background-color:#000000; display: inline-block;">
-                                    <hr>
-                                    </form>
-                                    <hr>
                                 </div>
                             </div>
                         </div>

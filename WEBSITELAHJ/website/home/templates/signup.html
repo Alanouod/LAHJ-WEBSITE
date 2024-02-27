@@ -5,7 +5,6 @@
 {% block content %}
 
 
-
 <body>
     <div class="container" style="margin-top: 150px">
         <!-- Outer Row -->
@@ -21,6 +20,7 @@
                                         <h1   >تسجيل جديد</h1>
                                     </div>
                                     <form class="user" method="POST" enctype="multipart/form-data">
+                                        <input type="hidden" name="user_type" value="{{ user_type }}">
                                         {% csrf_token %}
                                         <div class="form-group">
                                             <label class="form-control-label" for="input-username">الاسم</label>

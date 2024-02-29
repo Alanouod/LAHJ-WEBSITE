@@ -76,10 +76,10 @@
                 {% if user.is_authenticated %}
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_profile' %}">{{ user.username }}</a>
+                            <a class="nav-link" href="{% url 'homeowner_profile' %}">{{ user.username }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">تسجيل خروج</a>
+                            <a class="nav-link" href="{% url 'logout_view' %}">تسجيل خروج</a>
                         </li>
                         <!-- Add logic to display user icon if available -->
                     </ul>
@@ -89,7 +89,7 @@
                             <a class="nav-link" href="{% url 'signup' %}?user_type=homeowner">التسجيل</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">تسجيل الدخول</a>
+                            <a class="nav-link" href="{% url 'user_login' %}">تسجيل الدخول</a>
                         </li>
                     </ul>
                 {% endif %}

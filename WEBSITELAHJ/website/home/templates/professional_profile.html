@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Professional Profile{% endblock %}
+
+{% block content %}
+    <h1 class="mt-5">اهلاً بك بملف الشخصي</h1>
+    <p>Name: {{ profile.user.username }}</p>
+    <p>Email: {{ profile.user.email }}</p>
+    <p>Phone: {{ profile.phone }}</p>
+    <p>Address: {{ profile.address }}</p>
+    <!-- Add additional professional-specific fields here -->
+    <p>Bio: {{ profile.bio }}</p>
+    <p>Job: {{ profile.job }}</p>
+    <p>Previous Work: {{ profile.previous_work }}</p>
+{% endblock %}

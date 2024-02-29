@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from .models import Homeowner, Professional
+from .models import Homeowner, Professional, UserProfile
 from .forms import HomeownerSignupForm, ProfessionalSignupForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -11,8 +11,13 @@ from django.contrib.auth import login as auth_login
 from django.core.exceptions import ValidationError
 from django.contrib.auth import login, authenticate
 from django.db import IntegrityError
-from django.shortcuts import render, redirect
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login
+from .forms import HomeownerSignupForm, ProfessionalSignupForm
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+
 
 def home(request):
     return render(request, 'home.html')
@@ -51,22 +56,22 @@ def signup(request):
             try:
                 user = User.objects.create_user(username=username, email=email, password=password)
             except IntegrityError:
-                return render(request, 'signup.html', {'form': form, 'user_type': user_type, 'error_message': 'Username already exists. Please choose a different username.'})
+                return render(request, 'signup.html', {'form': form, 'user_type': user_type, 'error_message': 'Username or email already exists. Please choose a different one.'})
 
             if user_type == 'homeowner':
                 # Create Homeowner profile
-                # You may add additional logic for homeowner profile creation
-                pass
+                homeowner = Homeowner.objects.create(user=user)
             elif user_type == 'professional':
                 # Create Professional profile
-                # You may add additional logic for professional profile creation
-                pass
+                professional = Professional.objects.create(user=user)
+            else:
+                return render(request, 'signup.html', {'error_message': 'Invalid user type.'})
 
             # Log in the user
             user = authenticate(request, username=username, password=password)
             login(request, user)
 
-            return redirect('user_profile')
+            return redirect('homeowner_profile')
 
     else:
         user_type = request.GET.get('user_type')
@@ -77,18 +82,33 @@ def signup(request):
 
 def user_login(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        identifier = request.POST.get('identifier')  # 'identifier' can be either email or username
         password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
+
+        # Try to authenticate with email
+        user = authenticate(request, email=identifier, password=password)
+
+        # If not authenticated with email, try with username
+        if user is None:
+            user = authenticate(request, username=identifier, password=password)
 
         if user is not None:
-            login(request, user)
-            return redirect('user_profile')  # Redirect to user profile page
+            auth_login(request, user)  
+
+            # Redirect to the correct profile page based on user type
+            if getattr(user, 'homeowner', None):
+                return redirect('homeowner_profile')
+            elif getattr(user, 'professional', None):
+                return redirect('professional_profile')
+
+            else:
+                error_message = 'Invalid user type.'
+                return render(request, 'user_login.html', {'error_message': error_message})
         else:
             error_message = 'Invalid email or password.'
-            return render(request, 'login.html', {'error_message': error_message})
+            return render(request, 'user_login.html', {'error_message': error_message})
     else:
-        return render(request, 'login.html')
+        return render(request, 'user_login.html')
 
 
 
@@ -135,9 +155,20 @@ def joinAsPro(request):
 
     return render(request, 'joinAsPro.html', {'show_page2': show_page2})
 
+def user_profile(request):
+    user = request.user
 
-
-
+    try:
+        homeowner = Homeowner.objects.get(user=user)
+        return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
+    except Homeowner.DoesNotExist:
+        # If Homeowner does not exist, check if the user is a Professional
+        try:
+            professional = Professional.objects.get(user=user)
+            return render(request, 'professional_profile.html', {'professional': professional})
+        except Professional.DoesNotExist:
+            # If neither Homeowner nor Professional, show a message to register
+            return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
 
 def services(request):
     return render(request, 'services.html')
@@ -157,9 +188,29 @@ def privacy_policy(request):
 def terms_of_use(request):
     return render(request, 'terms_of_use.html')
 
-def user_profile(request):
-    return render(request, 'user_profile.html')
-
 def logout_view(request):
     logout(request)
     return render(request,'home.html')
+
+
+@login_required
+def homeowner_profile(request):
+    user = request.user
+
+    try:
+        homeowner = Homeowner.objects.get(user=user)
+        return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
+    except Homeowner.DoesNotExist:
+        return render(request, 'error.html', {'message': 'You are not registered as a homeowner.'})
+
+@login_required
+def professional_profile(request):
+    user = request.user
+
+    try:
+        professional = Professional.objects.get(user=user)
+        return render(request, 'professional_profile.html', {'professional': professional})
+    except Professional.DoesNotExist:
+        return render(request, 'error.html', {'message': 'You are not registered as a professional.'})
+
+

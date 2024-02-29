@@ -16,4 +16,3 @@ class ProfessionalSignupForm(forms.Form):
     bio = forms.CharField()
     job = forms.CharField()
     previous_work = forms.CharField()
-

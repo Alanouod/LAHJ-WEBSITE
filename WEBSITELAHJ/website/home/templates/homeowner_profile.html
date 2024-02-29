@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Homeowner Profile{% endblock %}
+
+{% block content %}
+<div  class="mt-5 text-end">
+    <h1>اهلاً بك بملفك الشخصي</h1>
+    <p>Name: {{ homeowner.user.username }}</p>
+    <p>Email: {{ homeowner.user.email }}</p>
+    <p>Phone: {{ homeowner.user.phone }}</p>
+    <p>Address: {{ homeowner.user.address }}</p>
+   
+</div>
+{% endblock %}

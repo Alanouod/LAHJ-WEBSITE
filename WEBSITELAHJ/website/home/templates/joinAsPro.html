@@ -3,118 +3,84 @@
 
 {% block title %}تسجيل محترف{% endblock %}
 
-<body>
-    {% block content %}
-    <div class="container" style="margin-top: 150px" id='page1'>
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-            <div class="col-xl-6 col-lg-12 col-md-9">
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row" style="text-align: center;">
-                            <div class="col-lg-12">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <div class="timeline">
-                                            <div class="circle filled"></div>
-                                            <div class="line"></div>
-                                            <div class="circle"></div>
-                                        </div>
-                                        <h1>انضم كمحترف</h1>
-                                    </div>
-                                    <form class="user" method="POST" enctype="multipart/form-data">
+{% block content %}
+<div class="container" style="margin-top: 150px">
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-12 col-md-9">
+            <div class="card o-hidden border-0 shadow-lg my-5">
+                <div class="card-body p-0">
+                    <div class="row" style="text-align: center;">
+                        <div class="col-lg-12">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h1>انضم كمحترف</h1>
+                                </div>
+                                <div id="page1">
+                                    <form class="user" method="POST" enctype="multipart/form-data" id="form-page1">
                                         {% csrf_token %}
-
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-username">الاسم</label>
+                                            <label for="input-username">الاسم</label>
                                             <input type="text" class="form-control" id="input-username" name="username"
                                                 required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-email">البريد
-                                                الإلكتروني</label>
+                                            <label for="input-email">البريد الإلكتروني</label>
                                             <input type="email" class="form-control" id="input-email" name="email"
                                                 required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-phone">رقم الهاتف</label>
+                                            <label for="input-phone">رقم الهاتف</label>
                                             <input type="tel" class="form-control" id="input-phone" name="phone"
                                                 required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-address">العنوان</label>
+                                            <label for="input-address">العنوان</label>
                                             <input type="text" class="form-control" id="input-address" name="address"
                                                 required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-password">كلمة المرور</label>
+                                            <label for="input-password">كلمة المرور</label>
                                             <input type="password" class="form-control" id="input-password"
                                                 name="password" required>
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-confirm-password">تأكيد كلمة
-                                                المرور</label>
+                                            <label for="input-confirm-password">تأكيد كلمة المرور</label>
                                             <input type="password" class="form-control" id="input-confirm-password"
                                                 name="confirm_password" required>
                                         </div>
-                                        <input type="button" value="التالي" class='btn btn-primary btn-block'
+                                        <input type="button" value="Next" class="btn btn-primary btn-block"
                                             style="background-color:#000000; display: inline-block;"
                                             onclick="showPage2()">
                                         <hr>
                                     </form>
-                                    <hr>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div id="page2" class="hidden">
-        <div class="container" style="margin-top: 150px">
-            <!-- Outer Row -->
-            <div class="row justify-content-center">
-                <div class="col-xl-6 col-lg-12 col-md-9">
-                    <div class="card o-hidden border-0 shadow-lg my-5">
-                        <div class="card-body p-0">
-                            <!-- Nested Row within Card Body -->
-                            <div class="row" style="text-align: center;">
-                                <div class="col-lg-12">
-                                    <div class="p-5">
-                                        <div class="text-center">
-                                            <div class="timeline">
-                                                <div class="circle filled"></div>
-                                                <div class="line"></div>
-                                                <div class="circle"></div>
-                                            </div>
-                                            <h1>معلومات الحساب </h1>
+                                <div id="page2" style="display: none;">
+                                    <form class="user" method="POST" enctype="multipart/form-data" id="form-page2">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="input-bio">نبذة مختصرة عن نفسك</label>
+                                            <input type="text" class="form-control" id="input-bio" name="bio" required>
                                         </div>
-                                        <form class="user" method="POST" enctype="multipart/form-data">
-                                            {% csrf_token %}
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="input-bio">نبذة مختصرة</label>
-                                                <input type="text" class="form-control" id="input-bio" name="bio"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="input-job">مجال العمل</label>
-                                                <input type="text" class="form-control" id="input-job" name="job"
-                                                    required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="input-previous-work">العمل
-                                                    السابق</label>
-                                                <input type="text" class="form-control" id="input-previous-work"
-                                                    name="previous_work" required>
-                                            </div>
-                                        </form>
-                                        <input type="submit" value="ارسال" class='btn btn-primary btn-block'
+                                        <div class="form-group">
+                                            <label for="input-job">مجال عملك</label>
+                                            <select class="form-control" id="input-job" name="job" required>
+                                                <option value="Interior-designer">مصمم داخلي</option>
+                                                <option value="architect">مهندس معماري</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="input-previous-work">اعمالك السابقة</label>
+                                            <input type="file" class="form-control" id="input-previous-work"
+                                                name="previous_work" required>
+                                        </div>
+                                        <input type="button" value="Previous" class="btn btn-primary btn-block"
+                                            style="background-color:#000000; display: inline-block;"
+                                            onclick="showPage1()">
+                                        <input type="submit" value="Submit" class="btn btn-primary btn-block"
                                             style="background-color:#000000; display: inline-block;">
                                         <hr>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -123,12 +89,17 @@
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function showPage2() {
-            document.getElementById("page1").classList.add("hidden");
-            document.getElementById("page2").classList.remove("hidden");
-        }
-    </script>
-    {% endblock %}
-</body>
+<script>
+    function showPage2() {
+        document.getElementById('page1').style.display = 'none';
+        document.getElementById('page2').style.display = 'block';
+    }
+
+    function showPage1() {
+        document.getElementById('page2').style.display = 'none';
+        document.getElementById('page1').style.display = 'block';
+    }
+</script>
+{% endblock %}

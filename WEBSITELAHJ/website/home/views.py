@@ -178,6 +178,9 @@ def reso1(request):
 
 def refe(request):
     return render(request, 'refe.html')
+def cost (request):
+    return render(request, 'cost.html')
+
 
 def tips(request):
     return render(request, 'tips.html')

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}الإلهام{% endblock %}
+{% block title %}حساب التكلفة{% endblock %}
 
 {% block content %}
 
@@ -8,4 +8,86 @@
 <main class="container mt-4">
     <h2 style="text-align: center;">حساب التكلفة</h2>
 </main>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost Calculator</title>
+    <style>
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #1CAED0;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+        
+        }
+        button:hover {
+            background-color: #1CAED0;
+        }
+        h3, P{
+            text-align: center;
+         }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <form id="costCalculator">
+        <label for="furnitureCost" style="text-align: right;">:تكلفة الأثاث</label>
+        <input type="number" id="furnitureCost" name="furnitureCost" min="0" required>
+        
+        <label for="designerFee"style="text-align: right;"> :تكلفة المصمم</label>
+        <input type="number" id="designerFee" name="designerFee" min="0" required>
+        
+        <label for="houseExpenses"style="text-align: right;">:مصاريف الأخرى</label>
+        <input type="number" id="houseExpenses" name="houseExpenses" min="0" required>
+        
+        <button type="button" onclick="calculateCost()" style="text-align: center;">حساب التكلفة</button>
+    </form>
+    <div id="result"></div>
+</div>
+
+<script>
+    function calculateCost() {
+        
+        var furnitureCost = parseFloat(document.getElementById("furnitureCost").value);
+        var designerFee = parseFloat(document.getElementById("designerFee").value);
+        var houseExpenses = parseFloat(document.getElementById("houseExpenses").value);
+
+        
+        var totalCost = furnitureCost + designerFee + houseExpenses;
+
+        
+        var resultElement = document.getElementById("result");
+        resultElement.innerHTML = `
+            <h3> تكلفة</h3>
+            <p>تكلفة الأثاث: ${furnitureCost.toFixed(2)}</p>
+            <p>تكلفة المصمم: ${designerFee.toFixed(2)}</p>
+            <p>المصاريف الأخرى : ${houseExpenses.toFixed(2)}</p>
+            <p><strong> المجموع: ${totalCost.toFixed(2)}</strong></p>
+        `;
+    }
+</script>
+
+</body>
+</html>
+
+
+
 {% endblock %}

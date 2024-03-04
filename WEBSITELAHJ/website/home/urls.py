@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1, refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost
+from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1, refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic
 
 urlpatterns = [
     path('', home, name='home'),
@@ -19,4 +19,5 @@ urlpatterns = [
     path('homeowner_profile/', homeowner_profile, name='homeowner_profile'),
     path('professional_profile/', professional_profile, name='professional_profile'),
      path('cost/',cost, name='cost'),
+     path('classic/',cost, name='classic'),
 ]

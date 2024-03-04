@@ -18,6 +18,6 @@ urlpatterns = [
     path('logout/', logout_view, name='logout_view'),
     path('homeowner_profile/', homeowner_profile, name='homeowner_profile'),
     path('professional_profile/', professional_profile, name='professional_profile'),
-     path('cost/',cost, name='cost'),
-     path('classic/',cost, name='classic'),
+    path('cost/',cost, name='cost'),
+    path('classic/',classic, name='classic'),
 ]

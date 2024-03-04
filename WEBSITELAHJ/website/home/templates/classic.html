@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}كلاسيكي  {% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الأثاث الكلاسيكي</title>
+<style>
+    .container {
+        text-align: center;
+    }
+    .upper-image {
+        position: relative;
+        display: inline-block;
+    }
+    .lower-image {
+        position: relative;
+        display: inline-block;
+        margin-top: 20px; /* تعديل المسافة بين الصور */
+    }
+    .caption {
+        position: relative;
+        display: block;
+        margin-top: 20px; /* تعديل المسافة بين الصور والنص */
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="upper-image">
+        <img  src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo" width="200" height="200">
+    </div>
+    <div class="lower-image">
+        <img  src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo" width="200" height="200">
+        <img  src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo" width="200" height="200">
+        <img  src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo" width="200" height="200">
+    </div>
+    <div class="caption">
+        <p>هنا يمكنك وضع النص الذي تريده في الأسفل</p>
+    </div>
+</div>
+</body>
+</html>
+
+
+{% endblock %}

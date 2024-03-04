@@ -3,7 +3,6 @@
 {% block title %}ريفي  {% endblock %}
 
 {% block content %}
-<br>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,68 +11,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ريفي</title>
 
-<style>
+    <style>
+        body {
+            font-family: 'Inter';
+            text-align: right;
+        }
 
+        .container {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-h4{
-    
-font-family: 'Inter';
-font-style: normal;
-font-weight: 400;
-font-size: 30px;
-line-height: 36px;
-text-align: right;
-top: 100px;
-color: #495057;
-}
-#n1{
-width: 210px;
-height: 1400px;
-background: url(@nurdizaynnn.jpg);
-border-radius: 5px;
-}
- 
-img{
+        .text-container {
+            flex: 1;
+            margin-left: 20px;
+        }
 
-    /* Rectangle 4458 */
-width: 212px;
-height: 1194px;
+        .text-container h1,
+        .text-container h4,
+        .text-container h5 {
+            margin: 0;
+            color: #495057;
+        }
 
-background: url(@nurdizaynnn.jpg);
-border-radius: 5px;
-
-}
-
-
-
-
-</style>
+        .image-container img {
+            width: 212px;
+            height: 1194px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
+
 <body>
-    <h1 id="text"  style="text-align: center; color: #495057;">ريفي</h1>
-    <br>
-    <div >
-        <h4>الأثاث الريفي هو نوع من الأثاث يتميز بالطابع التقليدي والبساطة </h4>
     
-       <h4>مصنوع عادةً من الخشب الطبيعي ويعكس جوًا دافئاً ومريحاً مستوحى من الحياة الريفية القديم</h4>
+    <br>
+    <div class="container">
+        <div class="text-container" >
+            <h1 style="text-align: center; color: #495057;">ريفي</h1>
+            <br>
+            <h4>الأثاث الريفي هو نوع من الأثاث يتميز بالطابع التقليدي والبساطة</h4>
+            <h4>مصنوع عادةً من الخشب الطبيعي ويعكس جوًا دافئاً ومريحاً مستوحى من الحياة الريفية القديم</h4>
+            <h4>الأبيض النقي الذي يمنح الإشراق والنضارة، والبيج الكريمي الذي يعكس الدفء والهدوء، والأخضر الزيتي الذي يضيف لمسة من الطبيعة والانسجام. إضافةً إلى ذلك، يمكن أيضًا الاعتماد على الألوان الطبيعية الأخرى مثل البني والرمادي والأزرق الفاتح لتكملة ديكورات المنازل بطريقة تناسب الطابع الريفي وتجعل المساحات تبدو أكثر دفئًا </h4>
+            
+            <br>
+            <br>
+            <h4>اين اجدها؟</h4>
+           
+            <h5>بوتيك ريفي</h5>
+           
+           <h5>أبيات</h5>
+      
+            <h5>اشلي</h5>
+        </div>
+        <div class="image-container">
+            <img src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo">
+        </div>
     </div>
-    
-    <br>
-
-    <div id="place" style="text-align: right;">
-        <h4 >اين اجدها؟</h3>
-        <h5>بوتيك ريفي</h5>
-        <h5>أبيات</h5>
-        <h5>اشلي</h5>
-    </div>
-
-    <img  id="rustic4" src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo">
-    
-
-    <br>
-    <br>
-    
 </body>
+
+</html>
+
+
 
 
 {% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}كلاسيكي  {% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title >الأثاث الكلاسيكي</title>
+<style>
+    .container {
+        text-align: center;
+    }
+    .upper-image {
+        position: relative;
+        display: inline-block;
+    }
+    .lower-image {
+        position: relative;
+        display: inline-block;
+        margin-top: 40px; /* تعديل المسافة بين الصور */
+    }
+    .caption {
+        position: relative;
+        display: block;
+        margin-top: 40px; /* تعديل المسافة بين الصور والنص */
+    }
+</style>
+</head>
+<body>
+    <br>
+    <br>
+    <h1 style="color:#495057; text-align: center;">الأثاث الكلاسيكي</h1>
+    <br>
+    <br>
+<div class="container">
+    <div class="upper-image">
+        <img  src="{% static 'images\classic.jpeg' %}" alt="Lahj Logo" width="300" height="300">
+    </div>
+    <div class="lower-image">
+        <img  src="{% static 'images\classic1.jpeg' %}" alt="Lahj Logo" width="300" height="300">
+        <img  src="{% static 'images\classic2.jpeg' %}" alt="Lahj Logo" width="300" height="300">
+        <img  src="{% static 'images\classic3.jpeg' %}" alt="Lahj Logo" width="300" height="300">
+    </div>
+    
+<section class="page-section">
+    <div class="container text-center">
+      <img src="https://cdn.porch.com/bootstrap/0web/home-page/paths/path-3.svg" alt=" Between Sections" class="img-fluid">
+    </div>
+  </section>
+  
+    <div class="caption" style="color:#495057;">
+        <h4> الكلاسيكي هو نمط من الفن والتصميم يعكس الأسلوب القديم أو الأثري، ويشمل عادةً العناصر والزخارف التقليدية التي تمتاز بالتفاصيل الفخمة والتصميم الرفيع. يعود أصل الكلاسيكي إلى العصور القديمة مثل الروماني واليوناني، وقد تأثر بشكل كبير بالأسلوب الرومانسي والباروك والروكوكو.
+
+            أما بالنسبة لألوان الكلاسيكي، فغالباً ما تكون محايدة وراقية، مع تركيز على درجات اللون الغنية والترابية، مثل الذهبي والبرونزي والأبيض والكريمي والأحمر والبني الغامق والأزرق الداكن والأخضر الغني والأسود </h4>
+    
+          
+            
+<section class="page-section">
+    <div class="container text-center">
+      <img src="https://cdn.porch.com/bootstrap/0web/home-page/paths/path-3.svg" alt=" Between Sections" class="img-fluid">
+    </div>
+  </section>
+  
+
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+    <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+  </svg> <h4>اين اجدها؟</h4>
+           
+    <h5>مفروشات الرقيب</h5>
+   
+   <h5>مفروشات الكلاسيك</h5>
+
+    <h5>اشلي</h5>
+    <h5>بوتري بارن</h5>
+   </div>
+</div>
+
+<br>
+<br>
+<a href="{% url 'reso1' %}" style="color:#495057 ;display: flex;justify-content: center;align-items: center; font-size: 30px;"><button style="background: #1CAED0;width: 234px;height: 70px;" > عودة</button></a>
+</body>
+
+</html>
+
+
+{% endblock %}

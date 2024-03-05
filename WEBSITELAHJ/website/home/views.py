@@ -165,6 +165,9 @@ def cost (request):
 def tips(request):
     return render(request, 'tips.html')
 
+def classic(request):
+    return render(request, 'classic.html')
+
 def privacy_policy(request):
     return render(request, 'privacy_policy.html')
 

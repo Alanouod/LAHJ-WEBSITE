@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Professional Photo{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 text-end">
+        <h1 class="display-4">تعديل الصورة</h1>
+        <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ photo_form.as_p }}
+            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+        </form>
+    </div>
+{% endblock %}

@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from .models import Homeowner, Professional, UserProfile
-from .forms import HomeownerSignupForm, ProfessionalSignupForm
+from .forms import HomeownerSignupForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
@@ -13,10 +13,16 @@ from django.contrib.auth import login, authenticate
 from django.db import IntegrityError
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as auth_login
+from django.contrib.auth.models import User
+from .models import Professional
+from django.contrib.auth import authenticate, login, logout
 from .forms import HomeownerSignupForm, ProfessionalSignupForm
-from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from .forms import HomeownerProfileForm, PhotoUploadForm
+from .forms import HomeownerEditForm 
+from django.contrib import messages
+from .forms import PhotoUploadForm
+from .forms import ProfessionalEditForm, PhotoUploadForm
+from .forms import ProfessionalEditForm,ProfessionalSignupForm,PhotoUploadForm
 
 
 def home(request):
@@ -37,17 +43,11 @@ def inspiration(request):
 def findPro(request):
     return render(request, 'findPro.html')
 
+
+
 def signup(request):
     if request.method == 'POST':
-        user_type = request.POST.get('user_type')
-
-        if user_type == 'homeowner':
-            form = HomeownerSignupForm(request.POST)
-        elif user_type == 'professional':
-            form = ProfessionalSignupForm(request.POST)
-        else:
-            return render(request, 'signup.html', {'error_message': 'Invalid user type.'})
-
+        form = HomeownerSignupForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
@@ -56,28 +56,51 @@ def signup(request):
             try:
                 user = User.objects.create_user(username=username, email=email, password=password)
             except IntegrityError:
-                return render(request, 'signup.html', {'form': form, 'user_type': user_type, 'error_message': 'Username or email already exists. Please choose a different one.'})
+                return render(request, 'signup.html', {'form': form, 'error_message': 'Username or email already exists. Please choose a different one.'})
 
-            if user_type == 'homeowner':
-                # Create Homeowner profile
-                homeowner = Homeowner.objects.create(user=user)
-            elif user_type == 'professional':
-                # Create Professional profile
-                professional = Professional.objects.create(user=user)
-            else:
-                return render(request, 'signup.html', {'error_message': 'Invalid user type.'})
+            # Create Homeowner profile
+            homeowner = Homeowner.objects.create(user=user)
 
             # Log in the user
             user = authenticate(request, username=username, password=password)
             login(request, user)
 
+            # Redirect to the homeowner profile
             return redirect('homeowner_profile')
 
     else:
-        user_type = request.GET.get('user_type')
-        form = HomeownerSignupForm(initial={'user_type': user_type}) if user_type == 'homeowner' else ProfessionalSignupForm(initial={'user_type': user_type})
+        form = HomeownerSignupForm()
 
-    return render(request, 'signup.html', {'form': form, 'user_type': user_type})
+    return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
+
+
+def joinAsPro(request):
+    form = ProfessionalSignupForm()
+
+    if request.method == 'POST':
+        form = ProfessionalSignupForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                email=form.cleaned_data['email'],
+                password=form.cleaned_data['password']
+            )
+
+            professional = Professional.objects.create(
+                user=user,
+                phone=form.cleaned_data['phone'],
+                address=form.cleaned_data['address'],
+                bio=form.cleaned_data['bio'],
+                job=form.cleaned_data['job'],
+                previous_work=form.cleaned_data['previous_work']
+            )
+
+            user = authenticate(request, username=user.username, password=form.cleaned_data['password'])
+            login(request, user)
+
+            return redirect('professional_profile')
+
+    return render(request, 'joinAsPro.html', {'form': form, 'user_type': 'professional'})
 
 
 def user_login(request):
@@ -111,49 +134,6 @@ def user_login(request):
         return render(request, 'user_login.html')
 
 
-
-def joinAsPro(request):
-    show_page2 = False
-
-    if request.method == 'POST':
-        if 'submitPage1' in request.POST:
-            form_page1 = ProfessionalSignupForm(request.POST)
-            if form_page1.is_valid():
-                # Handle the form submission of page1
-                username = form_page1.cleaned_data['username']
-                email = form_page1.cleaned_data['email']
-                phone = form_page1.cleaned_data['phone']
-                address = form_page1.cleaned_data['address']
-
-                # Create a new professional object
-                professional = Professional(
-                    username=username,
-                    email=email,
-                    phone=phone,
-                    address=address
-                )
-                professional.save()
-
-                # Set show_page2 to True to display the second page
-                show_page2 = True
-        elif 'submitPage2' in request.POST:
-            form_page2 = ProfessionalSignupForm(request.POST)
-            if form_page2.is_valid():
-                # Handle the form submission of page2
-                bio = form_page2.cleaned_data['bio']
-                job = form_page2.cleaned_data['job']
-                previous_work = form_page2.cleaned_data['previous_work']
-
-                # Update the existing professional object with page2 data
-                professional = Professional.objects.latest('id')
-                professional.bio = bio
-                professional.job = job
-                professional.previous_work = previous_work
-                professional.save()
-
-                return redirect('user_profile')
-
-    return render(request, 'joinAsPro.html', {'show_page2': show_page2})
 
 def user_profile(request):
     user = request.user
@@ -199,12 +179,78 @@ def logout_view(request):
 @login_required
 def homeowner_profile(request):
     user = request.user
+    homeowner = Homeowner.objects.get(user=user)  
 
-    try:
-        homeowner = Homeowner.objects.get(user=user)
-        return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
-    except Homeowner.DoesNotExist:
-        return render(request, 'error.html', {'message': 'You are not registered as a homeowner.'})
+    if request.method == 'POST':
+        # Handle editing profile information
+        profile_form = HomeownerProfileForm(request.POST, instance=homeowner)
+        if profile_form.is_valid():
+            profile_form.save()
+
+        # Handle uploading/editing a profile photo
+        photo_form = PhotoUploadForm(request.POST, request.FILES, instance=homeowner)
+        if photo_form.is_valid():
+            photo_form.save()
+
+        return redirect('homeowner_profile')
+
+    else:
+        # For displaying the profile and handling form submissions
+        profile_form = HomeownerProfileForm(instance=homeowner)
+        photo_form = PhotoUploadForm(instance=homeowner)
+
+    
+    return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
+
+@login_required
+def edit_profile(request):
+    homeowner = Homeowner.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        form = HomeownerEditForm(request.POST, instance=homeowner)
+        if form.is_valid():
+            form.save()
+            return redirect('homeowner_profile')
+    else:
+        form = HomeownerEditForm(instance=homeowner)
+
+    return render(request, 'edit_profile.html', {'form': form, 'homeowner': homeowner})
+
+
+@login_required
+def edit_photo(request):
+    homeowner = request.user.homeowner
+
+    if request.method == 'POST':
+        photo_form = PhotoUploadForm(request.POST, request.FILES, instance=homeowner)
+        if photo_form.is_valid():
+            photo_form.save()
+            return redirect('homeowner_profile')
+
+    else:
+        photo_form = PhotoUploadForm(instance=homeowner)
+
+    return render(request, 'edit_photo.html', {'homeowner': homeowner, 'photo_form': photo_form})
+
+
+
+def save_photo_changes(request):
+    if request.method == 'POST':
+        photo_form = PhotoUploadForm(request.POST, request.FILES)
+
+        if photo_form.is_valid():
+            # Save the changes to the user's photo
+            # Example: request.user.profile.photo = photo_form.cleaned_data['photo']
+            # Save the user's profile
+            # request.user.profile.save()
+
+            messages.success(request, 'Changes to the photo were saved successfully.')
+        else:
+            messages.error(request, 'Error saving changes to the photo. Please check the form.')
+
+    return redirect('edit_photo')  # Redirect back to the edit_photo page after saving changes
+
+
 
 @login_required
 def professional_profile(request):
@@ -217,3 +263,31 @@ def professional_profile(request):
         return render(request, 'error.html', {'message': 'You are not registered as a professional.'})
 
 
+@login_required
+def edit_professional_profile(request):
+    professional = Professional.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        form = ProfessionalEditForm(request.POST, instance=professional)
+        if form.is_valid():
+            form.save()
+            return redirect('professional_profile')
+    else:
+        form = ProfessionalEditForm(instance=professional)
+
+    return render(request, 'edit_professional_profile.html', {'form': form, 'professional': professional})
+
+
+
+@login_required
+def edit_professional_photo(request):
+    professional = Professional.objects.get(user=request.user)
+    
+    if request.method == 'POST':
+        form = PhotoUploadForm(request.POST, request.FILES, instance=professional)
+        if form.is_valid():
+            form.save()
+            return redirect('professional_profile')
+    else:
+        form = PhotoUploadForm(instance=professional)
+    return render(request, 'edit_professional_photo.html', {'form': form, 'professional': professional})

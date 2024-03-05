@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Professional Profile{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 text-end">
+        <h1 class="display-4">تعديل الملف الشخصي</h1>
+        <form method="post" action="{% url 'edit_professional_profile' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+        </form>
+    </div>
+{% endblock %}

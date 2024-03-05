@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Edit Photo{% endblock %}
+
+{% block content %}
+  <h1>Edit Photo</h1>
+  <!-- Add your form for editing the user's photo here -->
+  <form method="post" action="{% url 'save_photo_changes' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ photo_form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+{% endblock %}

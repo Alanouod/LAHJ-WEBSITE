@@ -1,3 +1,4 @@
+<!-- home/templates/home/joinAsPro.html -->
 {% extends 'base.html' %}
 {% load static %}
 
@@ -15,49 +16,39 @@
                                 <div class="text-center">
                                     <h1>انضم كمحترف</h1>
                                 </div>
-                                <div id="page1">
-                                    <form class="user" method="POST" enctype="multipart/form-data" id="form-page1">
-                                        {% csrf_token %}
+                                <form class="user" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div id="page1">
+                                        <!-- Page 1 Fields -->
                                         <div class="form-group">
                                             <label for="input-username">الاسم</label>
-                                            <input type="text" class="form-control" id="input-username" name="username"
-                                                required>
+                                            <input type="text" class="form-control" id="input-username" name="username" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-email">البريد الإلكتروني</label>
-                                            <input type="email" class="form-control" id="input-email" name="email"
-                                                required>
+                                            <input type="email" class="form-control" id="input-email" name="email" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-phone">رقم الهاتف</label>
-                                            <input type="tel" class="form-control" id="input-phone" name="phone"
-                                                required>
+                                            <input type="tel" class="form-control" id="input-phone" name="phone" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-address">العنوان</label>
-                                            <input type="text" class="form-control" id="input-address" name="address"
-                                                required>
+                                            <input type="text" class="form-control" id="input-address" name="address" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-password">كلمة المرور</label>
-                                            <input type="password" class="form-control" id="input-password"
-                                                name="password" required>
+                                            <input type="password" class="form-control" id="input-password" name="password" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-confirm-password">تأكيد كلمة المرور</label>
-                                            <input type="password" class="form-control" id="input-confirm-password"
-                                                name="confirm_password" required>
+                                            <input type="password" class="form-control" id="input-confirm-password" name="confirm_password" required>
                                         </div>
-                                        <input type="button" value="Next" class="btn btn-primary btn-block"
-                                            style="background-color:#000000; display: inline-block;"
-                                            onclick="showPage2()">
-                                        <hr>
-                                    </form>
-                                </div>
+                                        <input type="button" name="submitPage1" value="التالي" class="btn btn-primary btn-block" style="background-color:#000000; display: inline-block;" onclick="showPage2()">
+                                    </div>
 
-                                <div id="page2" style="display: none;">
-                                    <form class="user" method="POST" enctype="multipart/form-data" id="form-page2">
-                                        {% csrf_token %}
+                                    <div id="page2" style="display: none;">
+                                        <!-- Page 2 Fields -->
                                         <div class="form-group">
                                             <label for="input-bio">نبذة مختصرة عن نفسك</label>
                                             <input type="text" class="form-control" id="input-bio" name="bio" required>
@@ -71,17 +62,24 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="input-previous-work">اعمالك السابقة</label>
-                                            <input type="file" class="form-control" id="input-previous-work"
-                                                name="previous_work" required>
+                                            <input type="file" class="form-control" id="input-previous-work" name="previous_work" required>
                                         </div>
-                                        <input type="button" value="Previous" class="btn btn-primary btn-block"
-                                            style="background-color:#000000; display: inline-block;"
-                                            onclick="showPage1()">
-                                        <input type="submit" value="Submit" class="btn btn-primary btn-block"
-                                            style="background-color:#000000; display: inline-block;">
-                                        <hr>
-                                    </form>
-                                </div>
+                                        <input type="button" value="السابق" class="btn btn-primary btn-block" style="background-color:#000000; display: inline-block;" onclick="showPage1()">
+                                        <input type="submit" value="التسجيل" class="btn btn-primary btn-block" style="background-color:#000000; display: inline-block;">
+                                    </div>
+                                </form>
+
+                                <script>
+                                    function showPage2() {
+                                        document.getElementById('page1').style.display = 'none';
+                                        document.getElementById('page2').style.display = 'block';
+                                    }
+
+                                    function showPage1() {
+                                        document.getElementById('page2').style.display = 'none';
+                                        document.getElementById('page1').style.display = 'block';
+                                    }
+                                </script>
                             </div>
                         </div>
                     </div>
@@ -90,16 +88,4 @@
         </div>
     </div>
 </div>
-
-<script>
-    function showPage2() {
-        document.getElementById('page1').style.display = 'none';
-        document.getElementById('page2').style.display = 'block';
-    }
-
-    function showPage1() {
-        document.getElementById('page2').style.display = 'none';
-        document.getElementById('page1').style.display = 'block';
-    }
-</script>
 {% endblock %}

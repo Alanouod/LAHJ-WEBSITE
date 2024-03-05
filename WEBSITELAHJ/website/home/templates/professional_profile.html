@@ -1,14 +1,167 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Professional Profile{% endblock %}
 
 {% block content %}
-    <h1 class="mt-5">اهلاً بك بملف الشخصي</h1>
-    <p>Name: {{ profile.user.username }}</p>
-    <p>Email: {{ profile.user.email }}</p>
-    <p>Phone: {{ profile.phone }}</p>
-    <p>Address: {{ profile.address }}</p>
-    <!-- Add additional professional-specific fields here -->
-    <p>Bio: {{ profile.bio }}</p>
-    <p>Job: {{ profile.job }}</p>
-    <p>Previous Work: {{ profile.previous_work }}</p>
+<style>
+    .profile-section-link {
+        color: #1CAED0;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .profile-section-link:hover {
+        color: grey;
+    }
+
+    .section-content {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+    }
+
+    .section-content h3 {
+        color: #1CAED0;
+    }
+
+    .photo-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .photo-box {
+        width: 200px;
+        height: 200px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .photo-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .edit-photo-btn {
+        margin-top: 10px;
+        padding: 5px 10px;
+    }
+</style>
+
+<div class="container mt-5 text-end">
+    <div class="row mt-3 text-end">
+        <div class="col-mt-3 photo-container text-end">
+            <!-- Display professional's name with edit buttons -->
+            <h1 class="display-4">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal" onclick="window.location.href='{% url 'edit_professional_profile' %}'">تعديل الملف الشخصي</button>
+               
+                {{ professional.user.username }}
+            </h1>
+        </div>
+    </div>
+    <hr>
+
+    <!-- Other professional profile content -->
+    <div class="row mt-3 text-end">
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
+            <div id="ordersContent" class="section-content mt-3">
+                معلومات الطلبات
+            </div>
+        </div>
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
+            <div id="messagesContent" class="section-content mt-3">
+                معلومات الرسائل
+            </div>
+        </div>
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات المفضلة">المفضلة</a>
+            <div id="wishlistContent" class="section-content mt-3">
+                معلومات المفضلة
+            </div>
+        </div>
+        <div class="col mt-3 photo-box text-end">
+            <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+            {% if professional.photo %}
+                <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
+            {% else %}
+                <!-- Default placeholder image -->
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your form for editing professional profile information -->
+                <form method="post" action="{% url 'edit_professional_profile' %}">
+                    {% csrf_token %}
+                    <!-- Include fields like bio, job, etc. as needed -->
+                    {{ profile_form.as_p }}
+                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Edit Photo Modal -->
+<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your form for uploading/editing professional photo -->
+                <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="photo">تحميل صورة جديدة:</label>
+                    <input type="file" name="photo">
+                    <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ التغييرات</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateProfessionalPhoto() {
+        // Get the input file element
+        var inputElement = document.querySelector('input[name="photo"]');
+
+        // Check if a file is selected
+        if (inputElement.files.length > 0) {
+            // Get the selected file
+            var selectedFile = inputElement.files[0];
+
+            // Create a FileReader to read the selected file
+            var reader = new FileReader();
+
+            // Set the function to execute after the file is loaded
+            reader.onload = function (e) {
+                // Update the source attribute of the professionalPhoto image with the new data URL
+                document.getElementById('professionalPhoto').src = e.target.result;
+            };
+
+            // Read the selected file as a data URL
+            reader.readAsDataURL(selectedFile);
+        }
+    }
+</script>
 {% endblock %}

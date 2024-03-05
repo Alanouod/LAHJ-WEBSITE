@@ -1,33 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=150,default=None)
     phone = models.CharField(max_length=15, null=True, blank=True)
     email = models.EmailField(default=None)
-    password = models.CharField(default=None,max_length=255)
-    address = models.CharField(default=None,max_length=255)
+    password = models.CharField(default=None, max_length=255)
+    address = models.CharField(default=None, max_length=255)
 
     def __str__(self):
-        return self.name
-
+        return self.user.username
 
 
 class Homeowner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=255, default='')
+    photo = models.ImageField(upload_to='homeowner_photos/', null=True, blank=True)  # Add this line
+
 
 class Professional(models.Model):
-    user_profile = models.OneToOneField(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)  # Add this line with default=None
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, related_name='professional_profile', null=True)
     phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=255, default='')
     bio = models.TextField(null=True, blank=True)
     job = models.CharField(max_length=255, null=True, blank=True)
-    previous_work = models.CharField(max_length=255, null=True, blank=True)
-
+    previous_work = models.FileField(upload_to='previous_work/', null=True, blank=True)
+    photo = models.ImageField(upload_to='professional_photos/', null=True, blank=True)
 
 
 class Order(models.Model):

@@ -1,13 +1,169 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Homeowner Profile{% endblock %}
 
 {% block content %}
-<div  class="mt-5 text-end">
-    <h1>اهلاً بك بملفك الشخصي</h1>
-    <p>Name: {{ homeowner.user.username }}</p>
-    <p>Email: {{ homeowner.user.email }}</p>
-    <p>Phone: {{ homeowner.user.phone }}</p>
-    <p>Address: {{ homeowner.user.address }}</p>
-   
+<style>
+    .profile-section-link {
+      color: #1CAED0;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+  
+    .profile-section-link:hover {
+      color: grey;
+    }
+  
+    .section-content {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+  
+    .section-content h3 {
+      color: #1CAED0;
+    }
+
+    .photo-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .photo-box {
+      width: 200px;
+      height: 200px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 0 auto;  
+    }
+
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .edit-photo-btn {
+      margin-top: 10px;
+      padding: 5px 10px; 
+    }
+</style>
+
+<div class="container mt-5 text-end">
+    <div class="row mt-3 text-end">
+            <h1 class="display-4">
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
+                {{ homeowner.user.username }}
+            </h1>
+        </div> 
+    <hr>
+
+    <!-- Other profile content -->
+    
+    <div class="row mt-3 text-end">
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
+            <div id="ordersContent" class="section-content mt-3">
+                معلومات الطلبات
+            </div>
+        </div>
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
+            <div id="messagesContent" class="section-content mt-3">
+                معلومات الرسائل
+            </div>
+        </div>
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات المفضلة">المفضلة</a>
+            <div id="wishlistContent" class="section-content mt-3">
+                معلومات المفضلة
+            </div>
+        </div>    
+        
+        <div class="col mt-3 photo-box text-end">
+            <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+            {% if homeowner.photo %}
+                <img src="{{ homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
+            {% else %}
+                <!-- Default placeholder image -->
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
+            {% endif %}
+        </div>
+    </div>
+
+
+    </div>
 </div>
+
+<!-- Edit Photo Modal -->
+<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'edit_photo' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="photo">تحميل صورة جديدة:</label>
+                    <input type="file" name="photo">
+                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                </form>
+                
+                <!-- Display photo if available -->
+                <div class="col mt-3 photo-box text-end">
+                    <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+                    
+                    {% if homeowner.photo %}
+                        <!-- Update the image source in the photo-box -->
+                        <img src="{{ homeowner.photo.url }}" alt="User Photo" id="homeownerPhoto" class="img-fluid rounded-circle">
+                        
+                        <!-- Update the image source in the navigation bar -->
+                        <script>
+                            document.getElementById('homeownerPhotoNavbar').src = "{{ homeowner.photo.url }}";
+                        </script>
+                    {% else %}
+                        <!-- Display default image or placeholder if no photo is available -->
+                        <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" id="homeownerPhoto" class="img-fluid rounded-circle">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+
+        // Handle profile section link clicks
+        $('.profile-section-link').click(function (e) {
+            e.preventDefault();
+            var section = $(this).text().toLowerCase();
+            
+            // Fetch and load content dynamically based on the selected section
+            loadSectionContent(section);
+        });
+
+        // Function to fetch and load content for the selected section
+        function loadSectionContent(section) {
+            // You can use AJAX to fetch user-specific content for each section
+            // Replace the following with your actual logic to fetch and display content
+
+            var contentDiv = $('#' + section + 'Content');
+            contentDiv.html('<h3>Loading ' + section + ' Content...</h3>');
+
+            // Simulate an AJAX request (replace this with your actual AJAX logic)
+            setTimeout(function () {
+                contentDiv.html('<h3>' + section.charAt(0).toUpperCase() + section.slice(1) + ' Section Content</h3>');
+            }, 1000);
+        }
+    });
+</script>
+
 {% endblock %}

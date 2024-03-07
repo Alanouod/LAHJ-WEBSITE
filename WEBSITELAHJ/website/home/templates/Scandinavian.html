@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}الاسكندنافي {% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفحة مع دوائر الألوان</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0; 
+    }
+    .circle-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 50px; 
+    }
+    .circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+    .gray {
+        background-color: #808080; 
+    }
+    .white {
+        background-color: #FFFFFF; 
+    }
+    .brown {
+        background-color: #a86739; 
+    }
+    .black {
+        background-color: #000000; 
+    }
+    
+    .sea-green {
+        background-color: #2E8B57; 
+    }
+</style>
+</head>
+<body>
+    <br>
+    <br>
+    <div style="text-align: center;color:#495057 ;">
+        <h1 >الاسكندنافي</h1>
+    </div>
+<div class="circle-container">
+    <div class="circle gray"></div>
+    <div class="circle white"></div>
+    <div class="circle brown"></div>
+    <div class="circle black"></div>
+</div>
+
+<div class="circle-container">
+    
+    <div class="circle sea-green"></div>
+</div>
+<br>
+<br>
+<div style="text-align: center;color:#495057 ;">
+    
+    <br>
+    <h4>الأثاث الأسكندنافي هو نمط يأتي من دول شمال أوروبا مثل الدنمارك والسويد والنرويج وفنلندا، يتميز بالبساطة، الوظائفية، والتصميم العصري. يستخدم الخشب الطبيعي والألوان الهادئة مثل الأبيض والرمادي والبني والأسود، مع بعض اللمسات الزاهية مثل الفوشيا وخضر البحر. يتميز هذا الأثاث بالتركيز على الوظائفية والعملية، ويتمتع بالجودة العالية والمتانة. يمثل توازنًا مثاليًا بين الأناقة والراحة، جعله خيارًا مثاليًا لأولئك الذين يبحثون عن تصاميم عصرية وعملية في منازلهم</h4>
+    <br>
+    <br>
+    <img src="{% static 'images\house.jpg' %}" alt="Lahj Logo">
+    <br>
+    <br>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+        <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+      </svg> <h4>اين اجدها؟</h4>
+               
+        <h5>دايز للأثاث </h5>
+       
+       <h5>لوفت ديزاين  </h5>
+    
+        <h5>لاين للمفروشات </h5>
+
+        <h5>بوتري بارن</h5>
+</div>
+
+</body>
+
+</html>
+
+
+{% endblock %}

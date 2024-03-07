@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1, refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo
+from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1, refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian
 
 urlpatterns = [
     path('', home, name='home'),
@@ -25,5 +25,6 @@ urlpatterns = [
     path('save-photo-changes/', save_photo_changes, name='save_photo_changes'),
     path('edit_professional_profile/', edit_professional_profile, name='edit_professional_profile'),
     path('edit_professional_photo/', edit_professional_photo, name='edit_professional_photo'),
+    path('Scandinavian/', Scandinavian, name='Scandinavian'),
 
 ]

@@ -167,6 +167,9 @@ def tips(request):
 
 def classic(request):
     return render(request, 'classic.html')
+def Scandinavian(request):
+    logout(request)
+    return render(request,'Scandinavian.html')
 
 def privacy_policy(request):
     return render(request, 'privacy_policy.html')

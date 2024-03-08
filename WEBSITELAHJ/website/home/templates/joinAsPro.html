@@ -16,35 +16,48 @@
                                 <div class="text-center">
                                     <h1>انضم كمحترف</h1>
                                 </div>
-                                <form class="user" method="POST" enctype="multipart/form-data">
+                                <form class="user" method="POST" enctype="multipart/form-data" id="registration-form">
                                     {% csrf_token %}
                                     <div id="page1">
                                         <!-- Page 1 Fields -->
                                         <div class="form-group">
                                             <label for="input-username">الاسم</label>
-                                            <input type="text" class="form-control" id="input-username" name="username" required>
+                                            <input type="text" class="form-control" id="input-username" name="username"
+                                                required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-email">البريد الإلكتروني</label>
-                                            <input type="email" class="form-control" id="input-email" name="email" required>
+                                            <input type="email" class="form-control" id="input-email" name="email"
+                                                required>
+                                            <div id="email-error" class="error-message"></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-phone">رقم الهاتف</label>
-                                            <input type="tel" class="form-control" id="input-phone" name="phone" required>
+                                            <input type="tel" class="form-control" id="input-phone" name="phone"
+                                                required>
+                                            <div id="phone-error" class="error-message"></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-address">العنوان</label>
-                                            <input type="text" class="form-control" id="input-address" name="address" required>
+                                            <input type="text" class="form-control" id="input-address" name="address"
+                                                required>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-password">كلمة المرور</label>
-                                            <input type="password" class="form-control" id="input-password" name="password" required>
+                                            <input type="password" class="form-control" id="input-password"
+                                                name="password" required>
+                                            <div id="password-error" class="error-message"></div>
                                         </div>
                                         <div class="form-group">
                                             <label for="input-confirm-password">تأكيد كلمة المرور</label>
-                                            <input type="password" class="form-control" id="input-confirm-password" name="confirm_password" required>
+                                            <input type="password" class="form-control" id="input-confirm-password"
+                                                name="confirm_password" required>
+                                            <div id="confirm-password-error" class="error-message"></div>
                                         </div>
-                                        <input type="button" name="submitPage1" value="التالي" class="btn btn-primary btn-block" style="background-color:#000000; display: inline-block;" onclick="showPage2()">
+                                        <input type="button" name="submitPage1" value="التالي"
+                                            class="btn btn-primary btn-block"
+                                            style="background-color:#000000; display: inline-block;"
+                                            onclick="validatePage1()">
                                     </div>
 
                                     <div id="page2" style="display: none;">
@@ -62,22 +75,79 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="input-previous-work">اعمالك السابقة</label>
-                                            <input type="file" class="form-control" id="input-previous-work" name="previous_work" required>
+                                            <input type="file" class="form-control" id="input-previous-work"
+                                                name="previous_work" required>
                                         </div>
-                                        <input type="button" value="السابق" class="btn btn-primary btn-block" style="background-color:#000000; display: inline-block;" onclick="showPage1()">
-                                        <input type="submit" value="التسجيل" class="btn btn-primary btn-block" style="background-color:#000000; display: inline-block;">
+                                        <input type="button" value="السابق" class="btn btn-primary btn-block"
+                                            style="background-color:#000000; display: inline-block;"
+                                            onclick="showPage1()">
+                                        <input type="submit" value="التسجيل" class="btn btn-primary btn-block"
+                                            style="background-color:#000000; display: inline-block;">
                                     </div>
                                 </form>
 
                                 <script>
-                                    function showPage2() {
+                                    function validatePage1() {
+                                        // Validate email
+                                        const emailInput = document.getElementById('input-email');
+                                        const emailError = document.getElementById('email-error');
+                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                        if (!emailRegex.test(emailInput.value)) {
+                                            emailError.textContent = 'يرجى إدخال بريد إلكتروني صحيح';
+                                            emailInput.classList.add('is-invalid');
+                                            return;
+                                        } else {
+                                            emailError.textContent = '';
+                                            emailInput.classList.remove('is-invalid');
+                                        }
+
+                                        // Validate phone number
+                                        const phoneInput = document.getElementById('input-phone');
+                                        const phoneError = document.getElementById('phone-error');
+                                        const phoneRegex = /^[0-9]{10}$/;
+                                        if (!phoneRegex.test(phoneInput.value)) {
+                                            phoneError.textContent = '(05********) يرجى إدخال رقم هاتف صحيح';
+                                            phoneInput.classList.add('is-invalid');
+                                            return;
+                                        } else {
+                                            phoneError.textContent = '';
+                                            phoneInput.classList.remove('is-invalid');
+                                        }
+
+                                        // Validate password
+                                        const passwordInput = document.getElementById('input-password');
+                                        const passwordError = document.getElementById('password-error');
+                                        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+                                        if (!passwordRegex.test(passwordInput.value)) {
+                                            passwordError.textContent = 'يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل وتحتوي على حرف كبير وحرف صغير ورقم';
+                                            passwordInput.classList.add('is-invalid');
+                                            return;
+                                        } else {
+                                            passwordError.textContent = '';
+                                            passwordInput.classList.remove('is-invalid');
+                                        }
+
+                                        // Validate confirm password
+                                        const confirmPasswordInput = document.getElementById('input-confirm-password');
+                                        const confirmPasswordError = document.getElementById('confirm-password-error');
+                                        if (passwordInput.value !== confirmPasswordInput.value) {
+                                            confirmPasswordError.textContent = 'يجب أن تتطابق كلمة المرور مع تأكيد كلمة المرور';
+                                            confirmPasswordInput.classList.add('is-invalid');
+                                            return;
+                                        } else {
+                                            confirmPasswordError.textContent = '';
+                                            confirmPasswordInput.classList.remove('is-invalid');
+                                        }
+
+                                        // If all validations pass, show page 2
                                         document.getElementById('page1').style.display = 'none';
                                         document.getElementById('page2').style.display = 'block';
                                     }
 
                                     function showPage1() {
-                                        document.getElementById('page2').style.display = 'none';
+                                        // Show page 1
                                         document.getElementById('page1').style.display = 'block';
+                                        document.getElementById('page2').style.display = 'none';
                                     }
                                 </script>
                             </div>

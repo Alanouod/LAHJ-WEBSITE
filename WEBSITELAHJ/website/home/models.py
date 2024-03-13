@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True, blank=True)
@@ -29,6 +28,24 @@ class Professional(models.Model):
     job = models.CharField(max_length=255, null=True, blank=True)
     previous_work = models.FileField(upload_to='previous_work/', null=True, blank=True)
     photo = models.ImageField(upload_to='professional_photos/', null=True, blank=True)
+
+class PreviousWork(models.Model):
+    professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='previous_work/')
+    project_name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.project_name
+
+class Wishlist(models.Model):
+    homeowner = models.ForeignKey(Homeowner, on_delete=models.CASCADE)
+    previous_work = models.ForeignKey(PreviousWork, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.homeowner.user.username} - {self.previous_work.project_name}'
+
 
 
 class Order(models.Model):

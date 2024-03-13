@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from .models import Homeowner, Professional, UserProfile
+from .models import Homeowner, Professional, UserProfile,PreviousWork
 from .forms import HomeownerSignupForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -23,7 +23,8 @@ from django.contrib import messages
 from .forms import PhotoUploadForm
 from .forms import ProfessionalEditForm, PhotoUploadForm
 from .forms import ProfessionalEditForm,ProfessionalSignupForm,PhotoUploadForm
-
+from .models import PreviousWork
+from .models import PreviousWork, Wishlist
 
 def home(request):
     return render(request, 'home.html')
@@ -37,8 +38,18 @@ def terms_of_use(request):
 def resource(request):
     return render(request, 'resource.html')
 
+def save_to_wishlist(request, work_id):
+    if request.method == 'POST':
+        previous_work = PreviousWork.objects.get(id=work_id)
+        homeowner = request.user.homeowner  
+        Wishlist.objects.create(homeowner=homeowner, previous_work=previous_work)
+        return redirect('inspiration')
+
 def inspiration(request):
-    return render(request, 'inspiration.html')
+    previous_works = PreviousWork.objects.all()
+    print(previous_works) 
+    return render(request, 'inspiration.html', {'previous_works': previous_works})
+
 
 def findPro(request):
     return render(request, 'findPro.html')
@@ -133,55 +144,6 @@ def user_login(request):
     else:
         return render(request, 'user_login.html')
 
-
-
-def user_profile(request):
-    user = request.user
-
-    try:
-        homeowner = Homeowner.objects.get(user=user)
-        return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
-    except Homeowner.DoesNotExist:
-        # If Homeowner does not exist, check if the user is a Professional
-        try:
-            professional = Professional.objects.get(user=user)
-            return render(request, 'professional_profile.html', {'professional': professional})
-        except Professional.DoesNotExist:
-            # If neither Homeowner nor Professional, show a message to register
-            return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
-
-def services(request):
-    return render(request, 'services.html')
-
-def reso1(request):
-    return render(request, 'reso1.html')
-
-def refe(request):
-    return render(request, 'refe.html')
-def cost (request):
-    return render(request, 'cost.html')
-
-
-def tips(request):
-    return render(request, 'tips.html')
-
-def classic(request):
-    return render(request, 'classic.html')
-def Scandinavian(request):
-    logout(request)
-    return render(request,'Scandinavian.html')
-
-def privacy_policy(request):
-    return render(request, 'privacy_policy.html')
-
-def terms_of_use(request):
-    return render(request, 'terms_of_use.html')
-
-def logout_view(request):
-    logout(request)
-    return render(request,'home.html')
-
-
 @login_required
 def homeowner_profile(request):
     user = request.user
@@ -256,8 +218,6 @@ def save_photo_changes(request):
 
     return redirect('edit_photo')  # Redirect back to the edit_photo page after saving changes
 
-
-
 @login_required
 def professional_profile(request):
     user = request.user
@@ -267,7 +227,6 @@ def professional_profile(request):
         return render(request, 'professional_profile.html', {'professional': professional})
     except Professional.DoesNotExist:
         return render(request, 'error.html', {'message': 'You are not registered as a professional.'})
-
 
 @login_required
 def edit_professional_profile(request):
@@ -283,8 +242,6 @@ def edit_professional_profile(request):
 
     return render(request, 'edit_professional_profile.html', {'form': form, 'professional': professional})
 
-
-
 @login_required
 def edit_professional_photo(request):
     professional = Professional.objects.get(user=request.user)
@@ -297,3 +254,52 @@ def edit_professional_photo(request):
     else:
         form = PhotoUploadForm(instance=professional)
     return render(request, 'edit_professional_photo.html', {'form': form, 'professional': professional})
+
+
+
+def user_profile(request):
+    user = request.user
+
+    try:
+        homeowner = Homeowner.objects.get(user=user)
+        return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
+    except Homeowner.DoesNotExist:
+        # If Homeowner does not exist, check if the user is a Professional
+        try:
+            professional = Professional.objects.get(user=user)
+            return render(request, 'professional_profile.html', {'professional': professional})
+        except Professional.DoesNotExist:
+            # If neither Homeowner nor Professional, show a message to register
+            return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
+
+def services(request):
+    return render(request, 'services.html')
+
+def reso1(request):
+    return render(request, 'reso1.html')
+
+def refe(request):
+    return render(request, 'refe.html')
+def cost (request):
+    return render(request, 'cost.html')
+
+
+def tips(request):
+    return render(request, 'tips.html')
+
+def classic(request):
+    return render(request, 'classic.html')
+def Scandinavian(request):
+    logout(request)
+    return render(request,'Scandinavian.html')
+
+def privacy_policy(request):
+    return render(request, 'privacy_policy.html')
+
+def terms_of_use(request):
+    return render(request, 'terms_of_use.html')
+
+def logout_view(request):
+    logout(request)
+    return render(request,'home.html')
+

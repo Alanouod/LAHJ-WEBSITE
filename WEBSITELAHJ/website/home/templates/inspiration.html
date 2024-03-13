@@ -3,10 +3,45 @@
 {% block title %}الإلهام{% endblock %}
 
 {% block content %}
-    
-    <main class="container mt-4">
-        
-    </main>
+    <style>
+        /* CSS to enforce a specific aspect ratio for the images */
+        .card-img-top {
+            height: 200px; /* Adjust the height as needed */
+            object-fit: cover;
+        }
+    </style>
+
+    <div class="container mt-5">
+        <h1 class="display-4 mb-4 text-end"> الإلهام</h1>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for work in previous_works %}
+                <div class="col">
+                    <div class="card">
+                        <img src="{{ work.image.url }}" class="card-img-top" alt="{{ work.project_name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ work.project_name }}</h5>
+                            <p class="card-text">{{ work.description }}</p>
+                            <p>بواسطة: {{ work.professional.user.username }}</p>
+                            <!-- Add a button for adding to wishlist (optional) -->
+                            {% if request.user.is_authenticated %}
+                                <button class="btn btn-primary">حفظ للمفضلة </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                    </div><div class="row row-cols-1 row-cols-md-3 g-4">
+                {% endif %}
+            {% endfor %}
+            {% if not previous_works %}
+                <div class="col"></div><div class="col"></div><div class="col"></div>
+            {% elif previous_works|length|divisibleby:3 %}
+                <!-- No adjustment needed if the number of photos is divisible by 3 -->
+            {% elif previous_works|length|divisibleby:3 %}
+                <div class="col"></div>
+            {% elif previous_works|length|divisibleby:3 %}
+                <div class="col"></div><div class="col"></div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
-
-

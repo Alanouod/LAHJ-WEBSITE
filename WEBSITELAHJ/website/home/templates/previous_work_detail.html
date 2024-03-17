@@ -1,0 +1,16 @@
+<!-- previous_work_detail.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Previous Work Detail{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-end">
+    <h1>{{ previous_work.project_name }}</h1>
+    {% for image in previous_work.images.all %}
+    <div class="col-md-3 mb-3">
+        <img src="{{ image.image.url }}" alt="Project Photo" class="img-fluid rounded">
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

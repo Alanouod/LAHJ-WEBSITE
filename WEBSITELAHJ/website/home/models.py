@@ -31,13 +31,13 @@ class Professional(models.Model):
 
 class PreviousWork(models.Model):
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='previous_work/')
     project_name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     description = models.TextField()
 
-    def __str__(self):
-        return self.project_name
+class ProjectImage(models.Model):
+    project = models.ForeignKey(PreviousWork, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='project_images/')
 
 class Wishlist(models.Model):
     homeowner = models.ForeignKey(Homeowner, on_delete=models.CASCADE)

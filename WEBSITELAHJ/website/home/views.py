@@ -23,8 +23,11 @@ from django.contrib import messages
 from .forms import PhotoUploadForm
 from .forms import ProfessionalEditForm, PhotoUploadForm
 from .forms import ProfessionalEditForm,ProfessionalSignupForm,PhotoUploadForm
-from .models import PreviousWork
-from .models import PreviousWork, Wishlist
+from .models import PreviousWork, Wishlist,ProjectImage
+from .forms import ProjectPhotoUploadForm
+from .models import ProjectImage
+from django.shortcuts import redirect, get_object_or_404
+from django.http import JsonResponse
 
 def home(request):
     return render(request, 'home.html')
@@ -272,6 +275,70 @@ def user_profile(request):
             # If neither Homeowner nor Professional, show a message to register
             return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
 
+def projects(request):
+    project_images = None
+
+    if request.method == 'POST':
+        # Check if the request is for deleting an image
+        if 'delete_image_id' in request.POST:
+            image_id = request.POST['delete_image_id']
+            try:
+                # Get the project image object to delete
+                project_image = ProjectImage.objects.get(id=image_id)
+                # Check if the user owns this image (optional)
+                if project_image.project.professional.user == request.user:
+                    # Delete the image
+                    project_image.delete()
+                    # Redirect back to the projects page
+                    return redirect('projects')
+                else:
+                    # Handle unauthorized deletion attempt
+                    return HttpResponse("You are not authorized to delete this image.", status=403)
+            except ProjectImage.DoesNotExist:
+                # Handle if the image does not exist
+                return HttpResponse("Image not found.", status=404)
+
+        # Handle uploading new images (existing code)
+        form = ProjectPhotoUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            professional = request.user.professional
+            if hasattr(professional, 'previous_work'):
+                previous_work = PreviousWork.objects.create(
+                    professional=professional,
+                    project_name="Project Name",
+                    location="Location",
+                    description="Description"
+                )
+                new_image = ProjectImage.objects.create(image=form.cleaned_data['image'], project=previous_work)
+                return redirect('projects')
+            else:
+                pass
+        else:
+            pass
+    else:
+        professional = request.user.professional
+        if professional:
+            project_images = ProjectImage.objects.filter(project__professional=professional)
+        form = ProjectPhotoUploadForm()
+
+    return render(request, 'projects.html', {'project_images': project_images, 'form': form})
+
+def delete_project_image(request, image_id):
+    if request.method == 'POST':
+        # Retrieve the project image object
+        project_image = get_object_or_404(ProjectImage, id=image_id)
+        # Check if the logged-in user is the owner of the image
+        if project_image.project.professional.user == request.user:
+            # Delete the associated PreviousWork object
+            previous_work = project_image.project
+            previous_work.delete()
+            # Return success response
+            return JsonResponse({'success': True})
+    # Return failure response
+    return JsonResponse({'success': False}, status=400)
+
+
+
 def services(request):
     return render(request, 'services.html')
 
@@ -302,4 +369,3 @@ def terms_of_use(request):
 def logout_view(request):
     logout(request)
     return render(request,'home.html')
-

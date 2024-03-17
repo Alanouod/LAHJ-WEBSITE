@@ -57,7 +57,6 @@
             <!-- Display professional's name with edit buttons -->
             <h1 class="display-4">
                 <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal" onclick="window.location.href='{% url 'edit_professional_profile' %}'">تعديل الملف الشخصي</button>
-               
                 {{ professional.user.username }}
             </h1>
         </div>
@@ -79,10 +78,8 @@
             </div>
         </div>
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات المفضلة">المفضلة</a>
-            <div id="wishlistContent" class="section-content mt-3">
-                معلومات المفضلة
-            </div>
+            <!-- Link to المشاريع (Projects) -->
+            <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
         </div>
         <div class="col mt-3 photo-box text-end">
             <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}الإلهام{% endblock %}
+{% block title %}Inspiration{% endblock %}
 
 {% block content %}
     <style>
@@ -12,19 +12,22 @@
     </style>
 
     <div class="container mt-5">
-        <h1 class="display-4 mb-4 text-end"> الإلهام</h1>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <h3 class="display-4 mb-4 text-end">استلهم</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4" id="inspiration-container">
             {% for work in previous_works %}
-                <div class="col">
+                <div class="col" id="work-{{ work.id }}">
                     <div class="card">
-                        <img src="{{ work.image.url }}" class="card-img-top" alt="{{ work.project_name }}">
+                        {% if work.images.all %}
+                            <img src="{{ work.images.first.image.url }}" class="card-img-top" alt="{{ work.project_name }}">
+                        {% endif %}
                         <div class="card-body">
-                            <h5 class="card-title">{{ work.project_name }}</h5>
-                            <p class="card-text">{{ work.description }}</p>
-                            <p>بواسطة: {{ work.professional.user.username }}</p>
-                            <!-- Add a button for adding to wishlist (optional) -->
-                            {% if request.user.is_authenticated %}
-                                <button class="btn btn-primary">حفظ للمفضلة </button>
+                            <p>By: {{ work.professional.user.username }}</p>
+                            <!-- Display a message if the user is not authenticated -->
+                            {% if not request.user.is_authenticated %}
+                                <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>
+                            <!-- Display the button if the user is authenticated -->
+                            {% else %}
+                                <button class="btn btn-primary">حفظ للمفضلة</button>
                             {% endif %}
                         </div>
                     </div>
@@ -33,15 +36,16 @@
                     </div><div class="row row-cols-1 row-cols-md-3 g-4">
                 {% endif %}
             {% endfor %}
-            {% if not previous_works %}
-                <div class="col"></div><div class="col"></div><div class="col"></div>
-            {% elif previous_works|length|divisibleby:3 %}
-                <!-- No adjustment needed if the number of photos is divisible by 3 -->
-            {% elif previous_works|length|divisibleby:3 %}
-                <div class="col"></div>
-            {% elif previous_works|length|divisibleby:3 %}
-                <div class="col"></div><div class="col"></div>
-            {% endif %}
         </div>
     </div>
+
+    <script>
+        // JavaScript for dynamically removing deleted image cards
+        function removeDeletedImageCard(imageId) {
+            const cardToRemove = document.getElementById(`work-${imageId}`);
+            if (cardToRemove) {
+                cardToRemove.remove();
+            }
+        }
+    </script>
 {% endblock %}

@@ -1,6 +1,13 @@
 from django import forms
 from .models import Homeowner
 from .models import Professional
+from .models import ProjectImage
+
+class ProjectPhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = ProjectImage
+        fields = ['image']
+
 
 class HomeownerSignupForm(forms.Form):
     username = forms.CharField()
@@ -48,5 +55,10 @@ class PhotoUploadForm(forms.ModelForm):
         model = Professional
         fields = ['photo']
         widgets = {'photo': forms.FileInput(attrs={'accept': 'image/*'})}
+
+class ProjectPhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = ProjectImage
+        fields = ['image']
 
 

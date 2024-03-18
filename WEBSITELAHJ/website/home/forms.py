@@ -2,11 +2,20 @@ from django import forms
 from .models import Homeowner
 from .models import Professional
 from .models import ProjectImage
+from .models import PreviousWork
+
+
 
 class ProjectPhotoUploadForm(forms.ModelForm):
     class Meta:
         model = ProjectImage
         fields = ['image']
+
+class ProjectDetailForm(forms.ModelForm):
+    class Meta:
+        model = PreviousWork
+        fields = ['project_name', 'products_used', 'location', 'description']
+
 
 
 class HomeownerSignupForm(forms.Form):

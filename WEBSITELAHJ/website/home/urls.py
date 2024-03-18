@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects
+from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project
 from . import views
 urlpatterns = [
     path('', home, name='home'),
@@ -28,6 +28,8 @@ urlpatterns = [
     path('Scandinavian/', Scandinavian, name='Scandinavian'),
     path('projects/', projects, name='projects'),
     path('delete_project_image/<int:image_id>/', views.delete_project_image, name='delete_project_image'),
+    path('add_project/', add_project, name='add_project'),
+
 
 
 

@@ -29,11 +29,17 @@ class Professional(models.Model):
     previous_work = models.FileField(upload_to='previous_work/', null=True, blank=True)
     photo = models.ImageField(upload_to='professional_photos/', null=True, blank=True)
 
+
 class PreviousWork(models.Model):
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
-    project_name = models.CharField(max_length=255)
+    project_name = models.CharField(max_length=100)
+    products_used = models.CharField(max_length=200, default='')  # Add default value here
     location = models.CharField(max_length=255)
     description = models.TextField()
+
+    def __str__(self):
+        return self.project_name
+
 
 class ProjectImage(models.Model):
     project = models.ForeignKey(PreviousWork, on_delete=models.CASCADE, related_name='images')

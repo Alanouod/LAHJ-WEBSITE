@@ -28,6 +28,7 @@ from .forms import ProjectPhotoUploadForm
 from .models import ProjectImage
 from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse
+from .forms import ProjectPhotoUploadForm, ProjectDetailForm  
 
 def home(request):
     return render(request, 'home.html')
@@ -224,12 +225,10 @@ def save_photo_changes(request):
 @login_required
 def professional_profile(request):
     user = request.user
+    professional = Professional.objects.get(user=user)
+    projects = PreviousWork.objects.filter(professional=professional)
+    return render(request, 'professional_profile.html', {'professional': professional, 'projects': projects})
 
-    try:
-        professional = Professional.objects.get(user=user)
-        return render(request, 'professional_profile.html', {'professional': professional})
-    except Professional.DoesNotExist:
-        return render(request, 'error.html', {'message': 'You are not registered as a professional.'})
 
 @login_required
 def edit_professional_profile(request):
@@ -274,7 +273,7 @@ def user_profile(request):
         except Professional.DoesNotExist:
             # If neither Homeowner nor Professional, show a message to register
             return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
-
+        
 def projects(request):
     project_images = None
 
@@ -337,6 +336,33 @@ def delete_project_image(request, image_id):
     # Return failure response
     return JsonResponse({'success': False}, status=400)
 
+
+
+
+def add_project(request):
+    if request.method == 'POST':
+        # If the form is submitted, process the data
+        detail_form = ProjectDetailForm(request.POST)
+        photo_form = ProjectPhotoUploadForm(request.POST, request.FILES)
+
+        if detail_form.is_valid() and photo_form.is_valid():
+            # Save the project details
+            project = detail_form.save(commit=False)
+            project.professional = request.user.professional  # Assuming professional is authenticated
+            project.save()
+
+            # Save the project photo
+            photo = photo_form.save(commit=False)
+            photo.project = project
+            photo.save()
+
+            return redirect('projects')  # Redirect to the projects page after adding the project
+    else:
+        # If it's a GET request, just render the form
+        detail_form = ProjectDetailForm()
+        photo_form = ProjectPhotoUploadForm()
+
+    return render(request, 'add_project.html', {'detail_form': detail_form, 'photo_form': photo_form})
 
 
 def services(request):

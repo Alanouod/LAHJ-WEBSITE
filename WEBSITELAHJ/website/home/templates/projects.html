@@ -3,33 +3,26 @@
 
 {% block content %}
 <style>
-    /* CSS to enforce a specific aspect ratio for the images */
-    .project-img-top {
-        height: 200px; /* Adjust the height as needed */
-        object-fit: cover;
-    }
-    .upload-form {
-        margin-top: 20px; /* Add some top margin */
-        text-align: end; /* Align to the right */
-    }
+  
     .delete-btn {
-        margin-left: 10px; /* Add left margin for spacing */
-        z-index: 2; /* Ensure the delete button appears above the image */
+        margin-left: 10px; 
+        z-index: 2; 
     }
 </style>
-
 <div class="container mt-5">
     <h1 class="display-4 mb-4 text-end">المشاريع</h1>
     <div class="row row-cols-1 row-cols-md-4 g-4">
         {% for image in project_images %}
-            <div class="col">
+            <div class="col" id="project-{{ image.project.id }}">
                 <div class="card position-relative">
-                    <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
+                    <a href="{{ image.image.url }}" target="_blank">
+                        <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
+                    </a>
                     {% if user.is_authenticated and image.project.professional.user == user %}
-                    <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger delete-btn">حذف</button>
-                    </form>
+                        <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger delete-btn">حذف</button>
+                        </form>
                     {% endif %}
                 </div>
             </div>
@@ -38,14 +31,11 @@
             {% endif %}
         {% endfor %}
     </div>
-    <!-- Add a form for uploading more photos -->
-    <form method="post" action="{% url 'projects' %}" enctype="multipart/form-data" class="upload-form">
-        {% csrf_token %}
-        <label for="image">تحميل صورة جديدة:</label>
-        <input type="file" name="image">
-        <button type="submit" class="btn btn-primary">تحميل الصورة</button>
-    </form>
+    <a href="{% url 'add_project' %}" class="btn btn-primary mt-3">إضافة مشروع جديد</a>
 </div>
+
+
+
 <script>
     // JavaScript for handling delete confirmation and updating inspiration page
     document.querySelectorAll('.delete-btn').forEach(button => {
@@ -75,7 +65,59 @@
             }
         });
     });
+    
+        const openUploadFormBtn = document.getElementById('open-upload-form-btn');
+        const uploadFormModal = document.getElementById('upload-form-modal');
+        const closeModalBtn = document.querySelector('.close');
+        const uploadForm = document.getElementById('upload-form');
+    
+        openUploadFormBtn.addEventListener('click', function() {
+            uploadFormModal.style.display = 'block';
+        });
+    
+        closeModalBtn.addEventListener('click', function() {
+            uploadFormModal.style.display = 'none';
+        });
+    
+        uploadForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(uploadForm);
+    
+            fetch(uploadForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error('Failed to upload photo.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectImages = document.querySelectorAll('.project-img-top');
+    
+            projectImages.forEach(image => {
+                image.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const imageUrl = event.target.getAttribute('src');
+                    window.open(imageUrl, '_blank');
+                });
+            });
+        });
+    
+    
+    
 </script>
 
-</div>
 {% endblock %}
+
+

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}معلومات الصورة{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-end">
+    {% if project.images.all %}
+    <img src="{{ project.images.first.image.url }}" alt="{{ project.project_name }}">
+    {% endif %}
+    <p class="text-end"> اسم المشروع :{{ project.project_name }}</p>
+    <p class="text-end">منتجات مستخدمة :  {{ project.products_used }}</p>
+    <p class="text-end">الموقع: {{ project.location }}</p>
+    <p class="text-end">الوصف: {{ project.description }}</p>
+
+    <!-- Display link to professional's profile -->
+    {% if project.professional %}
+    <p class="text-end">المحترف: <a href="{% url 'professional_profile' professional_id=project.professional.id %}">{{ project.professional.user.username }}</a></p>
+    {% endif %}
+</div>
+
+{% endblock %}

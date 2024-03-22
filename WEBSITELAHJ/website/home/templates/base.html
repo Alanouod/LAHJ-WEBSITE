@@ -106,7 +106,7 @@
         {% elif user.professional %}
             <!-- Display professional's username and profile photo -->
             <li class="nav-item">
-                <a class="nav-link" href="{% url 'professional_profile' %}">
+                <a class="nav-link" href="{% url 'professional_profile' professional_id=user.professional.id %}">
                     {% if user.professional.photo %}
                         <img src="{{ user.professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 10px;">
                     {% else %}

@@ -33,7 +33,7 @@ class Professional(models.Model):
 class PreviousWork(models.Model):
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
     project_name = models.CharField(max_length=100)
-    products_used = models.CharField(max_length=200, default='')  # Add default value here
+    products_used = models.CharField(max_length=200, default='')  
     location = models.CharField(max_length=255)
     description = models.TextField()
 

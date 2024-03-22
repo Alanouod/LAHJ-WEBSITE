@@ -2,27 +2,27 @@
 {% block title %}إضافة مشروع{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="display-4 mb-4 text-end">إضافة مشروع</h1>
+<div class="container mt-5 text-end">
+    <h1 class="display-4 mb-4 ">إضافة مشروع</h1>
     <form method="post" action="{% url 'add_project' %}" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="project_name" class="form-label">اسم المشروع:</label>
+        <div class="mb-3 ">
+            <label for="project_name" class="form-label ">اسم المشروع:</label>
             <input type="text" class="form-control" id="project_name" name="project_name">
         </div>
-        <div class="mb-3">
+        <div class="mb-3 ">
             <label for="products_used" class="form-label">المنتجات المستخدمة:</label>
             <input type="text" class="form-control" id="products_used" name="products_used">
         </div>
-        <div class="mb-3">
+        <div class="mb-3 ">
             <label for="location" class="form-label">الموقع:</label>
             <input type="text" class="form-control" id="location" name="location">
         </div>
-        <div class="mb-3">
+        <div class="mb-3 ">
             <label for="description" class="form-label">الوصف:</label>
             <textarea class="form-control" id="description" name="description" rows="4"></textarea>
         </div>
-        <div class="mb-3">
+        <div class="mb-3 ">
             <label for="image" class="form-label">تحميل صورة جديدة:</label>
             <input type="file" class="form-control" id="image" name="image">
         </div>

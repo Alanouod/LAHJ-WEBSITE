@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}المشاريع{% endblock %}
 
 {% block content %}
 <style>
-  
     .delete-btn {
         margin-left: 10px; 
         z-index: 2; 
@@ -12,29 +12,35 @@
 <div class="container mt-5">
     <h1 class="display-4 mb-4 text-end">المشاريع</h1>
     <div class="row row-cols-1 row-cols-md-4 g-4">
-        {% for image in project_images %}
-            <div class="col" id="project-{{ image.project.id }}">
-                <div class="card position-relative">
-                    <a href="{{ image.image.url }}" target="_blank">
-                        <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
-                    </a>
-                    {% if user.is_authenticated and image.project.professional.user == user %}
-                        <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger delete-btn">حذف</button>
-                        </form>
-                    {% endif %}
+        {% for previous_work in previous_works %}
+            {% for image in previous_work.images.all %}
+                <div class="col" id="project-{{ previous_work.id }}">
+                    <div class="card position-relative">
+                        <a href="{{ image.image.url }}" target="_blank">
+                            <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
+                        </a>
+                        <!-- Display delete button if logged-in user is the owner of the project -->
+                        {% if user.is_authenticated and previous_work.professional.user == user %}
+                            <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger delete-btn">حذف</button>
+                            </form>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                </div><div class="row row-cols-1 row-cols-md-4 g-4">
-            {% endif %}
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                    </div><div class="row row-cols-1 row-cols-md-4 g-4">
+                {% endif %}
+            {% endfor %}
         {% endfor %}
     </div>
-    <a href="{% url 'add_project' %}" class="btn btn-primary mt-3">إضافة مشروع جديد</a>
+    
 </div>
 
+{% if user.is_authenticated and user.professional %}
 
+    <a href="{% url 'add_project' %}" class="btn btn-primary mt-3">إضافة مشروع جديد</a>
+{% endif %}
 
 <script>
     // JavaScript for handling delete confirmation and updating inspiration page
@@ -65,59 +71,17 @@
             }
         });
     });
-    
-        const openUploadFormBtn = document.getElementById('open-upload-form-btn');
-        const uploadFormModal = document.getElementById('upload-form-modal');
-        const closeModalBtn = document.querySelector('.close');
-        const uploadForm = document.getElementById('upload-form');
-    
-        openUploadFormBtn.addEventListener('click', function() {
-            uploadFormModal.style.display = 'block';
-        });
-    
-        closeModalBtn.addEventListener('click', function() {
-            uploadFormModal.style.display = 'none';
-        });
-    
-        uploadForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(uploadForm);
-    
-            fetch(uploadForm.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    throw new Error('Failed to upload photo.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const projectImages = document.querySelectorAll('.project-img-top');
+
+        projectImages.forEach(image => {
+            image.addEventListener('click', function(event) {
+                event.preventDefault();
+                const imageUrl = event.target.getAttribute('src');
+                window.open(imageUrl, '_blank');
             });
         });
-    
-        document.addEventListener('DOMContentLoaded', function() {
-            const projectImages = document.querySelectorAll('.project-img-top');
-    
-            projectImages.forEach(image => {
-                image.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    const imageUrl = event.target.getAttribute('src');
-                    window.open(imageUrl, '_blank');
-                });
-            });
-        });
-    
-    
-    
+    });
 </script>
-
 {% endblock %}
-
-

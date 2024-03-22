@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Professional Profile{% endblock %}
+{% block title %}الملف الشخصي {% endblock %}
 
 {% block content %}
 <style>
@@ -56,8 +56,12 @@
         <div class="col-mt-3 photo-container text-end">
             <!-- Display professional's name with edit buttons -->
             <h1 class="display-4">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal" onclick="window.location.href='{% url 'edit_professional_profile' %}'">تعديل الملف الشخصي</button>
+                {% if is_owner %}
+                {% if request.user == professional.user %}
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">تعديل الملف الشخصي</button>
+                {% endif %}
                 {{ professional.user.username }}
+                {% endif %}
             </h1>
         </div>
     </div>
@@ -79,62 +83,72 @@
         </div>
         <div class="col-md-3 text-end">
             <!-- Link to المشاريع (Projects) -->
+            {% if professional %}
+            <a href="{% url 'professional_projects' professional.id %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
+        {% else %}
             <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
-        </div>
+        {% endif %}
+            </div>
         <div class="col mt-3 photo-box text-end">
-            <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+            {% if is_owner %}
+            {% if request.user == professional.user %}
+                <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+            {% endif %}
+            {% endif %}
             {% if professional.photo %}
-                <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
+                <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" id="professionalPhoto">
             {% else %}
                 <!-- Default placeholder image -->
-                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle" id="professionalPhoto">
             {% endif %}
         </div>
     </div>
 
     <!-- Edit Profile Modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Your form for editing professional profile information -->
-                <form method="post" action="{% url 'edit_professional_profile' %}">
-                    {% csrf_token %}
-                    <!-- Include fields like bio, job, etc. as needed -->
-                    {{ profile_form.as_p }}
-                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Edit Photo Modal -->
-<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Your form for uploading/editing professional photo -->
-                <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <label for="photo">تحميل صورة جديدة:</label>
-                    <input type="file" name="photo">
-                    <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ التغييرات</button>
-                </form>
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your form for editing professional profile information -->
+                    <form method="post" action="{% url 'edit_professional_profile' %}">
+                        {% csrf_token %}
+                        <!-- Include fields like bio, job, etc. as needed -->
+                        {{ profile_form.as_p }}
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+    <!-- Edit Photo Modal -->
+    <div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Your form for uploading/editing professional photo -->
+                    <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="photo">تحميل صورة جديدة:</label>
+                        <input type="file" name="photo">
+                        <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ التغييرات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>

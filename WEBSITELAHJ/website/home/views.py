@@ -29,6 +29,9 @@ from .models import ProjectImage
 from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse
 from .forms import ProjectPhotoUploadForm, ProjectDetailForm  
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 def home(request):
     return render(request, 'home.html')
@@ -88,7 +91,6 @@ def signup(request):
 
     return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
 
-
 def joinAsPro(request):
     form = ProfessionalSignupForm()
 
@@ -113,7 +115,8 @@ def joinAsPro(request):
             user = authenticate(request, username=user.username, password=form.cleaned_data['password'])
             login(request, user)
 
-            return redirect('professional_profile')
+            # Redirect to the professional profile with the professional ID
+            return redirect('professional_profile', professional_id=professional.id)
 
     return render(request, 'joinAsPro.html', {'form': form, 'user_type': 'professional'})
 
@@ -137,7 +140,10 @@ def user_login(request):
             if getattr(user, 'homeowner', None):
                 return redirect('homeowner_profile')
             elif getattr(user, 'professional', None):
-                return redirect('professional_profile')
+                # Check if the user is a professional and get their professional ID
+                professional_id = user.professional.id
+                # Redirect to the professional_profile with the professional ID included in the URL
+                return redirect(reverse('professional_profile', kwargs={'professional_id': professional_id}))
 
             else:
                 error_message = 'Invalid user type.'
@@ -148,7 +154,6 @@ def user_login(request):
     else:
         return render(request, 'user_login.html')
 
-@login_required
 def homeowner_profile(request):
     user = request.user
     homeowner = Homeowner.objects.get(user=user)  
@@ -171,8 +176,8 @@ def homeowner_profile(request):
         profile_form = HomeownerProfileForm(instance=homeowner)
         photo_form = PhotoUploadForm(instance=homeowner)
 
-    
-    return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
+    return render(request, 'homeowner_profile.html', {'homeowner': homeowner, 'profile_form': profile_form, 'photo_form': photo_form})
+
 
 @login_required
 def edit_profile(request):
@@ -204,8 +209,7 @@ def edit_photo(request):
 
     return render(request, 'edit_photo.html', {'homeowner': homeowner, 'photo_form': photo_form})
 
-
-
+@login_required
 def save_photo_changes(request):
     if request.method == 'POST':
         photo_form = PhotoUploadForm(request.POST, request.FILES)
@@ -222,23 +226,35 @@ def save_photo_changes(request):
 
     return redirect('edit_photo')  # Redirect back to the edit_photo page after saving changes
 
-@login_required
-def professional_profile(request):
-    user = request.user
-    professional = Professional.objects.get(user=user)
-    projects = PreviousWork.objects.filter(professional=professional)
-    return render(request, 'professional_profile.html', {'professional': professional, 'projects': projects})
 
+def professional_profile(request, professional_id):
+    try:
+        professional = Professional.objects.get(id=professional_id)
+    except Professional.DoesNotExist:
+        # Handle the case where the Professional object does not exist
+        # For example, you can display an error message or redirect the user
+        return render(request, 'error.html', {'message': 'Professional profile not found'})
+    
+    is_owner = False  # Flag to determine if the logged-in user is the owner of the professional profile
+    if hasattr(request.user, 'professional'):
+        logged_in_professional = request.user.professional
+        if logged_in_professional == professional:
+            is_owner = True
+
+    return render(request, 'professional_profile.html', {'professional': professional, 'is_owner': is_owner})
 
 @login_required
 def edit_professional_profile(request):
+    if not hasattr(request.user, 'professional'):
+        raise Http404("You do not have permission to access this page.")
+        
     professional = Professional.objects.get(user=request.user)
 
     if request.method == 'POST':
         form = ProfessionalEditForm(request.POST, instance=professional)
         if form.is_valid():
             form.save()
-            return redirect('professional_profile')
+            return redirect('professional_profile', professional_id=professional.id)
     else:
         form = ProfessionalEditForm(instance=professional)
 
@@ -246,17 +262,20 @@ def edit_professional_profile(request):
 
 @login_required
 def edit_professional_photo(request):
+    if not hasattr(request.user, 'professional'):
+        raise Http404("You do not have permission to access this page.")
+        
     professional = Professional.objects.get(user=request.user)
     
     if request.method == 'POST':
         form = PhotoUploadForm(request.POST, request.FILES, instance=professional)
         if form.is_valid():
             form.save()
-            return redirect('professional_profile')
+            return redirect('professional_profile', professional_id=professional.id)
     else:
         form = PhotoUploadForm(instance=professional)
+    
     return render(request, 'edit_professional_photo.html', {'form': form, 'professional': professional})
-
 
 
 def user_profile(request):
@@ -273,55 +292,22 @@ def user_profile(request):
         except Professional.DoesNotExist:
             # If neither Homeowner nor Professional, show a message to register
             return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
-        
-def projects(request):
-    project_images = None
 
-    if request.method == 'POST':
-        # Check if the request is for deleting an image
-        if 'delete_image_id' in request.POST:
-            image_id = request.POST['delete_image_id']
-            try:
-                # Get the project image object to delete
-                project_image = ProjectImage.objects.get(id=image_id)
-                # Check if the user owns this image (optional)
-                if project_image.project.professional.user == request.user:
-                    # Delete the image
-                    project_image.delete()
-                    # Redirect back to the projects page
-                    return redirect('projects')
-                else:
-                    # Handle unauthorized deletion attempt
-                    return HttpResponse("You are not authorized to delete this image.", status=403)
-            except ProjectImage.DoesNotExist:
-                # Handle if the image does not exist
-                return HttpResponse("Image not found.", status=404)
 
-        # Handle uploading new images (existing code)
-        form = ProjectPhotoUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            professional = request.user.professional
-            if hasattr(professional, 'previous_work'):
-                previous_work = PreviousWork.objects.create(
-                    professional=professional,
-                    project_name="Project Name",
-                    location="Location",
-                    description="Description"
-                )
-                new_image = ProjectImage.objects.create(image=form.cleaned_data['image'], project=previous_work)
-                return redirect('projects')
-            else:
-                pass
-        else:
-            pass
+def projects(request, professional_id=None):
+    if professional_id:
+        # Filter PreviousWork objects by the professional's ID
+        previous_works = PreviousWork.objects.filter(professional_id=professional_id)
     else:
-        professional = request.user.professional
-        if professional:
-            project_images = ProjectImage.objects.filter(project__professional=professional)
-        form = ProjectPhotoUploadForm()
+        # If no professional ID is provided, retrieve all PreviousWork objects
+        previous_works = PreviousWork.objects.all()
 
-    return render(request, 'projects.html', {'project_images': project_images, 'form': form})
+    context = {
+        'previous_works': previous_works  # Changed variable name to previous_works
+    }
+    return render(request, 'projects.html', context)
 
+@login_required
 def delete_project_image(request, image_id):
     if request.method == 'POST':
         # Retrieve the project image object
@@ -336,9 +322,7 @@ def delete_project_image(request, image_id):
     # Return failure response
     return JsonResponse({'success': False}, status=400)
 
-
-
-
+@login_required
 def add_project(request):
     if request.method == 'POST':
         # If the form is submitted, process the data
@@ -363,6 +347,11 @@ def add_project(request):
         photo_form = ProjectPhotoUploadForm()
 
     return render(request, 'add_project.html', {'detail_form': detail_form, 'photo_form': photo_form})
+
+def project_details(request, project_id):
+    project = get_object_or_404(PreviousWork, id=project_id)
+    return render(request, 'project_details.html', {'project': project})
+
 
 
 def services(request):

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Inspiration{% endblock %}
+{% load static %}
+{% block title %}الالهام{% endblock %}
 
 {% block content %}
 <style>
@@ -9,18 +10,19 @@
         object-fit: cover;
     }
 </style>
-
 <div class="container mt-5">
     <h3 class="display-4 mb-4 text-end">استلهم</h3>
     <div class="row row-cols-1 row-cols-md-3 g-4" id="inspiration-container">
         {% for work in previous_works %}
             <div class="col" id="work-{{ work.id }}">
                 <div class="card">
-                    {% if work.images.all %}
-                        <img src="{{ work.images.first.image.url }}" class="card-img-top" alt="{{ work.project_name }}">
-                    {% endif %}
+                    <a href="{% url 'project_details' project_id=work.id %}">
+                        {% if work.images.all %}
+                            <img src="{{ work.images.first.image.url }}" class="card-img-top" alt="{{ work.project_name }}">
+                        {% endif %}
+                    </a>
                     <div class="card-body">
-                        <p class="text-end">بواسطة : {{ work.professional.user.username }}</p>
+                        <p class="text-end">بواسطة : <a href="{% url 'professional_profile' professional_id=work.professional.id %}">{{ work.professional.user.username }}</a></p>
                         {% if not request.user.is_authenticated %}
                             <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>
                         {% else %}

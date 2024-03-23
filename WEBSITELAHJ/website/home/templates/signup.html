@@ -4,7 +4,6 @@
 
 {% block content %}
 
-
 <body>
     <div class="container" style="margin-top: 150px">
         <!-- Outer Row -->
@@ -17,36 +16,51 @@
                             <div class="col-lg-12">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1   >تسجيل جديد</h1>
+                                        <h1>تسجيل جديد</h1>
                                     </div>
                                     <form class="user" method="POST" enctype="multipart/form-data">
                                         <input type="hidden" name="user_type" value="{{ user_type }}">
                                         {% csrf_token %}
-                                        <div class="form-group">
-                                            <label class="form-control-label" for="input-username">الاسم</label>
-                                            <input type="text" class="form-control" id="input-username" name="username" required>
+                                        <div id="error-container" class="alert alert-danger" style="display: none;">
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-email">البريد الإلكتروني</label>
-                                            <input type="email" class="form-control" id="input-email" name="email" required>
+                                            <label class="form-control-label" for="input-username">الاسم</label>
+                                            <input type="text" class="form-control" id="input-username" name="username"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="input-email">البريد
+                                                الإلكتروني</label>
+                                            <input type="email" class="form-control" id="input-email" name="email"
+                                                required>
+                                            <div id="email-error" class="invalid-feedback"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-control-label" for="input-phone">رقم الهاتف</label>
-                                            <input type="tel" class="form-control" id="input-phone" name="phone" required>
+                                            <input type="tel" class="form-control" id="input-phone" name="phone"
+                                                required>
+                                            <div id="phone-error" class="invalid-feedback"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-control-label" for="input-address">العنوان</label>
-                                            <input type="text" class="form-control" id="input-address" name="address" required>
+                                            <input type="text" class="form-control" id="input-address" name="address"
+                                                required>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-control-label" for="input-password">كلمة المرور</label>
-                                           <input type="password" class="form-control" id="input-password" name="password" required>
+                                            <input type="password" class="form-control" id="input-password"
+                                                name="password" required>
+
                                         </div>
                                         <div class="form-group">
-                                            <label class="form-control-label" for="input-confirm-password">تأكيد كلمة المرور</label>
-                                            <input type="password" class="form-control" id="input-confirm-password" name="confirm_password" required>
+                                            <label class="form-control-label" for="input-confirm-password">تأكيد كلمة
+                                                المرور</label>
+                                            <input type="password" class="form-control" id="input-confirm-password"
+                                                name="confirm_password" required>
+                                            <div id="confirm-password-error" class="invalid-feedback"></div>
                                         </div>
-                                        <input type="submit" value="تسجيل جديد" class='btn btn-primary btn-block' style="background-color:#000000; display: inline-block;">
+                                        <input type="submit" value="تسجيل جديد" class='btn btn-primary btn-block'
+                                            style="background-color:#000000; display: inline-block;">
                                         <hr>
                                     </form>
                                     <hr>
@@ -60,9 +74,101 @@
     </div>
 </body>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('.user');
+        const passwordInput = document.getElementById('input-password');
+        const confirmPasswordInput = document.getElementById('input-confirm-password');
+        const emailInput = document.getElementById('input-email');
+        const phoneInput = document.getElementById('input-phone');
+        const errorContainer = document.getElementById('error-container');
 
+        form.addEventListener('submit', function (event) {
+            if (!isPasswordValid() || !isEmailValid() || !isPhoneValid()) {
+                event.preventDefault();
+                errorContainer.textContent = 'يرجى ملء جميع الحقول بشكل صحيح';
+                errorContainer.style.display = 'block';
+            }
+        });
 
-    
+        passwordInput.addEventListener('input', function () {
+            validatePassword();
+            validateConfirmPassword();
+        });
+
+        emailInput.addEventListener('input', function () {
+            validateEmail();
+        });
+
+        phoneInput.addEventListener('input', function () {
+            validatePhone();
+        });
+
+        function isPasswordValid() {
+            return validatePassword() && validateConfirmPassword();
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            if (password.length < 6) {
+                passwordInput.classList.add('is-invalid');
+                return false;
+            } else {
+                passwordInput.classList.remove('is-invalid');
+                return true;
+            }
+        }
+
+        function validateConfirmPassword() {
+            const confirmPassword = confirmPasswordInput.value;
+            const password = passwordInput.value;
+            if (password !== confirmPassword) {
+                confirmPasswordInput.classList.add('is-invalid');
+                document.getElementById('confirm-password-error').textContent = 'كلمة المرور غير متطابقة';
+                return false;
+            } else {
+                confirmPasswordInput.classList.remove('is-invalid');
+                document.getElementById('confirm-password-error').textContent = '';
+                return true;
+            }
+        }
+
+        function isEmailValid() {
+            return validateEmail();
+        }
+
+        function validateEmail() {
+            const email = emailInput.value;
+            const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!pattern.test(email)) {
+                emailInput.classList.add('is-invalid');
+                document.getElementById('email-error').textContent = 'يرجى إدخال بريد إلكتروني صحيح';
+                return false;
+            } else {
+                emailInput.classList.remove('is-invalid');
+                document.getElementById('email-error').textContent = '';
+                return true;
+            }
+        }
+
+        function isPhoneValid() {
+            return validatePhone();
+        }
+
+        function validatePhone() {
+            const phone = phoneInput.value;
+            const pattern = /^\d{10}$/;
+            if (!pattern.test(phone)) {
+                phoneInput.classList.add('is-invalid');
+                document.getElementById('phone-error').textContent = 'يرجى إدخال رقم هاتف صحيح';
+                return false;
+            } else {
+                phoneInput.classList.remove('is-invalid');
+                document.getElementById('phone-error').textContent = '';
+                return true;
+            }
+        }
+    });
+</script>
+
 {% endblock %}
-
-

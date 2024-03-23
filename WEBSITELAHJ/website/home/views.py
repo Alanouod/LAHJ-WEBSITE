@@ -71,6 +71,13 @@ def signup(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
 
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'اسم المستخدم موجود بالفعل')
+                return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'هذا البريد الإلكتروني مسجل بالفعل')
+                return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
+            
             try:
                 user = User.objects.create_user(username=username, email=email, password=password)
             except IntegrityError:

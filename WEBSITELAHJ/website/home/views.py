@@ -97,28 +97,35 @@ def joinAsPro(request):
     if request.method == 'POST':
         form = ProfessionalSignupForm(request.POST, request.FILES)
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password']
-            )
+            email = form.cleaned_data['email']
+            username = form.cleaned_data['username']
+            if User.objects.filter(email=email).exists():
+                messages.error(request, 'هذا البريد الإلكتروني مسجل بالفعل')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'اسم المستخدم موجود بالفعل')
 
-            professional = Professional.objects.create(
-                user=user,
-                phone=form.cleaned_data['phone'],
-                address=form.cleaned_data['address'],
-                bio=form.cleaned_data['bio'],
-                job=form.cleaned_data['job'],
-                previous_work=form.cleaned_data['previous_work']
-            )
+            if not messages.get_messages(request):
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=form.cleaned_data['password']
+                )
 
-            user = authenticate(request, username=user.username, password=form.cleaned_data['password'])
-            login(request, user)
+                professional = Professional.objects.create(
+                    user=user,
+                    phone=form.cleaned_data['phone'],
+                    address=form.cleaned_data['address'],
+                    bio=form.cleaned_data['bio'],
+                    job=form.cleaned_data['job'],
+                    previous_work=form.cleaned_data['previous_work']
+                )
 
-            # Redirect to the professional profile with the professional ID
-            return redirect('professional_profile', professional_id=professional.id)
+                user = authenticate(request, username=user.username, password=form.cleaned_data['password'])
+                login(request, user)
 
-    return render(request, 'joinAsPro.html', {'form': form, 'user_type': 'professional'})
+                return redirect('professional_profile')
+
+    return render(request, 'joinAsPro.html', {'form': form, 'user_type': 'professional', 'messages': messages.get_messages(request)})
 
 
 def user_login(request):

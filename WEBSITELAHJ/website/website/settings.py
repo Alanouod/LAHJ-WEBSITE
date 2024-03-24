@@ -15,6 +15,7 @@ from pathlib import Path
 import os
 
 
+DEBUG = True
 
 
 

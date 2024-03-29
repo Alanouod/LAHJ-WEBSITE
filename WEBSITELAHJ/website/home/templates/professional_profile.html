@@ -49,6 +49,25 @@
         margin-top: 10px;
         padding: 5px 10px;
     }
+
+    .section-column {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .section-column > div {
+        flex: 1;
+        margin-right: 10px;
+    }
+    .reviews-container {
+        flex: 1;
+        margin-top: 20px;
+    }
+
+    .customer-name {
+        font-weight: bold;
+    }
+
 </style>
 
 <div class="container mt-5 text-end">
@@ -58,7 +77,7 @@
             <h1 class="display-4">
                 {% if is_owner %}
                 {% if request.user == professional.user %}
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">تعديل الملف الشخصي</button>
+                <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
                 {% endif %}
                 {{ professional.user.username }}
                 {% endif %}
@@ -68,7 +87,15 @@
     <hr>
 
     <!-- Other professional profile content -->
-    <div class="row mt-3 text-end">
+    <div class="row mt-3 text-end section-column">
+
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
+            <div id="messagesContent" class="section-content mt-3">
+                معلومات الرسائل
+            </div>
+        </div>
+
         <div class="col-md-3 text-end">
             <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
             <div id="ordersContent" class="section-content mt-3">
@@ -76,34 +103,72 @@
             </div>
         </div>
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
-            <div id="messagesContent" class="section-content mt-3">
-                معلومات الرسائل
-            </div>
-        </div>
-        <div class="col-md-3 text-end">
             <!-- Link to المشاريع (Projects) -->
             {% if professional %}
-            <a href="{% url 'professional_projects' professional.id %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
-        {% else %}
-            <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
-        {% endif %}
+    <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
+{% else %}
+    <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
+{% endif %}
+
+        </div>
+        
+        <div class="col-md-3 text-end">
+            <!-- Display professional's biography -->
+            <h3 class="profile-section-title">
+                <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="من أنا" onclick="toggleBio()">من أنا</a>
+            </h3>
+            <div id="bioContent" class="section-content mt-3" style="display: none;">
+                {% if professional.bio %}
+                    {{ professional.bio }}
+                {% else %}
+                    لا يوجد نبذة عن المحترف حتى الآن.
+                {% endif %}
             </div>
-        <div class="col mt-3 photo-box text-end">
-            {% if is_owner %}
-            {% if request.user == professional.user %}
-                <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
-            {% endif %}
-            {% endif %}
-            {% if professional.photo %}
-                <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" id="professionalPhoto">
-            {% else %}
-                <!-- Default placeholder image -->
-                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle" id="professionalPhoto">
-            {% endif %}
+        </div>
+
+        <div class="col-md-3 text-end">
+            <div class="col mt-3 photo-box text-end">
+                {% if is_owner %}
+                {% if request.user == professional.user %}
+                    <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+                {% endif %}
+                {% endif %}
+                {% if professional.photo %}
+                    <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" id="professionalPhoto">
+                {% else %}
+                    <!-- Default placeholder image -->
+                    <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle" id="professionalPhoto">
+                {% endif %}
+            </div>
+        </div>
+
+
+    </div>
+    <!-- Customer Reviews -->
+    <div class="row mt-3 text-end reviews-container  mt-5">
+        <div class="col-md-12">
+            <h3 class="profile-section-title">التعليقات</h3>
+            <div class="section-content mt-3">
+                <!-- Display existing comments -->
+                {% for comment in comments %}
+                <div class="customer-review">
+                    <p>{{ comment.content }}</p>
+                    <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
+                </div>
+                {% endfor %}
+    
+                <form method="post" action="{% url 'add_comment' professional.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">إرسال</button>
+                </form>
+                {% if not user.is_authenticated %}
+                <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
+                {% endif %}
+                
+            </div>
         </div>
     </div>
-
     <!-- Edit Profile Modal -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -174,5 +239,15 @@
             reader.readAsDataURL(selectedFile);
         }
     }
+
+    function toggleBio() {
+        var bioContent = document.getElementById('bioContent');
+        if (bioContent.style.display === 'none') {
+            bioContent.style.display = 'block';
+        } else {
+            bioContent.style.display = 'none';
+        }
+    }
+
 </script>
 {% endblock %}

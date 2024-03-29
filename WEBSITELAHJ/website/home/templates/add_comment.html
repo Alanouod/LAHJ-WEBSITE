@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}إضافة تعليق{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-end">
+    <h1 class="display-4 mb-4 ">إضافة تعليق</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">إرسال</button>
+  </form>
+</div>
+  {% endblock %}

@@ -32,6 +32,8 @@ from .forms import ProjectPhotoUploadForm, ProjectDetailForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from .forms import CommentForm
+from .models import Comment
 
 def home(request):
     return render(request, 'home.html')
@@ -117,23 +119,31 @@ def joinAsPro(request):
                     email=email,
                     password=form.cleaned_data['password']
                 )
-
                 professional = Professional.objects.create(
                     user=user,
                     phone=form.cleaned_data['phone'],
                     address=form.cleaned_data['address'],
                     bio=form.cleaned_data['bio'],
                     job=form.cleaned_data['job'],
-                    previous_work=form.cleaned_data['previous_work']
+                    previous_work=request.FILES.get('previous_work') 
                 )
+
+                
+                project = PreviousWork.objects.create(
+                    professional=professional,
+                    description="Description of the previous work",
+                    # Add any other necessary fields
+                )
+
+                # Associate the uploaded previous work with the new project
+                ProjectImage.objects.create(project=project, image=professional.previous_work)
 
                 user = authenticate(request, username=user.username, password=form.cleaned_data['password'])
                 login(request, user)
 
-                return redirect('professional_profile')
+                return redirect('professional_profile', professional_id=professional.id)
 
     return render(request, 'joinAsPro.html', {'form': form, 'user_type': 'professional', 'messages': messages.get_messages(request)})
-
 
 def user_login(request):
     if request.method == 'POST':
@@ -240,22 +250,33 @@ def save_photo_changes(request):
 
     return redirect('edit_photo')  # Redirect back to the edit_photo page after saving changes
 
-
 def professional_profile(request, professional_id):
     try:
         professional = Professional.objects.get(id=professional_id)
+        comments = Comment.objects.filter(professional=professional)
     except Professional.DoesNotExist:
-        # Handle the case where the Professional object does not exist
-        # For example, you can display an error message or redirect the user
         return render(request, 'error.html', {'message': 'Professional profile not found'})
-    
-    is_owner = False  # Flag to determine if the logged-in user is the owner of the professional profile
-    if hasattr(request.user, 'professional'):
+
+    is_owner = False  
+    if request.user.is_authenticated and hasattr(request.user, 'professional'):
         logged_in_professional = request.user.professional
         if logged_in_professional == professional:
             is_owner = True
 
-    return render(request, 'professional_profile.html', {'professional': professional, 'is_owner': is_owner})
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.professional = professional
+            comment.save()
+            # Redirect to the same page after adding the comment
+            return redirect('professional_profile', professional_id=professional_id)
+    else:
+        form = CommentForm()
+
+    return render(request, 'professional_profile.html', {'professional': professional, 'is_owner': is_owner, 'form': form, 'comments': comments})
+
 
 @login_required
 def edit_professional_profile(request):
@@ -307,19 +328,25 @@ def user_profile(request):
             # If neither Homeowner nor Professional, show a message to register
             return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
 
-
 def projects(request, professional_id=None):
     if professional_id:
         # Filter PreviousWork objects by the professional's ID
         previous_works = PreviousWork.objects.filter(professional_id=professional_id)
+        # Check if the logged-in user is the owner of the professional profile
+        is_owner = request.user.is_authenticated and \
+                   hasattr(request.user, 'professional') and \
+                   request.user.professional.id == professional_id
     else:
         # If no professional ID is provided, retrieve all PreviousWork objects
         previous_works = PreviousWork.objects.all()
+        is_owner = False  # Since no professional_id is provided, there's no specific owner
 
     context = {
-        'previous_works': previous_works  # Changed variable name to previous_works
+        'previous_works': previous_works,
+        'is_owner': is_owner,
     }
     return render(request, 'projects.html', context)
+
 
 @login_required
 def delete_project_image(request, image_id):
@@ -346,13 +373,19 @@ def add_project(request):
         if detail_form.is_valid() and photo_form.is_valid():
             # Save the project details
             project = detail_form.save(commit=False)
-            project.professional = request.user.professional  # Assuming professional is authenticated
+            project.professional = request.user.professional  
             project.save()
 
-            # Save the project photo
+            # Save the project photo as a ProjectImage instance
             photo = photo_form.save(commit=False)
             photo.project = project
             photo.save()
+
+            # If the professional has a registration photo, save it as a ProjectImage instance
+            professional = request.user.professional
+            if professional.previous_work:
+                registration_photo = ProjectImage.objects.create(project=project, image=professional.previous_work)
+                registration_photo.save()
 
             return redirect('projects')  # Redirect to the projects page after adding the project
     else:
@@ -366,6 +399,23 @@ def project_details(request, project_id):
     project = get_object_or_404(PreviousWork, id=project_id)
     return render(request, 'project_details.html', {'project': project})
 
+@login_required
+def add_comment(request, professional_id):
+    professional = get_object_or_404(Professional, id=professional_id)
+    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.professional = professional
+            comment.save()
+            # Redirect to the professional profile page after adding the comment
+            return redirect('professional_profile', professional_id=professional_id)
+    else:
+        form = CommentForm()
+    
+    return render(request, 'add_comment.html', {'form': form})
 
 
 def services(request):

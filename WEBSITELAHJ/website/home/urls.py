@@ -19,7 +19,7 @@ urlpatterns = [
     path('homeowner_profile/', homeowner_profile, name='homeowner_profile'),
     path('professional_profile/<int:professional_id>/', views.professional_profile, name='professional_profile'),
     path('projects/', views.projects, name='projects'), 
-    path('projects/<int:professional_id>/', views.projects, name='professional_projects'),  
+    path('professional/<int:professional_id>/projects/', views.projects, name='projects'),
     path('cost/',cost, name='cost'),
     path('classic/',classic, name='classic'),
     path('edit-profile/', edit_profile, name='edit_profile'),
@@ -31,7 +31,8 @@ urlpatterns = [
     path('delete_project_image/<int:image_id>/', views.delete_project_image, name='delete_project_image'),
     path('add_project/', add_project, name='add_project'),
     path('project_details/<int:project_id>/', views.project_details, name='project_details'),
-
+    path('professional_profile/<int:professional_id>/add_comment/', views.add_comment, name='add_comment'),
+    
 
 
 ]

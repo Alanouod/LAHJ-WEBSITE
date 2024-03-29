@@ -1,20 +1,10 @@
+from django.shortcuts import render, redirect
 from django import forms
 from .models import Homeowner
 from .models import Professional
 from .models import ProjectImage
 from .models import PreviousWork
-
-
-
-class ProjectPhotoUploadForm(forms.ModelForm):
-    class Meta:
-        model = ProjectImage
-        fields = ['image']
-
-class ProjectDetailForm(forms.ModelForm):
-    class Meta:
-        model = PreviousWork
-        fields = ['project_name', 'products_used', 'location', 'description']
+from .models import Comment
 
 
 
@@ -57,7 +47,7 @@ class ProfessionalSignupForm(forms.Form):
 class ProfessionalEditForm(forms.ModelForm):
     class Meta:
         model = Professional
-        fields = ['phone', 'address', 'bio', 'job', 'previous_work']
+        fields = ['phone', 'address', 'bio', 'job', 'photo']
 
 class PhotoUploadForm(forms.ModelForm):
     class Meta:
@@ -70,4 +60,18 @@ class ProjectPhotoUploadForm(forms.ModelForm):
         model = ProjectImage
         fields = ['image']
 
+class ProjectPhotoUploadForm(forms.ModelForm):
+    class Meta:
+        model = ProjectImage
+        fields = ['image']
 
+class ProjectDetailForm(forms.ModelForm):
+    class Meta:
+        model = PreviousWork
+        fields = ['project_name', 'products_used', 'location', 'description']
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

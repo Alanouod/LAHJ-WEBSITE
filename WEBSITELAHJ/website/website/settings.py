@@ -34,6 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = 'user_login'  # Adjust this to match the name of your login URL pattern
 
 # Application definition
 

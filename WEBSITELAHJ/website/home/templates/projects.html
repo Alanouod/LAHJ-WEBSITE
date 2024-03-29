@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}المشاريع{% endblock %}
 
 {% block content %}
@@ -13,37 +14,37 @@
     <h1 class="display-4 mb-4 text-end">المشاريع</h1>
     <div class="row row-cols-1 row-cols-md-4 g-4">
         {% for previous_work in previous_works %}
-            {% for image in previous_work.images.all %}
-                <div class="col" id="project-{{ previous_work.id }}">
-                    <div class="card position-relative">
-                        <a href="{{ image.image.url }}" target="_blank">
-                            <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
-                        </a>
-                        <!-- Display delete button if logged-in user is the owner of the project -->
-                        {% if user.is_authenticated and previous_work.professional.user == user %}
+            <div class="col">
+                <div class="card position-relative">
+                    <div class="card-body">
+                        {% for image in previous_work.images.all %}
+                            <a href="{{ image.image.url }}" target="_blank">
+                                <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
+                            </a>
+                                <!-- delete button -->
+                            {% if user.is_authenticated and is_owner %}
                             <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger delete-btn">حذف</button>
-                            </form>
-                        {% endif %}
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger delete-btn">حذف</button>
+                                </form>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
-                {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                    </div><div class="row row-cols-1 row-cols-md-4 g-4">
-                {% endif %}
-            {% endfor %}
+            </div>
+            {% if forloop.counter|divisibleby:4 and not forloop.last %}
+                </div><div class="row row-cols-1 row-cols-md-4 g-4">
+            {% endif %}
         {% endfor %}
     </div>
-    
+    <!-- Add project button -->
+    {% if user.is_authenticated and is_owner %}
+        <a href="{% url 'add_project' %}" class="btn btn-primary mt-3">إضافة مشروع جديد</a>
+    {% endif %}
 </div>
 
-{% if user.is_authenticated and user.professional %}
-
-    <a href="{% url 'add_project' %}" class="btn btn-primary mt-3">إضافة مشروع جديد</a>
-{% endif %}
-
 <script>
-    // JavaScript for handling delete confirmation and updating inspiration page
+    // JavaScript for handling delete confirmation
     document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', function() {
             const confirmation = confirm('Are you sure you want to delete the image?');
@@ -58,8 +59,8 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Reload the inspiration page on success
-                        window.location.href = "{% url 'inspiration' %}";
+                        // Reload the page on success
+                        window.location.reload();
                     } else {
                         // Handle failure (optional)
                         alert('Failed to delete image.');
@@ -72,6 +73,7 @@
         });
     });
 
+    // Open image in new tab on click
     document.addEventListener('DOMContentLoaded', function() {
         const projectImages = document.querySelectorAll('.project-img-top');
 

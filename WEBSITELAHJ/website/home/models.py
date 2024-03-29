@@ -26,7 +26,7 @@ class Professional(models.Model):
     address = models.CharField(max_length=255, default='')
     bio = models.TextField(null=True, blank=True)
     job = models.CharField(max_length=255, null=True, blank=True)
-    previous_work = models.FileField(upload_to='previous_work/', null=True, blank=True)
+    previous_work = models.FileField(upload_to='project_images/', null=True, blank=True)
     photo = models.ImageField(upload_to='professional_photos/', null=True, blank=True)
 
 
@@ -53,6 +53,11 @@ class Wishlist(models.Model):
         return f'{self.homeowner.user.username} - {self.previous_work.project_name}'
 
 
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 class Order(models.Model):
     homeowner = models.ForeignKey(Homeowner, on_delete=models.CASCADE)

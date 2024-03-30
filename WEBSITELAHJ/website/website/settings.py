@@ -11,9 +11,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
 import os
+import dj_database_url
 
+
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 DEBUG = True
 
@@ -81,18 +83,18 @@ WSGI_APPLICATION = 'website.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'Se2324@a',
-        'HOST': 'localhost',
+        'USER': 'postgres.pfqebpzknbltitkvixes',
+        'PASSWORD': 'Seee2324@aa',
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
         'PORT': '5432',
     }
 }
+if os.environ.get('ENVIRONMENT') == "PRODUCTION":
+    DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 
 # Password validation

@@ -4,101 +4,135 @@
 
 {% block content %}
 <style>
+    a {
+
+        color: black;
+        text-decoration: none;
+
+    }
+
     .profile-section-link {
-      color: #1CAED0;
-      text-decoration: none;
-      transition: color 0.3s ease;
+        color: #1CAED0;
+        text-decoration: none;
+        transition: color 0.3s ease;
     }
-  
+
     .profile-section-link:hover {
-      color: grey;
+        color: grey;
     }
-  
+
     .section-content {
-      margin-top: 20px;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
     }
-  
+
     .section-content h3 {
-      color: #1CAED0;
+        color: #1CAED0;
     }
 
     .photo-container {
-      margin-top: 20px;
-      text-align: center;
+        margin-top: 20px;
+        text-align: center;
     }
 
     .photo-box {
-      width: 200px;
-      height: 200px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 0 auto;  
+        width: 200px;
+        height: 200px;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 0 auto;
     }
 
     .photo-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .edit-photo-btn {
-      margin-top: 10px;
-      padding: 5px 10px; 
+        margin-top: 10px;
+        padding: 5px 10px;
     }
 </style>
 
 <div class="container mt-5 text-end">
     <div class="row mt-3 text-end">
-            <h1 class="display-4">
-                <a href="{% url 'edit_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
-                {{ homeowner.user.username }}
-            </h1>
-        </div> 
+        <h1 class="display-4">
+            <a href="{% url 'edit_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
+            {{ homeowner.user.username }}
+        </h1>
+    </div>
     <hr>
 
     <!-- Other profile content -->
-    
+
     <div class="row mt-3 text-end">
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top"
+                title="معلومات الطلبات">الطلبات</a>
             <div id="ordersContent" class="section-content mt-3">
                 معلومات الطلبات
             </div>
         </div>
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top"
+                title="معلومات الرسائل">الرسائل</a>
             <div id="messagesContent" class="section-content mt-3">
                 معلومات الرسائل
             </div>
         </div>
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات المفضلة">المفضلة</a>
+            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top"
+                title="معلومات المفضلة">المفضلة</a>
             <div id="wishlistContent" class="section-content mt-3">
-                معلومات المفضلة
+                {% if homeowner.wishlist_set.all %}
+                <div class="wishlist-items">
+                    {% for wishlist_item in homeowner.wishlist_set.all %}
+                    <div class="wishlist-item">
+                        {% if wishlist_item.previous_work.images.all %}
+                        <a href="{% url 'project_details' project_id=wishlist_item.previous_work.id %}">
+                            <img src="{{ wishlist_item.previous_work.images.first.image.url }}"
+                                alt="{{ wishlist_item.previous_work.project_name }}"
+                                style="max-width: 100%; height: auto;">
+                        </a>
+                        {% endif %}
+                        <h4>
+                            <a href="{% url 'project_details' project_id=wishlist_item.previous_work.id %}">
+                                {{wishlist_item.previous_work.project_name}}
+
+                            </a>
+                        </h4>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p>No items in the wishlist.</p>
+                {% endif %}
             </div>
-        </div>    
-        
+        </div>
+
         <div class="col mt-3 photo-box text-end">
-            <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+            <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل
+                الصورة</button>
             {% if homeowner.photo %}
-                <img src="{{ homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
+            <img src="{{ homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
             {% else %}
-                <!-- Default placeholder image -->
-                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
+            <!-- Default placeholder image -->
+            <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
             {% endif %}
         </div>
     </div>
 
 
-    </div>
+</div>
 </div>
 
 <!-- Edit Photo Modal -->
-<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -113,22 +147,25 @@
                     <input type="file" name="photo">
                     <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                 </form>
-                
+
                 <!-- Display photo if available -->
                 <div class="col mt-3 photo-box text-end">
-                    <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
-                    
+                    <button class="btn btn-secondary edit-photo-btn" data-toggle="modal"
+                        data-target="#editPhotoModal">تعديل الصورة</button>
+
                     {% if homeowner.photo %}
-                        <!-- Update the image source in the photo-box -->
-                        <img src="{{ homeowner.photo.url }}" alt="User Photo" id="homeownerPhoto" class="img-fluid rounded-circle">
-                        
-                        <!-- Update the image source in the navigation bar -->
-                        <script>
-                            document.getElementById('homeownerPhotoNavbar').src = "{{ homeowner.photo.url }}";
-                        </script>
+                    <!-- Update the image source in the photo-box -->
+                    <img src="{{ homeowner.photo.url }}" alt="User Photo" id="homeownerPhoto"
+                        class="img-fluid rounded-circle">
+
+                    <!-- Update the image source in the navigation bar -->
+                    <script>
+                        document.getElementById('homeownerPhotoNavbar').src = "{{ homeowner.photo.url }}";
+                    </script>
                     {% else %}
-                        <!-- Display default image or placeholder if no photo is available -->
-                        <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" id="homeownerPhoto" class="img-fluid rounded-circle">
+                    <!-- Display default image or placeholder if no photo is available -->
+                    <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" id="homeownerPhoto"
+                        class="img-fluid rounded-circle">
                     {% endif %}
                 </div>
             </div>
@@ -145,7 +182,7 @@
         $('.profile-section-link').click(function (e) {
             e.preventDefault();
             var section = $(this).text().toLowerCase();
-            
+
             // Fetch and load content dynamically based on the selected section
             loadSectionContent(section);
         });

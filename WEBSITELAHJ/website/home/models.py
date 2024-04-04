@@ -16,7 +16,7 @@ class Homeowner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True, blank=True)
     address = models.CharField(max_length=255, default='')
-    photo = models.ImageField(upload_to='homeowner_photos/', null=True, blank=True)  # Add this line
+    photo = models.ImageField(upload_to='homeowner_photos/', null=True, blank=True)
 
 
 class Professional(models.Model):

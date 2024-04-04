@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}الالهام{% endblock %}
 
 {% block content %}
@@ -11,6 +12,7 @@
 </style>
 <div class="container mt-5">
     <h3 class="display-4 mb-4 text-end">استلهم</h3>
+
     <div class="row row-cols-1 row-cols-md-3 g-4" id="inspiration-container">
         {% for work in previous_works %}
         <div class="col" id="work-{{ work.id }}">
@@ -23,11 +25,11 @@
                 <div class="card-body">
                     <p class="text-end">بواسطة : <a
                             href="{% url 'professional_profile' professional_id=work.professional.id %}">
-                            {{work.professional.user.username }}</a></p> {% if not request.user.is_authenticated %}
+                            {{work.professional.user.username }}</a></p>
+                    {% if not request.user.is_authenticated %}
                     <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>
                     {% else %}
-                    <a href="{% url 'save_to_wishlist' previous_work_id=work.id %}" class="btn btn-primary">Save to
-                        Wishlist</a>
+                    <button class="btn btn-primary" onclick="saveToWishlist('{{ work.id }}')">حفظ للمفضلة</button>
                     {% endif %}
                 </div>
             </div>
@@ -40,7 +42,6 @@
     </div>
 </div>
 
-
 <script>
     // JavaScript for dynamically removing deleted image cards
     function removeDeletedImageCard(imageId) {
@@ -48,6 +49,31 @@
         if (cardToRemove) {
             cardToRemove.remove();
         }
+    }
+    function saveToWishlist(previousWorkId) {
+        // Send an asynchronous request to the server
+        fetch("{% url 'save_to_wishlist' previous_work_id=0 %}".replace("0", previousWorkId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data
+                if (data.success) {
+                    // Show a success message
+                    alert("تمت إضافة العنصر إلى قائمة الأمنيات بنجاح");
+                } else {
+                    // Show an error message
+                    alert("العنصر موجود بالفعل في قائمة الأمنيات");
+                }
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error('Error:', error);
+            });
     }
 </script>
 {% endblock %}

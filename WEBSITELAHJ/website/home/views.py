@@ -1,5 +1,6 @@
 
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -34,6 +35,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from .forms import CommentForm
 from .models import Comment
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 
 def home(request):
     return render(request, 'home.html')
@@ -47,12 +50,23 @@ def terms_of_use(request):
 def resource(request):
     return render(request, 'resource.html')
 
-def save_to_wishlist(request, work_id):
-    if request.method == 'POST':
-        previous_work = PreviousWork.objects.get(id=work_id)
-        homeowner = request.user.homeowner  
-        Wishlist.objects.create(homeowner=homeowner, previous_work=previous_work)
-        return redirect('inspiration')
+
+
+def save_to_wishlist(request, previous_work_id):
+    previous_work = get_object_or_404(PreviousWork, id=previous_work_id)
+    homeowner = request.user.homeowner
+
+    # Check if the item is already in the wishlist
+    if Wishlist.objects.filter(homeowner=homeowner, previous_work=previous_work).exists():
+        # Item already exists in the wishlist, return JSON response with error message
+        return JsonResponse({'success': False, 'message': 'العنصر موجود بالفعل في قائمة الأمنيات'})
+
+    # Item is not in the wishlist, create a new Wishlist object
+    Wishlist.objects.create(homeowner=homeowner, previous_work=previous_work)
+
+    # Return JSON response with success message
+    return JsonResponse({'success': True, 'message': 'تمت إضافة العنصر إلى قائمة الأمنيات بنجاح'})
+
 
 def inspiration(request):
     previous_works = PreviousWork.objects.all()
@@ -180,8 +194,8 @@ def user_login(request):
 
 def homeowner_profile(request):
     user = request.user
-    homeowner = Homeowner.objects.get(user=user)  
-
+    homeowner = Homeowner.objects.get(user=user)
+    wishlist_items = Wishlist.objects.filter(homeowner=homeowner)
     if request.method == 'POST':
         # Handle editing profile information
         profile_form = HomeownerProfileForm(request.POST, instance=homeowner)
@@ -200,7 +214,7 @@ def homeowner_profile(request):
         profile_form = HomeownerProfileForm(instance=homeowner)
         photo_form = PhotoUploadForm(instance=homeowner)
 
-    return render(request, 'homeowner_profile.html', {'homeowner': homeowner, 'profile_form': profile_form, 'photo_form': photo_form})
+    return render(request, 'homeowner_profile.html', {'homeowner': homeowner, 'profile_form': profile_form, 'photo_form': photo_form, 'wishlist_items': wishlist_items})
 
 
 @login_required
@@ -243,7 +257,6 @@ def save_photo_changes(request):
             # Example: request.user.profile.photo = photo_form.cleaned_data['photo']
             # Save the user's profile
             # request.user.profile.save()
-
             messages.success(request, 'Changes to the photo were saved successfully.')
         else:
             messages.error(request, 'Error saving changes to the photo. Please check the form.')

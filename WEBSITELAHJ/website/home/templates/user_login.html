@@ -3,7 +3,7 @@
 {% block title %}تسجيل دخول{% endblock %}
 
 {% block content %}
-  
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,8 +12,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
-       
-
         .login-box {
             margin-top: 150px;
             border-radius: 10px;
@@ -44,22 +42,25 @@
                     <div class="text-center">
                         <h1>تسجيل الدخول</h1>
                     </div>
-<form class="user" method="POST" enctype="multipart/form-data" style="text-align: center;">
-    {% csrf_token %}
-    <div class="form-group">
-        <label class="form-control-label" for="input-identifier">البريد الإلكتروني أو اسم المستخدم</label>
-        <input type="text" class="form-control" id="input-identifier" name="identifier" required>
-    </div>
-    <div class="form-group">
-        <label class="form-control-label" for="input-password">كلمة المرور</label>
-        <input type="password" class="form-control" id="input-password" name="password" required>
-    </div>
-    <input type="submit" value="تسجيل الدخول" class='btn btn-primary btn-block'>
-</form>
+                    <form class="user" method="POST" enctype="multipart/form-data" style="text-align: center;">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-control-label" for="input-identifier">البريد الإلكتروني أو اسم
+                                المستخدم</label>
+                            <input type="text" class="form-control" id="input-identifier" name="identifier" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label" for="input-password">كلمة المرور</label>
+                            <input type="password" class="form-control" id="input-password" name="password" required>
+                        </div>
+                        <input type="submit" value="تسجيل الدخول" class='btn btn-primary btn-block'>
+                    </form>
                     <hr>
 
                     <div class="text-center">
                         <a class="nav-link" href="{% url 'signup' %}" style="color:#000000">التسجيل</a>
+                        <a class="nav-link" href="{% url 'password_reset' %}" style="color:#000000">نسيت كلمة
+                            المرور؟</a>
                     </div>
                 </div>
             </div>
@@ -70,7 +71,6 @@
 
 </html>
 
-   
-        
+
+
 {% endblock %}
-    

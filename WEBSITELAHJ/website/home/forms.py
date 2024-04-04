@@ -20,11 +20,11 @@ class HomeownerProfileForm(forms.ModelForm):
         model = Homeowner
         fields = ['phone', 'address']  
 
-class PhotoUploadForm(forms.ModelForm):
+class HomeownerPhotoUploadForm(forms.ModelForm):
     class Meta:
         model = Homeowner
         fields = ['photo']  
-        widgets = {'photo': forms.FileInput(attrs={'accept': 'image/*'})}  
+        widgets = {'photo': forms.FileInput(attrs={'accept': 'image/*'})} 
 
 
 class HomeownerEditForm(forms.ModelForm):
@@ -47,7 +47,7 @@ class ProfessionalSignupForm(forms.Form):
 class ProfessionalEditForm(forms.ModelForm):
     class Meta:
         model = Professional
-        fields = ['phone', 'address', 'bio', 'job', 'photo']
+        fields = ['phone', 'address', 'bio']
 
 class PhotoUploadForm(forms.ModelForm):
     class Meta:
@@ -60,10 +60,6 @@ class ProjectPhotoUploadForm(forms.ModelForm):
         model = ProjectImage
         fields = ['image']
 
-class ProjectPhotoUploadForm(forms.ModelForm):
-    class Meta:
-        model = ProjectImage
-        fields = ['image']
 
 class ProjectDetailForm(forms.ModelForm):
     class Meta:

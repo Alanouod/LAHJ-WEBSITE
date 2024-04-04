@@ -26,7 +26,7 @@
 
     <div class="row row-cols-1 row-cols-md-3 g-4" id="inspiration-container">
         {% for work in previous_works %}
-        <div class="col" id="work-{{ work.id }}">
+        <div class="col mb-4">
             <div class="card">
                 <a href="{% url 'project_details' project_id=work.id %}">
                     {% if work.images.all %}
@@ -34,8 +34,7 @@
                     {% endif %}
                 </a>
                 <div class="card-body">
-                    <p class="text-end">بواسطة : <a
-                            href="{% url 'professional_profile' professional_id=work.professional.id %}">
+                    <p class="text-end">بواسطة : <a href="{% url 'professional_profile' professional_id=work.professional.id %}">
                             {{work.professional.user.username }}</a></p>
                     {% if not request.user.is_authenticated %}
                     <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>

@@ -84,35 +84,37 @@
                 معلومات الرسائل
             </div>
         </div>
+
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top"
-                title="معلومات المفضلة">المفضلة</a>
-            <div id="wishlistContent" class="section-content mt-3">
-                {% if homeowner.wishlist_set.all %}
-                <div class="wishlist-items">
-                    {% for wishlist_item in homeowner.wishlist_set.all %}
-                    <div class="wishlist-item">
-                        {% if wishlist_item.previous_work.images.all %}
+    <a href="{% url 'wishlist_photos' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات المفضلة">المفضلة</a>
+    <div id="wishlistContent" class="section-content mt-3">
+        {% if homeowner.wishlist_set.all %}
+        <div class="wishlist-items stack-of-cards" onclick="location.href='{% url 'wishlist_photos' %}'">
+            {% for wishlist_item in homeowner.wishlist_set.all %}
+                {% if wishlist_item.previous_work.images.all %}
+                    <div class="card">
                         <a href="{% url 'project_details' project_id=wishlist_item.previous_work.id %}">
                             <img src="{{ wishlist_item.previous_work.images.first.image.url }}"
                                 alt="{{ wishlist_item.previous_work.project_name }}"
-                                style="max-width: 100%; height: auto;">
+                                class="card-img-top">
                         </a>
-                        {% endif %}
-                        <h4>
-                            <a href="{% url 'project_details' project_id=wishlist_item.previous_work.id %}">
-                                {{wishlist_item.previous_work.project_name}}
-
-                            </a>
-                        </h4>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'project_details' project_id=wishlist_item.previous_work.id %}">
+                                    {{wishlist_item.previous_work.project_name}}
+                                </a>
+                            </h5>
+                        </div>
                     </div>
-                    {% endfor %}
-                </div>
-                {% else %}
-                <p> يمكنك اضافة مشاريع للمفضلة من صفحة الإلهام</p>
                 {% endif %}
-            </div>
+            {% endfor %}
         </div>
+        {% else %}
+        <p> يمكنك اضافة مشاريع للمفضلة من صفحة الإلهام</p>
+        {% endif %}
+    </div>
+</div>
+
 
         <div class="col mt-3 photo-box text-end">
             <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل

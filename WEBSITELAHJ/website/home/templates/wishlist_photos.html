@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}جميع الصور المحفوظة{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="display-4">جميع الصور المحفوظة</h1>
+    <div class="row">
+        {% for photo_url in saved_photos %}
+            <div class="col-md-3 mb-4">
+                <div class="card">
+                    <img src="{{ photo_url }}" class="card-img-top" alt="Saved Photo">
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

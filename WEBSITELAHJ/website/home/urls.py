@@ -34,4 +34,6 @@ urlpatterns = [
     path('project_details/<int:project_id>/', views.project_details, name='project_details'),
     path('professional_profile/<int:professional_id>/add_comment/', views.add_comment, name='add_comment'),
     path('save-to-wishlist/<int:previous_work_id>/', save_to_wishlist, name='save_to_wishlist'),
+    path('wishlist/photos/', views.wishlist_photos, name='wishlist_photos'),
+   
     ] 

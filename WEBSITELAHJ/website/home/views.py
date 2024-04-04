@@ -37,6 +37,8 @@ from .forms import CommentForm
 from .models import Comment
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
+from .forms import HomeownerPhotoUploadForm
+
 
 def home(request):
     return render(request, 'home.html')
@@ -67,6 +69,10 @@ def save_to_wishlist(request, previous_work_id):
     # Return JSON response with success message
     return JsonResponse({'success': True, 'message': 'تمت إضافة العنصر إلى قائمة الأمنيات بنجاح'})
 
+def wishlist_photos(request):
+    homeowner = request.user.homeowner
+    saved_photos = Wishlist.objects.filter(homeowner=homeowner).values_list('previous_work__images__image', flat=True)
+    return render(request, 'wishlist_photos.html', {'saved_photos': saved_photos})
 
 def inspiration(request):
     previous_works = PreviousWork.objects.all()
@@ -146,7 +152,7 @@ def joinAsPro(request):
                 project = PreviousWork.objects.create(
                     professional=professional,
                     description="Description of the previous work",
-                    # Add any other necessary fields
+
                 )
 
                 # Associate the uploaded previous work with the new project
@@ -231,21 +237,21 @@ def edit_profile(request):
 
     return render(request, 'edit_profile.html', {'form': form, 'homeowner': homeowner})
 
-
 @login_required
 def edit_photo(request):
     homeowner = request.user.homeowner
 
     if request.method == 'POST':
-        photo_form = PhotoUploadForm(request.POST, request.FILES, instance=homeowner)
+        photo_form = HomeownerPhotoUploadForm(request.POST, request.FILES, instance=homeowner)
         if photo_form.is_valid():
             photo_form.save()
             return redirect('homeowner_profile')
 
     else:
-        photo_form = PhotoUploadForm(instance=homeowner)
+        photo_form = HomeownerPhotoUploadForm(instance=homeowner)
 
     return render(request, 'edit_photo.html', {'homeowner': homeowner, 'photo_form': photo_form})
+
 
 @login_required
 def save_photo_changes(request):
@@ -299,7 +305,7 @@ def edit_professional_profile(request):
     professional = Professional.objects.get(user=request.user)
 
     if request.method == 'POST':
-        form = ProfessionalEditForm(request.POST, instance=professional)
+        form = ProfessionalEditForm(request.POST, request.FILES, instance=professional)
         if form.is_valid():
             form.save()
             return redirect('professional_profile', professional_id=professional.id)
@@ -307,6 +313,7 @@ def edit_professional_profile(request):
         form = ProfessionalEditForm(instance=professional)
 
     return render(request, 'edit_professional_profile.html', {'form': form, 'professional': professional})
+
 
 @login_required
 def edit_professional_photo(request):

@@ -5,25 +5,50 @@
 
 {% block content %}
 <style>
+    .project-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        height: 300px; 
+    }
+
+    .project-img {
+        width: 100%; 
+        height: auto;
+    }
+
     .delete-btn {
-        margin-left: 10px; 
-        z-index: 2; 
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+    }
+
+    .add-project-btn {
+        margin-right: 10px;
     }
 </style>
+
 <div class="container mt-5">
-    <h1 class="display-4 mb-4 text-end">المشاريع</h1>
-    <div class="row row-cols-1 row-cols-md-4 g-4">
+    <h3 class="display-4 mb-4 text-end">
+        {% if user.is_authenticated and is_owner %}
+            <a href="{% url 'add_project' %}" class="btn btn-primary add-project-btn">إضافة مشروع جديد</a>
+        {% endif %}
+        المشاريع
+    </h3>
+    <div class="row">
         {% for previous_work in previous_works %}
-            <div class="col">
-                <div class="card position-relative">
+            <div class="col-md-4 mb-4">
+                <div class="card project-card">
                     <div class="card-body">
                         {% for image in previous_work.images.all %}
                             <a href="{{ image.image.url }}" target="_blank">
-                                <img src="{{ image.image.url }}" class="project-img-top" alt="Project Photo">
+                                <img src="{{ image.image.url }}" class="project-img" alt="Project Photo">
                             </a>
-                                <!-- delete button -->
+                            <!-- Delete button -->
                             {% if user.is_authenticated and is_owner %}
-                            <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
+                                <form method="post" action="{% url 'delete_project_image' image.id %}" class="delete-form">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger delete-btn">حذف</button>
                                 </form>
@@ -32,58 +57,54 @@
                     </div>
                 </div>
             </div>
-            {% if forloop.counter|divisibleby:4 and not forloop.last %}
-                </div><div class="row row-cols-1 row-cols-md-4 g-4">
-            {% endif %}
         {% endfor %}
     </div>
-    <!-- Add project button -->
-    {% if user.is_authenticated and is_owner %}
-        <a href="{% url 'add_project' %}" class="btn btn-primary mt-3">إضافة مشروع جديد</a>
-    {% endif %}
 </div>
 
 <script>
-    // JavaScript for handling delete confirmation
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            const confirmation = confirm('Are you sure you want to delete the image?');
-            if (confirmation) {
-                fetch(button.parentElement.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': "{{ csrf_token }}",
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Reload the page on success
-                        window.location.reload();
-                    } else {
-                        // Handle failure (optional)
-                        alert('Failed to delete image.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            }
-        });
-    });
-
-    // Open image in new tab on click
-    document.addEventListener('DOMContentLoaded', function() {
-        const projectImages = document.querySelectorAll('.project-img-top');
-
-        projectImages.forEach(image => {
-            image.addEventListener('click', function(event) {
-                event.preventDefault();
-                const imageUrl = event.target.getAttribute('src');
-                window.open(imageUrl, '_blank');
+        // JavaScript for handling delete confirmation
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission behavior
+    
+                const confirmation = confirm('Are you sure you want to delete the image?');
+                if (confirmation) {
+                    fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': "{{ csrf_token }}",
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Reload the page on success
+                            window.location.reload();
+                        } else {
+                            // Handle failure (optional)
+                            alert('Failed to delete image.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }
             });
         });
-    });
+    
+        // Open image in new tab on click
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectImages = document.querySelectorAll('.project-img');
+    
+            projectImages.forEach(image => {
+                image.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const imageUrl = event.target.getAttribute('src');
+                    window.open(imageUrl, '_blank');
+                });
+            });
+        });
+
 </script>
 {% endblock %}

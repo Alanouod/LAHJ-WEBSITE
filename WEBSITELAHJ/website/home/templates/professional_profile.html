@@ -19,6 +19,15 @@
         padding: 20px;
         border: 1px solid #ddd;
         border-radius: 10px;
+        display: none;  
+    }
+
+    .section-content.active {
+        display: block;  
+    }
+
+    .section-content.always-visible {
+        display: block;  
     }
 
     .section-content h3 {
@@ -59,6 +68,7 @@
         flex: 1;
         margin-right: 10px;
     }
+
     .reviews-container {
         flex: 1;
         margin-top: 20px;
@@ -76,10 +86,10 @@
             <!-- Display professional's name with edit buttons -->
             <h1 class="display-4">
                 {% if is_owner %}
-                {% if request.user == professional.user %}
-                <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
-                {% endif %}
-                {{ professional.user.username }}
+                    {% if request.user == professional.user %}
+                        <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
+                    {% endif %}
+                    {{ professional.user.username }}
                 {% endif %}
             </h1>
         </div>
@@ -88,50 +98,37 @@
 
     <!-- Other professional profile content -->
     <div class="row mt-3 text-end section-column">
-
-        <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
-            <div id="messagesContent" class="section-content mt-3">
-                معلومات الرسائل
+        {% if is_owner %}
+            <!-- Render the messages and orders sections only if the user is the owner -->
+            <div class="col-md-3 text-end">
+                <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
             </div>
-        </div>
-
-        <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
-            <div id="ordersContent" class="section-content mt-3">
-                معلومات الطلبات
+        
+            <div class="col-md-3 text-end">
+                <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
             </div>
-        </div>
-        <div class="col-md-3 text-end">
+        {% endif %}
+
+        <div class="col-md-3 text-end ml-auto"> <!-- Align المشاريع section to the right -->
             <!-- Link to المشاريع (Projects) -->
             {% if professional %}
-    <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
-{% else %}
-    <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
-{% endif %}
-
+                <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
+            {% else %}
+                <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
+            {% endif %}
         </div>
-        
-        <div class="col-md-3 text-end">
+
+        <div class="col-md-3 text-end ml-auto"> <!-- Align من أنا section to the right -->
             <!-- Display professional's biography -->
-            <h3 class="profile-section-title">
-                <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="من أنا" onclick="toggleBio()">من أنا</a>
-            </h3>
-            <div id="bioContent" class="section-content mt-3" style="display: none;">
-                {% if professional.bio %}
-                    {{ professional.bio }}
-                {% else %}
-                    لا يوجد نبذة عن المحترف حتى الآن.
-                {% endif %}
-            </div>
+            <a href="#" class="profile-section-link" data-section="bioContent" data-toggle="tooltip" data-placement="top" title="من أنا">من أنا</a>
         </div>
 
         <div class="col-md-3 text-end">
             <div class="col mt-3 photo-box text-end">
                 {% if is_owner %}
-                {% if request.user == professional.user %}
-                    <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
-                {% endif %}
+                    {% if request.user == professional.user %}
+                        <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل الصورة</button>
+                    {% endif %}
                 {% endif %}
                 {% if professional.photo %}
                     <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" id="professionalPhoto">
@@ -142,112 +139,117 @@
             </div>
         </div>
 
-
     </div>
+
+    <!-- Section contents -->
+    <div id="messagesContent" class="section-content mt-3">
+        معلومات الرسائل
+    </div>
+    <div id="ordersContent" class="section-content mt-3">
+        معلومات الطلبات
+    </div>
+
+    <div id="bioContent" class="section-content mt-3">
+        {% if professional.bio %}
+            {{ professional.bio }}
+        {% else %}
+            لا يوجد نبذة عن المحترف حتى الآن.
+        {% endif %}
+    </div>
+
     <!-- Customer Reviews -->
-    <div class="row mt-3 text-end reviews-container  mt-5">
+    <div class="row mt-3 text-end reviews-container mt-5">
         <div class="col-md-12">
             <h3 class="profile-section-title">التعليقات</h3>
-            <div class="section-content mt-3">
+            <div class="section-content mt-3 always-visible"> <!-- Set the customer reviews section as always visible -->
                 <!-- Display existing comments -->
                 {% for comment in comments %}
-                <div class="customer-review">
-                    <p>{{ comment.content }}</p>
-                    <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
-                </div>
+                    <div class="customer-review">
+                        <p>{{ comment.content }}</p>
+                        <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
+                    </div>
+                    <hr>
                 {% endfor %}
-    
+
                 <form method="post" action="{% url 'add_comment' professional.id %}">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">إرسال</button>
                 </form>
                 {% if not user.is_authenticated %}
-                <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
+                    <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
                 {% endif %}
-                
             </div>
         </div>
     </div>
-    <!-- Edit Profile Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Your form for editing professional profile information -->
-                    <form method="post" action="{% url 'edit_professional_profile' %}">
-                        {% csrf_token %}
-                        <!-- Include fields like bio, job, etc. as needed -->
-                        {{ profile_form.as_p }}
-                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
-                    </form>
-                </div>
+
+ <!-- Edit Profile Modal -->
+ <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'edit_professional_profile' %}">
+                    {% csrf_token %}
+                    <!-- Include fields like bio, job, etc. as needed -->
+                    {{ profile_form.as_p }}
+                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                </form>
             </div>
         </div>
     </div>
-    <!-- Edit Photo Modal -->
-    <div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <!-- Your form for uploading/editing professional photo -->
-                    <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <label for="photo">تحميل صورة جديدة:</label>
-                        <input type="file" name="photo">
-                        <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ التغييرات</button>
-                    </form>
-                </div>
+</div>
+<!-- Edit Photo Modal -->
+<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="photo">تحميل صورة جديدة:</label>
+                    <input type="file" name="photo">
+                    <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ التغييرات</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
 </div>
 
 <script>
-    function updateProfessionalPhoto() {
-        // Get the input file element
-        var inputElement = document.querySelector('input[name="photo"]');
+    // Function to toggle section content
+    function toggleSection(sectionId) {
+        // Hide all section contents
+        var allSectionContents = document.querySelectorAll('.section-content');
+        allSectionContents.forEach(function(content) {
+            content.classList.remove('active');
+        });
 
-        // Check if a file is selected
-        if (inputElement.files.length > 0) {
-            // Get the selected file
-            var selectedFile = inputElement.files[0];
-
-            // Create a FileReader to read the selected file
-            var reader = new FileReader();
-
-            // Set the function to execute after the file is loaded
-            reader.onload = function (e) {
-                // Update the source attribute of the professionalPhoto image with the new data URL
-                document.getElementById('professionalPhoto').src = e.target.result;
-            };
-
-            // Read the selected file as a data URL
-            reader.readAsDataURL(selectedFile);
-        }
+        // Display the clicked section content
+        var sectionContent = document.getElementById(sectionId);
+        sectionContent.classList.add('active');
     }
 
-    function toggleBio() {
-        var bioContent = document.getElementById('bioContent');
-        if (bioContent.style.display === 'none') {
-            bioContent.style.display = 'block';
-        } else {
-            bioContent.style.display = 'none';
-        }
-    }
-
+    // Add click event listener to all section links
+    var sectionLinks = document.querySelectorAll('.profile-section-link');
+    sectionLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            var sectionId = this.getAttribute('data-section');
+            toggleSection(sectionId);
+        });
+    });
 </script>
+
 {% endblock %}

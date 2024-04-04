@@ -3,19 +3,61 @@
 {% block title %}معلومات الصورة{% endblock %}
 
 {% block content %}
-<div class="container mt-5 text-end">
-    {% if project.images.all %}
-    <img src="{{ project.images.first.image.url }}" alt="{{ project.project_name }}">
-    {% endif %}
-    <p class="text-end"> اسم المشروع :{{ project.project_name }}</p>
-    <p class="text-end">منتجات مستخدمة :  {{ project.products_used }}</p>
-    <p class="text-end">الموقع: {{ project.location }}</p>
-    <p class="text-end">الوصف: {{ project.description }}</p>
+<style>
+    .card-container {
+        display: flex;
+        justify-content: center; 
+        align-items: center; 
+        height: 80vh; 
+    }
 
-    <!-- Display link to professional's profile -->
-    {% if project.professional %}
-    <p class="text-end">المحترف: <a href="{% url 'professional_profile' professional_id=project.professional.id %}">{{ project.professional.user.username }}</a></p>
-    {% endif %}
+    .outer-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+        max-width: 600px; 
+        max-height: 400px; 
+        display: flex; 
+    }
+
+    .inner-card {
+        flex: 1; 
+        padding: 20px;
+        text-align: right; 
+        font-size: 15px;
+        overflow: auto; 
+    }
+
+    .image-container {
+        flex: 1; 
+        position: relative;
+    }
+
+    .image {
+        width: 100%; 
+        height: auto;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card-container">
+        {% if project.images.all %}
+        <div class="outer-card">
+            <div class="inner-card">
+                <p>اسم المشروع: {{ project.project_name }}</p>
+                <p>منتجات مستخدمة: {{ project.products_used }}</p>
+                <p>الموقع: {{ project.location }}</p>
+                <p>الوصف: {{ project.description }}</p>
+                {% if project.professional %}
+                <p>المحترف: <a href="{% url 'professional_profile' professional_id=project.professional.id %}">{{ project.professional.user.username }}</a></p>
+                {% endif %}
+            </div>
+            <div class="image-container">
+                <img class="image" src="{{ project.images.first.image.url }}" alt="{{ project.project_name }}">
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </div>
-
 {% endblock %}

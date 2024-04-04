@@ -1,20 +1,31 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}الالهام{% endblock %}
 
 {% block content %}
 <style>
-    
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
     .card-img-top {
-        height: 200px; 
+        height: 200px;
         object-fit: cover;
     }
+
+    .card-body {
+        padding: 1rem;
+    }
 </style>
+
 <div class="container mt-5">
     <h3 class="display-4 mb-4 text-end">استلهم</h3>
-    <div class="row row-cols-1 row-cols-md-3 g-4" id="inspiration-container">
+    <div class="row">
         {% for work in previous_works %}
-            <div class="col" id="work-{{ work.id }}">
+            <div class="col-md-4 mb-4">
                 <div class="card">
                     <a href="{% url 'project_details' project_id=work.id %}">
                         {% if work.images.all %}
@@ -22,7 +33,7 @@
                         {% endif %}
                     </a>
                     <div class="card-body">
-                        <p class="text-end">بواسطة : <a href="{% url 'professional_profile' professional_id=work.professional.id %}">{{ work.professional.user.username }}</a></p>
+                        <p class="text-end">بواسطة: <a href="{% url 'professional_profile' professional_id=work.professional.id %}">{{ work.professional.user.username }}</a></p>
                         {% if not request.user.is_authenticated %}
                             <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>
                         {% else %}
@@ -31,21 +42,17 @@
                     </div>
                 </div>
             </div>
-            {% if forloop.counter|divisibleby:3 and not forloop.last %}
-                </div><div class="row row-cols-1 row-cols-md-3 g-4">
-            {% endif %}
         {% endfor %}
     </div>
 </div>
 
-
-    <script>
-       // JavaScript for dynamically removing deleted image cards
-       function removeDeletedImageCard(imageId) {
+<script>
+    // JavaScript for dynamically removing deleted image cards
+    function removeDeletedImageCard(imageId) {
         const cardToRemove = document.getElementById(`work-${imageId}`);
         if (cardToRemove) {
             cardToRemove.remove();
         }
     }
-    </script>
+</script>
 {% endblock %}

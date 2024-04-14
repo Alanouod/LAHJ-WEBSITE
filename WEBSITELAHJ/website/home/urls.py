@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist
+from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist,submit_rating
 from . import views
 
 urlpatterns = [
@@ -35,5 +35,7 @@ urlpatterns = [
     path('professional_profile/<int:professional_id>/add_comment/', views.add_comment, name='add_comment'),
     path('save-to-wishlist/<int:previous_work_id>/', save_to_wishlist, name='save_to_wishlist'),
     path('wishlist/photos/', views.wishlist_photos, name='wishlist_photos'),
+    path('submit_rating/', submit_rating, name='submit_rating'),
+    path('submit_rating/<int:professional_id>/', views.submit_rating, name='submit_rating'),
    
     ] 

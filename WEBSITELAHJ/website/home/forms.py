@@ -5,7 +5,18 @@ from .models import Professional
 from .models import ProjectImage
 from .models import PreviousWork
 from .models import Comment
+from .models import Rating
 
+
+class RatingForm(forms.Form):
+    rating = forms.IntegerField(label='Rating', min_value=1, max_value=5)
+    comment = forms.CharField(label='Comment', widget=forms.Textarea)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
 
 
 class HomeownerSignupForm(forms.Form):
@@ -66,8 +77,3 @@ class ProjectDetailForm(forms.ModelForm):
         model = PreviousWork
         fields = ['project_name', 'products_used', 'location', 'description']
 
-
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['content']

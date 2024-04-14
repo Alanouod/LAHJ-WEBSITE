@@ -33,11 +33,18 @@ from .forms import ProjectPhotoUploadForm, ProjectDetailForm
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from .forms import CommentForm
 from .models import Comment
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from .forms import HomeownerPhotoUploadForm
+from django.db.models import Avg
+from .models import Professional, Rating
+from django.db.models import Sum
+from .forms import CommentForm, RatingForm
+from .models import Professional, Comment, Rating
+from django.contrib import messages
+from django.db.models import Count
+from decimal import Decimal
 
 
 def home(request):
@@ -53,7 +60,7 @@ def resource(request):
     return render(request, 'resource.html')
 
 
-
+@login_required
 def save_to_wishlist(request, previous_work_id):
     previous_work = get_object_or_404(PreviousWork, id=previous_work_id)
     homeowner = request.user.homeowner
@@ -273,6 +280,15 @@ def professional_profile(request, professional_id):
     try:
         professional = Professional.objects.get(id=professional_id)
         comments = Comment.objects.filter(professional=professional)
+        # Fetch all ratings associated with the professional
+        ratings = Rating.objects.filter(professional=professional)
+        # Calculate the average rating
+        avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
+        # Round the average rating to two decimal places
+        if avg_rating is not None:
+            avg_rating = round(avg_rating, 2)
+        # Calculate the number of ratings
+        num_ratings = ratings.count()
     except Professional.DoesNotExist:
         return render(request, 'error.html', {'message': 'Professional profile not found'})
 
@@ -283,18 +299,97 @@ def professional_profile(request, professional_id):
             is_owner = True
 
     if request.method == 'POST':
+        if 'comment' in request.POST:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.user = request.user
+                comment.professional = professional
+                comment.save()
+                return redirect('professional_profile', professional_id=professional_id)
+        elif 'rating' in request.POST:
+            rating_form = RatingForm(request.POST)
+            if rating_form.is_valid():
+                rating_value = rating_form.cleaned_data['rating']
+                comment = rating_form.cleaned_data['comment']
+                # Save the rating here
+                rating = Rating.objects.create(
+                    user=request.user,
+                    professional=professional,
+                    rating=rating_value,
+                    comment=comment
+                )
+                rating.save()
+                # Recalculate the average rating including the new rating
+                ratings = Rating.objects.filter(professional=professional)
+                avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
+                # Redirect to the professional profile page after adding the rating
+                return redirect('professional_profile', professional_id=professional_id)
+    else:
+        form = CommentForm()
+        rating_form = RatingForm()
+
+    return render(request, 'professional_profile.html', {
+        'professional': professional,
+        'is_owner': is_owner,
+        'form': form,
+        'rating_form': rating_form,
+        'comments': comments,
+        'avg_rating': avg_rating,
+        'num_ratings': num_ratings,
+    })
+
+
+@login_required
+def add_comment(request, professional_id):
+    professional = get_object_or_404(Professional, id=professional_id)
+    
+    if request.method == 'POST':
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.user = request.user
             comment.professional = professional
             comment.save()
-            # Redirect to the same page after adding the comment
+            # Redirect to the professional profile page after adding the comment
             return redirect('professional_profile', professional_id=professional_id)
     else:
         form = CommentForm()
+    
+    return render(request, 'add_comment.html', {'form': form})
 
-    return render(request, 'professional_profile.html', {'professional': professional, 'is_owner': is_owner, 'form': form, 'comments': comments})
+@login_required
+def submit_rating(request, professional_id):
+    if request.method == 'POST':
+        rating_value = int(request.POST.get('rating', 0))
+        comment = request.POST.get('comment', '')
+        professional = Professional.objects.get(pk=professional_id)
+        user = request.user
+
+        # Validate rating value
+        if rating_value < 1 or rating_value > 5:
+            messages.error(request, "Invalid rating value. Please select a rating between 1 and 5.")
+            return redirect('professional_profile', professional_id=professional_id)
+
+        # Handle non-AJAX request
+        existing_rating = Rating.objects.filter(user=user, professional=professional).first()
+        if existing_rating:
+            existing_rating.rating = rating_value
+            existing_rating.comment = comment
+            existing_rating.save()
+        else:
+            new_rating = Rating.objects.create(user=user, professional=professional, rating=rating_value, comment=comment)
+            new_rating.save()
+
+        # Recalculate the average rating including all ratings
+        avg_rating = Rating.objects.filter(professional=professional).aggregate(Avg('rating'))['rating__avg']
+        professional.avg_rating = avg_rating
+        professional.save()
+
+        messages.success(request, "Rating submitted successfully.")
+        return redirect('professional_profile', professional_id=professional_id)
+    else:
+        return redirect('home')
 
 
 @login_required
@@ -418,24 +513,6 @@ def add_project(request):
 def project_details(request, project_id):
     project = get_object_or_404(PreviousWork, id=project_id)
     return render(request, 'project_details.html', {'project': project})
-
-@login_required
-def add_comment(request, professional_id):
-    professional = get_object_or_404(Professional, id=professional_id)
-    
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = request.user
-            comment.professional = professional
-            comment.save()
-            # Redirect to the professional profile page after adding the comment
-            return redirect('professional_profile', professional_id=professional_id)
-    else:
-        form = CommentForm()
-    
-    return render(request, 'add_comment.html', {'form': form})
 
 
 def services(request):

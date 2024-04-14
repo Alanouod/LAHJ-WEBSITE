@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=True, blank=True)
@@ -28,7 +30,16 @@ class Professional(models.Model):
     job = models.CharField(max_length=255, null=True, blank=True)
     previous_work = models.FileField(upload_to='project_images/', null=True, blank=True)
     photo = models.ImageField(upload_to='professional_photos/', null=True, blank=True)
-    rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+
+
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    professional = models.ForeignKey(Professional, on_delete=models.CASCADE,null=True)
+    rating = models.IntegerField(null=True,)
+    comment = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ('user', 'professional')
 
 
 class PreviousWork(models.Model):

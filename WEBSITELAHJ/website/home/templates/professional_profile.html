@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}الملف الشخصي {% endblock %}
-
 {% block content %}
 <style>
     .profile-section-link {
@@ -77,29 +76,61 @@
     .customer-name {
         font-weight: bold;
     }
-
+    .rtl-text {
+        direction: rtl;
+    }
 </style>
-
 <div class="container mt-5 text-end">
-    <div class="row mt-3 text-end">
+    <div class="row mt-3 text-end align-items-center justify-content-end"> 
         <div class="col-mt-3 photo-container text-end">
-            <!-- Display professional's name with edit buttons -->
-            <h1 class="display-4">
+            <h6 class="display-4">
                 {% if is_owner %}
                     {% if request.user == professional.user %}
-                        <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
+                        <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تحرير المللف</a>
                     {% endif %}
-                    {{ professional.user.username }}
-                {% endif %}
-            </h1>
+                {% endif %}  
+                <span>{{ professional.user.username }}</span>             
+                <div class="d-flex align-items-center "> 
+                    {% if not is_owner %}
+                        <button id="rateButton" class="btn btn-primary">قيَيم</button>
+                    {% endif %}
+                    <div class="rating ml-3 d-flex align-items-center"> 
+                        <div class="stars" style="display: inline-block; font-size: 14px;">
+                            {% for _ in "12345" %}
+                                {% if forloop.counter <= avg_rating|stringformat:"f" %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span style="font-size: 16px;">{{ avg_rating|default:"No ratings yet." }}</span> 
+                        <span style="font-size: 16px;">({{ num_ratings }})</span> 
+                        <span style="font-size: 16px;">تقييم</span> 
+                    </div>
+                </div>
+                
+            </h6>
         </div>
     </div>
-    <hr>
+</div>
 
+<!-- rating section -->
+<div id="ratingFormSection" style="display: none;">
+    <form id="ratingForm" method="post" action="{% url 'submit_rating' professional.id %}">
+        {% csrf_token %}
+        <label for="rating">قيم:</label>
+        <input type="number" name="rating" id="rating" min="1" max="5" required>
+        <label for="comment">تعليق:</label>
+        <textarea name="comment" id="comment" rows="4" required></textarea>
+        <button type="submit" class="btn btn-primary">أرسل</button>
+    </form>
+</div>
+<hr>
     <!-- Other professional profile content -->
     <div class="row mt-3 text-end section-column">
         {% if is_owner %}
-            <!-- Render the messages and orders sections only if the user is the owner -->
+            <!--  only if the user is the owner -->
             <div class="col-md-3 text-end">
                 <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip" data-placement="top" title="معلومات الرسائل">الرسائل</a>
             </div>
@@ -109,19 +140,17 @@
             </div>
         {% endif %}
 
-        <div class="col-md-3 text-end ml-auto"> <!-- Align المشاريع section to the right -->
-            <!-- Link to المشاريع (Projects) -->
+        <div class="col-md-3 text-end ml-auto rtl-text"> <!--  المشاريع  -->
             {% if professional %}
                 <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
             {% else %}
                 <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="المشاريع">المشاريع</a>
             {% endif %}
         </div>
-
-        <div class="col-md-3 text-end ml-auto"> <!-- Align من أنا section to the right -->
-            <!-- Display professional's biography -->
+        
+        <div class="col-md-3 text-end ml-auto rtl-text"> <!--  من أنا  -->
             <a href="#" class="profile-section-link" data-section="bioContent" data-toggle="tooltip" data-placement="top" title="من أنا">من أنا</a>
-        </div>
+        </div>  
 
         <div class="col-md-3 text-end">
             <div class="col mt-3 photo-box text-end">
@@ -157,31 +186,34 @@
         {% endif %}
     </div>
 
-    <!-- Customer Reviews -->
-    <div class="row mt-3 text-end reviews-container mt-5">
-        <div class="col-md-12">
-            <h3 class="profile-section-title">التعليقات</h3>
-            <div class="section-content mt-3 always-visible"> <!-- Set the customer reviews section as always visible -->
-                <!-- Display existing comments -->
-                {% for comment in comments %}
-                    <div class="customer-review">
-                        <p>{{ comment.content }}</p>
-                        <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
-                    </div>
-                    <hr>
-                {% endfor %}
+<!-- Customer Reviews -->
+<div class="row mt-3 text-end reviews-container mt-5">
+    <div class="col-md-12">
+        <h3 class="profile-section-title">التعليقات</h3>
+        <div class="section-content mt-3 always-visible"> 
+            <!-- Display existing comments -->
+            {% for comment in comments %}
+                <div class="customer-review">
+                    <p>{{ comment.content }}</p>
+                    <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
+                </div>
+                <hr>
+            {% endfor %}
 
-                <form method="post" action="{% url 'add_comment' professional.id %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">إرسال</button>
-                </form>
-                {% if not user.is_authenticated %}
-                    <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
-                {% endif %}
-            </div>
+            <!-- Add form for new comment -->
+            <form method="post" action="{% url 'add_comment' professional.id %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">إرسال</button>
+            </form>
+            
+            {% if not user.is_authenticated %}
+                <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
+            {% endif %}
         </div>
     </div>
+</div>
+
 
  <!-- Edit Profile Modal -->
  <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
@@ -225,11 +257,31 @@
         </div>
     </div>
 </div>
-
-</div>
-
 <script>
-    // Function to toggle section content
+        var rateButton = document.getElementById('rateButton');
+        var ratingFormSection = document.getElementById('ratingFormSection');
+    
+        if (rateButton && ratingFormSection) {
+            rateButton.addEventListener('click', function() {
+                // Open a new window with the rating form
+                var ratingWindow = window.open('', '_blank', 'width=400,height=400');
+                // Write the rating form HTML content to the new window
+                ratingWindow.document.write('<html><head><title>قييم</title></head><body>' + ratingFormSection.innerHTML + '</body></html>');
+                // Close the original rating form section
+                ratingFormSection.style.display = 'none';
+    
+                // Add event listener to the form submit button in the new window
+                var submitButton = ratingWindow.document.getElementById('submitRatingButton');
+                if (submitButton) {
+                    submitButton.addEventListener('click', function() {
+                        // Close the new window when the form is submitted
+                        ratingWindow.close();
+                    });
+                }
+            });
+        }    
+
+     // Function to toggle section content
     function toggleSection(sectionId) {
         // Hide all section contents
         var allSectionContents = document.querySelectorAll('.section-content');
@@ -252,4 +304,5 @@
     });
 </script>
 
-{% endblock %}
+
+    {% endblock %}

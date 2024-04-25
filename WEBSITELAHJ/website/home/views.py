@@ -530,6 +530,15 @@ def submit_order(request, professional_id):
             budget=budget,
             status=status, 
         )
-        return redirect('professional_profile', professional_id=professional_id)
+        return redirect('homeowner_profile')  # Redirect to the homeowner's profile page
 
     return render(request, 'professional_profile.html', {'professional': professional})
+
+@login_required
+def view_orders(request):
+    if request.user.is_authenticated:
+        homeowner = request.user.homeowner
+        orders = homeowner.orders.all()
+        return render(request, 'homeowner_orders.html', {'homeowner': homeowner, 'orders': orders})
+    else:
+        return render(request, 'homeowner_orders.html')

@@ -71,10 +71,22 @@
 
     <div class="row mt-3 text-end">
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-toggle="tooltip" data-placement="top"
+            <a href="{% url 'view_orders' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top"
                 title="معلومات الطلبات">الطلبات</a>
             <div id="ordersContent" class="section-content mt-3">
-                معلومات الطلبات
+                {% if homeowner.orders.exists %}
+                <div class="card order-card">
+                    <div class="card-body">
+                        <h5 class="card-title">وصف المشروع: {{ homeowner.orders.last.project_description }}</h5>
+                        <p class="card-text">الحالة: {{ homeowner.orders.last.status }}</p>
+                    </div>
+                </div>
+                {% if homeowner.orders.count > 1 %}
+                <a href="{% url 'view_orders' %}" class="view-all-link">عرض جميع الطلبات</a>
+                {% endif %}
+                {% else %}
+                <p class="empty-message">لا يوجد طلبات حتى الآن.</p>
+                {% endif %}
             </div>
         </div>
         <div class="col-md-3 text-end">
@@ -86,27 +98,29 @@
         </div>
 
         <div class="col-md-3 text-end">
-            <a href="{% url 'wishlist_photos' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top" title="معلومات المفضلة">المفضلة</a>
+            <a href="{% url 'wishlist_photos' %}" class="profile-section-link" data-toggle="tooltip"
+                data-placement="top" title="معلومات المفضلة">المفضلة</a>
             <div id="wishlistContent" class="section-content mt-3">
                 {% if homeowner.wishlist_set.all %}
-                    {% if homeowner.wishlist_set.first.previous_work.images.all %}
-                        <div class="card">
-                            <a href="{% url 'wishlist_photos' %}">
-                                <img src="{{ homeowner.wishlist_set.first.previous_work.images.first.image.url }}" class="card-img-top" alt="Saved Photo">
-                            </a>
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a href="{% url 'wishlist_photos' %}"></a>
-                                </h5>
-                            </div>
-                        </div>
-                    {% endif %}
+                {% if homeowner.wishlist_set.first.previous_work.images.all %}
+                <div class="card">
+                    <a href="{% url 'wishlist_photos' %}">
+                        <img src="{{ homeowner.wishlist_set.first.previous_work.images.first.image.url }}"
+                            class="card-img-top" alt="Saved Photo">
+                    </a>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'wishlist_photos' %}"></a>
+                        </h5>
+                    </div>
+                </div>
+                {% endif %}
                 {% else %}
-                    <p> يمكنك اضافة مشاريع للمفضلة من صفحة الإلهام</p>
+                <p> يمكنك اضافة مشاريع للمفضلة من صفحة الإلهام</p>
                 {% endif %}
             </div>
         </div>
-        
+
         <div class="col mt-3 photo-box text-end">
             <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل
                 الصورة</button>

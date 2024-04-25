@@ -72,11 +72,11 @@ class Comment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class Order(models.Model):
-    homeowner = models.ForeignKey(Homeowner, on_delete=models.CASCADE)
+    homeowner = models.ForeignKey(Homeowner, on_delete=models.CASCADE ,related_name='orders')
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
     project_description = models.TextField(default="")
     budget = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
-    status = models.CharField(max_length=20, default='pending')
+    status = models.CharField(max_length=20, default='في الانتظار')
 
     def __str__(self):
         return f"Order #{self.pk} - {self.project_description[:50]}..."

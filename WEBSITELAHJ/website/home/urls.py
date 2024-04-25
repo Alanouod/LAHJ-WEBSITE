@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist,submit_rating,wishlist_photos
+from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist,submit_rating,wishlist_photos,view_orders
 from . import views
+from .views import view_orders
 
 urlpatterns = [
     path('', home, name='home'),
@@ -39,5 +40,5 @@ urlpatterns = [
     path('submit_rating/<int:professional_id>/', views.submit_rating, name='submit_rating'),
     path('wishlist-photos/', wishlist_photos, name='wishlist_photos'),
     path('professional_profile/<int:professional_id>/submit_order/', views.submit_order, name='submit_order'),
-   
+   path('homeowner/orders/', view_orders, name='view_orders'),
     ] 

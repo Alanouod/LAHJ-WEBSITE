@@ -38,5 +38,6 @@ urlpatterns = [
     path('submit_rating/', submit_rating, name='submit_rating'),
     path('submit_rating/<int:professional_id>/', views.submit_rating, name='submit_rating'),
     path('wishlist-photos/', wishlist_photos, name='wishlist_photos'),
+    path('professional_profile/<int:professional_id>/submit_order/', views.submit_order, name='submit_order'),
    
     ] 

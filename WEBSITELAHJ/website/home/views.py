@@ -20,7 +20,7 @@ from .forms import HomeownerEditForm
 from .forms import PhotoUploadForm
 from .forms import ProfessionalEditForm, PhotoUploadForm
 from .forms import ProfessionalEditForm,ProfessionalSignupForm,PhotoUploadForm
-from .models import PreviousWork, Wishlist,ProjectImage
+from .models import PreviousWork, Wishlist,ProjectImage , Order
 from .forms import ProjectPhotoUploadForm
 from .models import ProjectImage
 from django.shortcuts import redirect, get_object_or_404
@@ -514,3 +514,22 @@ def terms_of_use(request):
 def logout_view(request):
     logout(request)
     return render(request,'home.html')
+
+def submit_order(request, professional_id):
+    professional = get_object_or_404(Professional, pk=professional_id)
+
+    if request.method == 'POST':
+        project_description = request.POST.get('project_description')
+        budget = request.POST.get('budget')
+        status = request.POST.get('status')  # If you have a form field for status
+
+        order = Order.objects.create(
+            homeowner=request.user.homeowner,
+            professional=professional,
+            project_description=project_description,
+            budget=budget,
+            status=status, 
+        )
+        return redirect('professional_profile', professional_id=professional_id)
+
+    return render(request, 'professional_profile.html', {'professional': professional})

@@ -1,17 +1,46 @@
 {% extends 'base.html' %}
-{% block title %}جميع الصور المحفوظة{% endblock %}
+{% load static %}
+
+{% block title %} الصور المفضلة{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h1 class="display-4">جميع الصور المحفوظة</h1>
-    <div class="row">
-        {% for photo_url in saved_photos %}
-            <div class="col-md-3 mb-4">
-                <div class="card">
-                    <img src="{{ photo_url }}" class="card-img-top" alt="Saved Photo">
+<style>
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        height: 200px; /* Set a fixed height for the images */
+        object-fit: cover; /* Maintain aspect ratio */
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+</style>
+<div class="container mt-5 text-end">
+    <h1>الصور المفضلة</h1>
+    {% if saved_photos %}
+        <div class="row">
+            {% for photo in saved_photos %}
+                {% if forloop.counter0|divisibleby:3 %}
+                    </div><div class="row">
+                {% endif %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="{{ photo.image.url }}" class="card-img-top" alt="Saved Photo">
+                        <div class="card-body">
+                            <!-- Any additional information or actions related to the photo can be added here -->
+                        </div>
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p> لا توجد صور محفوظة حتى الآن ، يمكنك اضافة الصور من صفحة الإلهام</p>
+    {% endif %}
 </div>
+
 {% endblock %}

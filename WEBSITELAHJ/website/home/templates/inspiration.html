@@ -26,7 +26,7 @@
 
     <div class="row row-cols-1 row-cols-md-3 g-4" id="inspiration-container">
         {% for work in previous_works %}
-        <div class="col mb-4">
+        <div class="col-md-4 mb-4">
             <div class="card">
                 <a href="{% url 'project_details' project_id=work.id %}">
                     {% if work.images.all %}

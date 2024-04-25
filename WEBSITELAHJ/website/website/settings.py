@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-
+import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,8 +91,21 @@ DATABASES = {
         'PASSWORD': 'Seee2324@aa',
         'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
         'PORT': '5432',
-    }
+    },
+    'test': { 
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': 'myTest', 
+        'USER': 'postgres.pfqebpzknbltitkvixes', 
+        'PASSWORD': 'Seee2324@aa', 
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com', 
+        'PORT': '5432', 
+        } 
 }
+# Ensure that the test database configuration is used when running tests
+if 'test' in sys.argv:
+    DATABASES['default'] = DATABASES['test']
+
+# Check if the environment is set to production and configure the database accordingly
 if os.environ.get('ENVIRONMENT') == "PRODUCTION":
     DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 

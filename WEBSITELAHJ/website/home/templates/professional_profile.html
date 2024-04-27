@@ -103,21 +103,19 @@
                             <button class="btn btn-primary"
                                 style="position: absolute; top: 10px; right: 10px; font-size: 10px; background-color: red;"
                                 onclick="closeOrderForm()">X</button>
-                            <form method="POST" action="{% url 'submit_order' professional_id=professional.id %}">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="projectDescription" class="form-control-label" for="input-identifier"
-                                        style="font-size: 25px;">وصف المشروع</label>
-                                    <textarea id="projectDescription" name="project_description"
-                                        class="form-control"></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="budget" class="form-control-label" for="input-identifier" style="
-                                        font-size: 25px">الميزانية</label>
-                                    <input type="text" id="budget" name="budget" class="form-control">
-                                </div>
-                                <button type="submit" class="btn btn-primary">ارسل الطلب</button>
-                            </form>
+                                <form method="POST" action="{% url 'submit_order' professional_id=professional.id %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="projectDescription" class="form-control-label" for="input-identifier" style="font-size: 25px;">وصف المشروع</label>
+                                        <textarea id="projectDescription" name="project_description" class="form-control"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="budget" class="form-control-label" for="input-identifier" style="font-size: 25px">الميزانية</label>
+                                        <input type="text" id="budget" name="budget" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">ارسل الطلب</button>
+                                </form>
+                                
                         </div>
                     </div>
                     {% endif %}
@@ -210,9 +208,40 @@
 <div id="messagesContent" class="section-content mt-3">
     معلومات الرسائل
 </div>
+
 <div id="ordersContent" class="section-content mt-3">
-    معلومات الطلبات
+    <h3 class="profile-section-title">طلبات الخدمة</h3>
+    {% if orders %}
+        <ul>
+            {% for order in orders %}
+                <li>
+                    #{{ order.id }} - الحالة: {{ order.status }} - تاريخ الطلب: {{ order.created_at|date:"Y-m-d H:i:s" }}
+                    {% if order.status == 'في الانتظار' %}
+                        <form method="post" action="{% url 'accept_order' order.id %}" style="display: inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success">قبول</button>
+                        </form>
+                        <form method="post" action="{% url 'decline_order' order.id %}" style="display: inline-block;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">رفض</button>
+                        </form>
+                    {% endif %}
+                    <!-- Add a button to view order details -->
+                    <button class="btn btn-primary view-order-details-btn" data-order-id="{{ order.id }}">عرض التفاصيل</button>
+                    <!-- Add a container for order details, initially hidden -->
+                    <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
+                        <p>وصف الطلب: {{ order.project_description }}</p>
+                        <p>الميزانية: {{ order.budget }}</p>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>لا توجد طلبات حتى الآن.</p>
+    {% endif %}
 </div>
+
+
 
 <div id="bioContent" class="section-content mt-3">
     {% if professional.bio %}
@@ -361,6 +390,23 @@
         orderFormContainer.style.display = "none";
         requestServiceBtn.style.visibility = "visible";
     }
+    
+
+        // Add click event listener to all view order details buttons
+        var viewOrderDetailsButtons = document.querySelectorAll('.view-order-details-btn');
+        viewOrderDetailsButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var orderId = this.getAttribute('data-order-id');
+                var orderDetails = document.getElementById('order-details-' + orderId);
+                // Toggle the display of order details
+                if (orderDetails.style.display === 'none') {
+                    orderDetails.style.display = 'block';
+                } else {
+                    orderDetails.style.display = 'none';
+                }
+            });
+        });
+    
 </script>
 
 

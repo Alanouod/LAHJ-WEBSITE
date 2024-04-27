@@ -6,6 +6,8 @@ from .models import ProjectImage
 from .models import PreviousWork
 from .models import Comment
 from .models import Rating
+from .models import Order
+
 
 
 class RatingForm(forms.Form):
@@ -77,3 +79,7 @@ class ProjectDetailForm(forms.ModelForm):
         model = PreviousWork
         fields = ['project_name', 'products_used', 'location', 'description']
 
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['project_description', 'budget']

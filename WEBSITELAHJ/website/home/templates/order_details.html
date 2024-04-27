@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} تفاصيل الطلب{% endblock %}
+
+{% block content %}
+<h1>Order Details</h1>
+<p>Order ID: {{ order.id }}</p>
+<p>Description: {{ order.description }}</p>
+<p>Budget: {{ order.budget }}</p>
+{% endblock %}

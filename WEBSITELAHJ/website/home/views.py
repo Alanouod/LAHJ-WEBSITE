@@ -38,7 +38,7 @@ from .forms import CommentForm, RatingForm
 from .models import Professional, Comment, Rating
 from django.db.models import Count
 from decimal import Decimal
-
+from .forms import OrderForm
 
 def home(request):
     return render(request, 'home.html')
@@ -253,7 +253,6 @@ def save_photo_changes(request):
             messages.error(request, 'Error saving changes to the photo. Please check the form.')
 
     return redirect('edit_photo')  # Redirect back to the edit_photo page after saving changes
-
 def professional_profile(request, professional_id):
     try:
         professional = Professional.objects.get(id=professional_id)
@@ -267,6 +266,10 @@ def professional_profile(request, professional_id):
             avg_rating = round(avg_rating, 2)
         # Calculate the number of ratings
         num_ratings = ratings.count()
+
+        # Retrieve orders associated with the professional
+        orders = Order.objects.filter(professional=professional)
+
     except Professional.DoesNotExist:
         return render(request, 'error.html', {'message': 'Professional profile not found'})
 
@@ -315,8 +318,8 @@ def professional_profile(request, professional_id):
         'comments': comments,
         'avg_rating': avg_rating,
         'num_ratings': num_ratings,
+        'orders': orders,  
     })
-
 
 @login_required
 def add_comment(request, professional_id):
@@ -515,30 +518,50 @@ def logout_view(request):
     logout(request)
     return render(request,'home.html')
 
+@login_required
 def submit_order(request, professional_id):
     professional = get_object_or_404(Professional, pk=professional_id)
-
+    
     if request.method == 'POST':
-        project_description = request.POST.get('project_description')
-        budget = request.POST.get('budget')
-        status = request.POST.get('status')  # If you have a form field for status
-
-        order = Order.objects.create(
-            homeowner=request.user.homeowner,
-            professional=professional,
-            project_description=project_description,
-            budget=budget,
-            status=status, 
-        )
-        return redirect('homeowner_profile')  # Redirect to the homeowner's profile page
-
-    return render(request, 'professional_profile.html', {'professional': professional})
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            homeowner = request.user.homeowner
+            order = form.save(commit=False)
+            order.homeowner = homeowner
+            order.professional = professional 
+            order.status = 'في الانتظار'  # Set the default status here or extract it from the form if available
+            order.save()
+            return redirect('homeowner_profile')  
+    else:
+        form = OrderForm()
+    
+    return render(request, 'order_form.html', {'professional': professional, 'form': form})
 
 @login_required
 def view_orders(request):
-    if request.user.is_authenticated:
-        homeowner = request.user.homeowner
-        orders = homeowner.orders.all()
-        return render(request, 'homeowner_orders.html', {'homeowner': homeowner, 'orders': orders})
-    else:
-        return render(request, 'homeowner_orders.html')
+    homeowner = request.user.homeowner
+    orders = homeowner.orders.all()
+    return render(request, 'homeowner_profile.html', {'homeowner': homeowner, 'orders': orders})
+
+def accept_order(request, order_id):
+    order = Order.objects.get(id=order_id)
+    order.status = 'مقبول'
+    order.save()
+    # Assuming you have a professional associated with the order
+    professional_id = order.professional.id
+    return redirect('professional_profile', professional_id=professional_id)  
+
+def decline_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    order.status = 'مرفوض'
+    order.save()
+    # Assuming you have a professional associated with the order
+    professional_id = order.professional.id
+    return redirect('professional_profile', professional_id=professional_id)
+
+
+def order_details(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    professional_id = order.professional.id
+    order = get_object_or_404(Order, pk=order_id)
+    return render(request, 'order_details.html', {'order': order})

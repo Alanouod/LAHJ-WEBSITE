@@ -86,8 +86,11 @@ class Order(models.Model):
 class Quote(models.Model):
     professional = models.ForeignKey(Professional, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, default=None)
-    cost = models.DecimalField(max_digits=10, decimal_places=2)
+    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     terms = models.TextField()
+    status = models.CharField(max_length=100, default='في الانتظار') 
+    created_at = models.DateTimeField(auto_now_add=True) 
+
 
     def __str__(self):
         return f"Quote #{self.pk} - {self.professional.user_profile.name}"

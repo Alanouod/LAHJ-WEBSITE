@@ -65,19 +65,23 @@
     </div>
     <hr>
 
-    <!-- Other profile content -->
-
     <div class="row mt-3 text-end">
         <div class="col-md-3 text-end">
-            <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top"
-                title="معلومات الطلبات">الطلبات</a>
-            <!-- Add the order ID to the order display -->
+            <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
             <div id="ordersContent" class="section-content mt-3">
                 {% if homeowner.orders.exists %}
                     <div class="card order-card">
                         <div class="card-body">
-                            {% for order in homeowner.orders.all %}
-                                <p class="order-info">طلب #{{ order.id }} - الحالة: {{ order.status }}</p>
+                            {% for order in orders %}
+                                <p class="order-info">طلب #{{ order.id }} - تاريخ: {{ order.created_at|date:"Y-m-d H:i:s" }} - الحالة: {{ order.status }}</p>
+                                <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
+                                    <p>Order Description: {{ order.project_description }}</p>
+                                    <p>Budget: {{ order.budget }}</p>
+                                </div>
+                                {% if order.status == 'مقبول' %}
+                                    <button class="btn btn-primary view-quote-details" data-order-id="{{ order.id }}">تفاصيل العرض</button>
+                                    <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;"></div>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -86,6 +90,8 @@
                 {% endif %}
             </div>
         </div>
+    
+
         <div class="col-md-3 text-end">
             <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip" data-placement="top"
                 title="معلومات الرسائل">الرسائل</a>
@@ -173,51 +179,75 @@
         </div>
     </div>
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <script>
     $(document).ready(function() {
-        // Function to toggle section content visibility
         function toggleSection(sectionId) {
-            // Hide all section contents
             $('.section-content').hide();
-            // Display the clicked section content
             $('#' + sectionId).show();
         }
-
-        // Add click event listener to all section links
+    
         $('.profile-section-link').click(function(e) {
             e.preventDefault();
             var sectionId = $(this).data('section');
             toggleSection(sectionId);
         });
-    });
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
-
-        // Handle profile section link clicks
-        $('.profile-section-link').click(function (e) {
-            e.preventDefault();
-            var section = $(this).data('section');
-
-            // Fetch and load content dynamically based on the selected section
-            loadSectionContent(section);
+    
+        $('.view-quote-details').on('click', function() {
+            var detailsDivId = 'quote-details-' + $(this).data('order-id');
+            var detailsDiv = $('#' + detailsDivId);
+            if (detailsDiv.is(':hidden')) {
+                $.ajax({
+                    url: '/get_quote_details/' + $(this).data('order-id') + '/',
+                    method: 'GET',
+                    success: function(data) {
+                        var content = '';
+                        console.log(data);  // Debugging: Log the data
+                        data.forEach(function(quote) {
+                            content += '<div><p>رقم العرض: ' + quote.id + '</p><p>الشروط: ' + quote.terms + '</p><p>التكلفة: ' + quote.cost + '</p><p>الحالة: ' + (quote.status || 'No Status') + '</p>';
+                            if (quote.status === 'في الانتظار') {
+                                content += '<button class="btn btn-success accept-quote" data-quote-id="' + quote.id + '">قبول</button>';
+                                content += '<button class="btn btn-danger decline-quote" data-quote-id="' + quote.id + '">رفض</button>';
+                            }
+                            content += '</div>';
+                        });
+                        detailsDiv.html(content);
+                        detailsDiv.show();
+                    },
+                    error: function(xhr) {
+                        console.log('Error fetching quote details: ' + xhr.statusText);
+                    }
+                });
+            } else {
+                detailsDiv.hide();
+            }
         });
-
-        // Function to fetch and load content for the selected section
-        function loadSectionContent(section) {
-            // You can use AJAX to fetch user-specific content for each section
-            // Replace the following with your actual logic to fetch and display content
-
-            var contentDiv = $('#' + section + 'Content');
-            contentDiv.html('<h3>Loading ' + section + ' Content...</h3>');
-
-            // Simulate an AJAX request (replace this with your actual AJAX logic)
-            setTimeout(function () {
-                contentDiv.html('<h3>' + section.charAt(0).toUpperCase() + section.slice(1) + ' Section Content</h3>');
-            }, 1000);
-        }
+    
+        $(document).on('click', '.accept-quote, .decline-quote', function() {
+            var quoteId = $(this).data('quote-id');
+            var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
+            $.ajax({
+                url: '/' + action + '/',
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                    quote_id: quoteId
+                },
+                success: function(response) {
+                    alert(response.message);
+                    $(this).closest('div').find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
+                    $(this).siblings('button').remove();
+                    $(this).remove();
+                },
+                error: function(xhr) {
+                    alert('Error processing request: ' + xhr.responseText);
+                }
+            });
+        });
     });
-</script>
+    </script>
+    
+    
 
 {% endblock %}

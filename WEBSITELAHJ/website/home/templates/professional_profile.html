@@ -210,7 +210,7 @@
 </div>
 
 <div id="ordersContent" class="section-content mt-3">
-    <h3 class="profile-section-title">طلبات الخدمة</h3>
+    <h6 class="profile-section-title">الطلبات</h6>
     {% if orders %}
         <ul>
             {% for order in orders %}
@@ -226,9 +226,28 @@
                             <button type="submit" class="btn btn-danger">رفض</button>
                         </form>
                     {% endif %}
-                    <!-- Add a button to view order details -->
                     <button class="btn btn-primary view-order-details-btn" data-order-id="{{ order.id }}">عرض التفاصيل</button>
-                    <!-- Add a container for order details, initially hidden -->
+                    {% if order.status == 'مقبول' %}
+                    <button class="btn btn-primary submit-quote-btn" data-order-id="{{ order.id }}">تقديم عرض</button>
+                    <button class="btn btn-info view-quote-details-btn" data-order-id="{{ order.id }}">تفاصيل العرض</button>
+                    <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;">
+                        <!-- Details will be loaded here via JavaScript or server-rendered content -->
+                    </div>
+                    <div class="quote-form-container" id="quote-form-container-{{ order.id }}" style="display: none;">
+                        <form id="quoteForm-{{ order.id }}" method="POST" action="{% url 'submit_quote' order_id=order.id %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="terms" style="font-size: 15px">الشروط</label>
+                                <textarea id="terms" name="terms" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="cost" class="form-control-label" style="font-size: 15px">التكلفة</label>
+                                <input type="text" id="cost" name="cost" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary">تقديم العرض</button>
+                        </form>
+                    </div>
+                    {% endif %}
                     <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
                         <p>وصف الطلب: {{ order.project_description }}</p>
                         <p>الميزانية: {{ order.budget }}</p>
@@ -240,6 +259,7 @@
         <p>لا توجد طلبات حتى الآن.</p>
     {% endif %}
 </div>
+
 
 
 
@@ -406,7 +426,134 @@
                 }
             });
         });
-    
+                    // Add click event listener to all submit quote buttons
+            var submitQuoteButtons = document.querySelectorAll('.submit-quote-btn');
+            submitQuoteButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    var orderId = this.getAttribute('data-order-id');
+                    var quoteFormContainer = document.getElementById('quote-form-container-' + orderId);
+                    // Toggle the display of quote form container
+                    if (quoteFormContainer.style.display === 'none') {
+                        quoteFormContainer.style.display = 'block';
+                    } else {
+                        quoteFormContainer.style.display = 'none';
+                    }
+                });
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                // Toggle quote form
+                document.querySelectorAll('.submit-quote-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.getAttribute('data-order-id');
+                        const formContainer = document.getElementById('quote-form-container-' + orderId);
+                        formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+                    });
+                });
+            
+                // Toggle quote details
+                document.querySelectorAll('.view-quote-details-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.getAttribute('data-order-id');
+                        const detailsContainer = document.getElementById('quote-details-' + orderId);
+                        if (detailsContainer.style.display === 'none' || !detailsContainer.style.display) {
+                            // Load quote details dynamically if not already loaded
+                            // This could be an AJAX call to the server to fetch quote details
+                            fetch(`/api/quotes/${orderId}`).then(response => response.json()).then(data => {
+                                detailsContainer.innerHTML = `Terms: ${data.terms}<br>Cost: ${data.cost}<br>Status: ${data.status}`;
+                                detailsContainer.style.display = 'block';
+                            }).catch(error => console.error('Error loading quote details:', error));
+                        } else {
+                            detailsContainer.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                // Toggle quote form display
+                document.querySelectorAll('.submit-quote-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.getAttribute('data-order-id');
+                        const formContainer = document.getElementById('quote-form-container-' + orderId);
+                        formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+                    });
+                });
+            
+                // Toggle quote details display
+                document.querySelectorAll('.view-quote-details-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const orderId = this.getAttribute('data-order-id');
+                        const detailsContainer = document.getElementById('quote-details-' + orderId);
+                        if (detailsContainer.style.display === 'none' || !detailsContainer.style.display) {
+                            // Ideally, fetch details from the server if not already loaded
+                            fetch(`/api/quotes/${orderId}`).then(response => response.json()).then(data => {
+                                detailsContainer.innerHTML = `Terms: ${data.terms}<br>Cost: ${data.cost}<br>Status: ${data.status}`;
+                                detailsContainer.style.display = 'block';
+                            }).catch(error => console.error('Error loading quote details:', error));
+                        } else {
+                            detailsContainer.style.display = 'none';
+                        }
+                    });
+                });
+            
+               
+            
+                
+            });
+            $('.view-quote-details-btn').click(function() {
+                var orderId = $(this).data('order-id');
+                var detailsContainer = $('#quote-details-' + orderId);
+        
+                if (detailsContainer.is(':empty') || detailsContainer.is(':hidden')) {
+                    fetch(`/get_quote_details/${orderId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var content = '';
+                        data.forEach(quote => {
+                            content += `<div>
+                                <p>رقم العرض: ${quote.id}</p>
+                                <p>الشروط: ${quote.terms}</p>
+                                <p>التكلفة: ${quote.cost}</p>
+                                <p>الحالة: ${quote.status || 'No status available'}</p>
+                            </div>`;
+                        });
+                        detailsContainer.html(content);
+                        detailsContainer.show();
+                    })
+                    .catch(error => {
+                        console.error('Error loading quote details:', error);
+                        detailsContainer.html('<p>Error loading details.</p>');
+                        detailsContainer.show();
+                    });
+                } else {
+                    detailsContainer.toggle();
+                }
+            });
+        
+            // Handle the accept and decline quote actions
+            $(document).on('click', '.accept-quote, .decline-quote', function() {
+                var quoteId = $(this).data('quote-id');
+                var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
+                $.ajax({
+                    url: '/' + action + '/',
+                    method: 'POST',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                        quote_id: quoteId
+                    },
+                    success: function(response) {
+                        alert(response.message);
+                        // Remove buttons and update status after action is successful
+                        var parentDiv = $(this).closest('div');
+                        parentDiv.find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
+                        parentDiv.find('.accept-quote, .decline-quote').remove();
+                    },
+                    error: function(xhr) {
+                        alert('Error processing request: ' + xhr.responseText);
+                    }
+                });
+            });
+        
+            
 </script>
 
 

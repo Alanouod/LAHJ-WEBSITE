@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseForbidden
 from django.contrib.auth.models import User
 from .models import Homeowner, Professional, UserProfile,PreviousWork
 from django.contrib.auth.forms import UserCreationForm
@@ -39,6 +39,8 @@ from .models import Professional, Comment, Rating
 from django.db.models import Count
 from decimal import Decimal
 from .forms import OrderForm
+from .models import Quote
+from django.views.decorators.http import require_http_methods
 
 def home(request):
     return render(request, 'home.html')
@@ -175,8 +177,18 @@ def homeowner_profile(request):
         # For displaying the profile and handling form submissions
         profile_form = HomeownerProfileForm(instance=homeowner)
         photo_form = PhotoUploadForm(instance=homeowner)
-
-    return render(request, 'homeowner_profile.html', {'homeowner': homeowner, 'profile_form': profile_form, 'photo_form': photo_form, 'wishlist_items': wishlist_items})
+    # Fetch orders and quotes associated with the homeowner
+    orders = homeowner.orders.all()
+    quotes = Quote.objects.filter(order__homeowner=homeowner)
+    
+    return render(request, 'homeowner_profile.html', {
+        'homeowner': homeowner,
+        'profile_form': profile_form,
+        'photo_form': photo_form,
+        'wishlist_items': wishlist_items,
+        'orders': orders,
+        'quotes': quotes, 
+})
 
 @login_required
 def edit_profile(request):
@@ -252,7 +264,8 @@ def save_photo_changes(request):
         else:
             messages.error(request, 'Error saving changes to the photo. Please check the form.')
 
-    return redirect('edit_photo')  # Redirect back to the edit_photo page after saving changes
+    return redirect('edit_photo') 
+
 def professional_profile(request, professional_id):
     try:
         professional = Professional.objects.get(id=professional_id)
@@ -278,6 +291,9 @@ def professional_profile(request, professional_id):
         logged_in_professional = request.user.professional
         if logged_in_professional == professional:
             is_owner = True
+
+    form = CommentForm()
+    rating_form = RatingForm()
 
     if request.method == 'POST':
         if 'comment' in request.POST:
@@ -306,9 +322,6 @@ def professional_profile(request, professional_id):
                 avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
                 # Redirect to the professional profile page after adding the rating
                 return redirect('professional_profile', professional_id=professional_id)
-    else:
-        form = CommentForm()
-        rating_form = RatingForm()
 
     return render(request, 'professional_profile.html', {
         'professional': professional,
@@ -535,7 +548,8 @@ def submit_order(request, professional_id):
     else:
         form = OrderForm()
     
-    return render(request, 'order_form.html', {'professional': professional, 'form': form})
+    return render(request, 'professional_profile.html', {'professional': professional, 'form': form})
+
 
 @login_required
 def view_orders(request):
@@ -547,7 +561,6 @@ def accept_order(request, order_id):
     order = Order.objects.get(id=order_id)
     order.status = 'مقبول'
     order.save()
-    # Assuming you have a professional associated with the order
     professional_id = order.professional.id
     return redirect('professional_profile', professional_id=professional_id)  
 
@@ -565,3 +578,48 @@ def order_details(request, order_id):
     professional_id = order.professional.id
     order = get_object_or_404(Order, pk=order_id)
     return render(request, 'order_details.html', {'order': order})
+
+def submit_quote(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    # Check if a quote already exists for this order
+    if Quote.objects.filter(order=order).exists():
+        messages.error(request, "A quote has already been submitted for this order.")
+        return redirect('order_details', order_id=order_id)
+
+    if request.method == 'POST':
+        terms = request.POST.get('terms')
+        cost = request.POST.get('cost')
+        # Create the quote
+        Quote.objects.create(
+            professional=request.user.professional,
+            order=order,
+            terms=terms,
+            cost=cost,
+            status='في الانتظار'
+        )
+        return redirect('order_details', order_id=order_id)
+
+def get_quote_details(request, order_id):
+    quotes = Quote.objects.filter(order__id=order_id)
+    if quotes.exists():
+        data = [{'id': quote.id, 'terms': quote.terms, 'cost': quote.cost, 'status': quote.status} for quote in quotes]
+        return JsonResponse(data, safe=False)
+    else:
+        return JsonResponse({'error': 'No quotes found for this order.'}, status=404)
+
+
+@require_http_methods(["POST"])
+def accept_quote(request):
+    quote_id = request.POST.get('quote_id')
+    quote = get_object_or_404(Quote, pk=quote_id)
+    quote.status = 'مقبول'
+    quote.save()
+    return JsonResponse({'message': 'Quote accepted successfully'})
+
+@require_http_methods(["POST"])
+def decline_quote(request):
+    quote_id = request.POST.get('quote_id')
+    quote = get_object_or_404(Quote, pk=quote_id)
+    quote.status = 'مرفوض'
+    quote.save()
+    return JsonResponse({'message': 'Quote declined successfully'})

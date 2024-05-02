@@ -7,6 +7,7 @@ from .models import PreviousWork
 from .models import Comment
 from .models import Rating
 from .models import Order
+from .models import Quote
 
 
 
@@ -83,3 +84,8 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['project_description', 'budget']
+
+class QuoteForm(forms.ModelForm):
+    class Meta:
+        model = Quote
+        fields = ['terms', 'cost']

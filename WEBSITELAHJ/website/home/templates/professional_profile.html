@@ -255,20 +255,21 @@
         </div>
     </div>
 
-<!-- rating section -->
+<!-- Rating Section -->
 <div id="ratingModal" class="rating-modal">
     <div class="rating-modal-content">
         <span class="close-modal" onclick="toggleModal('ratingModal')">&times;</span>
-        <form method="post" action="{% url 'submit_rating' professional.id %}">
+        <form method="post" action="{% url 'submit_rating' professional.id %}" id="ratingForm">
             {% csrf_token %}
-            <label for="rating">قيم:</label>
+            <label for="rating">قييم:</label>
             <input type="number" name="rating" id="rating" min="1" max="5" required>
             <label for="comment">تعليق:</label>
             <textarea name="comment" id="comment" rows="4" required></textarea>
-            <button type="submit" class="btn btn-primary">إرسال</button>
+            <button type="submit" class="btn btn-primary">أرسل</button>
         </form>
     </div>
 </div>
+
 
 <hr>
 <!--  messages -->
@@ -328,50 +329,52 @@
 <div id="ordersContent" class="section-content mt-3">
     <h6 class="profile-section-title">الطلبات</h6>
     {% if orders %}
-        <ul>
-            {% for order in orders %}
-                <li>
-                    #{{ order.id }} - الحالة: {{ order.status }} - تاريخ الطلب: {{ order.created_at|date:"Y-m-d H:i:s" }}
-                    {% if order.status == 'في الانتظار' %}
-                        <form method="post" action="{% url 'accept_order' order.id %}" style="display: inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">قبول</button>
-                        </form>
-                        <form method="post" action="{% url 'decline_order' order.id %}" style="display: inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">رفض</button>
-                        </form>
-                    {% endif %}
-                    <button class="btn btn-primary view-order-details-btn" data-order-id="{{ order.id }}">عرض التفاصيل</button>
-                    {% if order.status == 'مقبول' %}
-                    <button class="btn btn-primary submit-quote-btn" data-order-id="{{ order.id }}">تقديم عرض</button>
-                    <button class="btn btn-info view-quote-details-btn" data-order-id="{{ order.id }}">تفاصيل العرض</button>
-                    <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;">
+    <ul>
+        {% for order in orders %}
+        <li>
+            #{{ order.id }} - الحالة: {{ order.status }} - تاريخ الطلب: {{ order.created_at|date:"Y-m-d H:i:s" }}
+            {% if order.status == 'في الانتظار' %}
+            <form method="post" action="{% url 'accept_order' order.id %}" style="display: inline-block;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">قبول</button>
+            </form>
+            <form method="post" action="{% url 'decline_order' order.id %}" style="display: inline-block;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">رفض</button>
+            </form>
+            {% endif %}
+            <button class="btn btn-primary view-order-details-btn" data-order-id="{{ order.id }}">عرض
+                التفاصيل</button>
+            {% if order.status == 'مقبول' %}
+            <button class="btn btn-primary submit-quote-btn" data-order-id="{{ order.id }}">تقديم عرض</button>
+            <button class="btn btn-info view-quote-details-btn" data-order-id="{{ order.id }}">تفاصيل العرض</button>
+            <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;">
+                <!-- Details will be loaded here via JavaScript or server-rendered content -->
+            </div>
+            <div class="quote-form-container" id="quote-form-container-{{ order.id }}" style="display: none;">
+                <form id="quoteForm-{{ order.id }}" method="POST" action="{% url 'submit_quote' order_id=order.id %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="terms" style="font-size: 15px">الشروط</label>
+                        <textarea id="terms" name="terms" class="form-control"></textarea>
                     </div>
-                    <div class="quote-form-container" id="quote-form-container-{{ order.id }}" style="display: none;">
-                        <form id="quoteForm-{{ order.id }}" method="POST" action="{% url 'submit_quote' order_id=order.id %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="terms" style="font-size: 15px">الشروط</label>
-                                <textarea id="terms" name="terms" class="form-control"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="cost" class="form-control-label" style="font-size: 15px">التكلفة</label>
-                                <input type="text" id="cost" name="cost" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary">تقديم العرض</button>
-                        </form>
+                    <div class="form-group">
+                        <label for="cost" class="form-control-label" style="font-size: 15px">التكلفة</label>
+                        <input type="text" id="cost" name="cost" class="form-control">
                     </div>
-                    {% endif %}
-                    <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
-                        <p>وصف الطلب: {{ order.project_description }}</p>
-                        <p>الميزانية: {{ order.budget }}</p>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
+                    <button type="submit" class="btn btn-primary">تقديم العرض</button>
+                </form>
+            </div>
+            {% endif %}
+            <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
+                <p>وصف الطلب: {{ order.project_description }}</p>
+                <p>الميزانية: {{ order.budget }}</p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     {% else %}
-        <p>لا توجد طلبات حتى الآن.</p>
+    <p>لا توجد طلبات حتى الآن.</p>
     {% endif %}
 </div>
 
@@ -454,10 +457,12 @@
         </div>
     </div>
 </div>
-<script>
-    var rateButton = document.getElementById('rateButton');
-    var ratingFormSection = document.getElementById('ratingFormSection');
 
+    <script>
+        
+        var rateButton = document.getElementById('rateButton');
+        var ratingFormSection = document.getElementById('ratingFormSection');
+    
         if (rateButton && ratingFormSection) {
             rateButton.addEventListener('click', function () {
                 // Open a new window with the rating form
@@ -466,7 +471,7 @@
                 ratingWindow.document.write('<html><head><title>قييم</title></head><body>' + ratingFormSection.innerHTML + '</body></html>');
                 // Close the original rating form section
                 ratingFormSection.style.display = 'none';
-
+    
                 // Add event listener to the form submit button in the new window
                 var submitButton = ratingWindow.document.getElementById('submitRatingButton');
                 if (submitButton) {
@@ -477,7 +482,7 @@
                 }
             });
         }
-
+    
         // Function to toggle section content
         function toggleSection(sectionId) {
             // Hide all section contents
@@ -485,12 +490,12 @@
             allSectionContents.forEach(function (content) {
                 content.classList.remove('active');
             });
-
+    
             // Display the clicked section content
             var sectionContent = document.getElementById(sectionId);
             sectionContent.classList.add('active');
         }
-
+    
         // Add click event listener to all section links
         var sectionLinks = document.querySelectorAll('.profile-section-link');
         sectionLinks.forEach(function (link) {
@@ -502,45 +507,46 @@
         function toggleOrderForm() {
             var orderFormContainer = document.getElementById("orderFormContainer");
             var requestServiceBtn = document.getElementById("requestServiceBtn");
-    // Add click event listener to all section links
-    var sectionLinks = document.querySelectorAll('.profile-section-link');
-    sectionLinks.forEach(function (link) {
-        link.addEventListener('click', function (e) {
-            var sectionId = this.getAttribute('data-section');
-            toggleSection(sectionId);
-        });
-    });
     
-    function toggleOrderForm() {
-        var orderFormContainer = document.getElementById("orderFormContainer");
-        var requestServiceBtn = document.getElementById("requestServiceBtn");
-
-        if (orderFormContainer.style.display === "" || orderFormContainer.style.display === "none") {
-            orderFormContainer.style.display = "block";
-            requestServiceBtn.style.visibility = "hidden";
-        } else {
+            if (orderFormContainer.style.display === "" || orderFormContainer.style.display === "none") {
+                orderFormContainer.style.display = "block";
+                requestServiceBtn.style.visibility = "hidden";
+            } else {
+                orderFormContainer.style.display = "none";
+                requestServiceBtn.style.visibility = "visible";
+            }
+        }
+    
+        function toggleMessageForm() {
+            var messageFormContainer = document.getElementById("messageFormContainer");
+            var messageBtn = document.getElementById("messageBtn");
+    
+            if (messageFormContainer.style.display === "" || messageFormContainer.style.display === "none") {
+                messageFormContainer.style.display = "block";
+                messageBtn.style.visibility = "hidden";
+            } else {
+                messageFormContainer.style.display = "none";
+                messageBtn.style.visibility = "visible";
+            }
+        }
+    
+        function closeOrderForm() {
+            var orderFormContainer = document.getElementById("orderFormContainer");
+            var requestServiceBtn = document.getElementById("requestServiceBtn");
+    
             orderFormContainer.style.display = "none";
             requestServiceBtn.style.visibility = "visible";
         }
-    }
-
-    function closeOrderForm() {
-        var orderFormContainer = document.getElementById("orderFormContainer");
-        var requestServiceBtn = document.getElementById("requestServiceBtn");
-
-            orderFormContainer.style.display = "none";
-            requestServiceBtn.style.visibility = "visible";
-        }
-
+    
         function closeMessageForm() {
             var messageFormContainer = document.getElementById("messageFormContainer");
             var messageBtn = document.getElementById("messageBtn");
-
+    
             messageFormContainer.style.display = "none";
             messageBtn.style.visibility = "visible";
         }
-
-
+    
+    
         // Add click event listener to all view order details buttons
         var viewOrderDetailsButtons = document.querySelectorAll('.view-order-details-btn');
         viewOrderDetailsButtons.forEach(function (button) {
@@ -578,7 +584,7 @@
                     formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
                 });
             });
-
+    
             // Toggle quote details
             document.querySelectorAll('.view-quote-details-btn').forEach(button => {
                 button.addEventListener('click', function () {
@@ -606,7 +612,7 @@
                     formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
                 });
             });
-
+    
             // Toggle quote details display
             document.querySelectorAll('.view-quote-details-btn').forEach(button => {
                 button.addEventListener('click', function () {
@@ -623,15 +629,15 @@
                     }
                 });
             });
-
-
-
-
+    
+    
+    
+    
         });
         $('.view-quote-details-btn').click(function () {
             var orderId = $(this).data('order-id');
             var detailsContainer = $('#quote-details-' + orderId);
-
+    
             if (detailsContainer.is(':empty') || detailsContainer.is(':hidden')) {
                 fetch(`/get_quote_details/${orderId}`)
                     .then(response => response.json())
@@ -639,11 +645,11 @@
                         var content = '';
                         data.forEach(quote => {
                             content += `<div>
-                                <p>رقم العرض: ${quote.id}</p>
-                                <p>الشروط: ${quote.terms}</p>
-                                <p>التكلفة: ${quote.cost}</p>
-                                <p>الحالة: ${quote.status || 'No status available'}</p>
-                            </div>`;
+                                    <p>رقم العرض: ${quote.id}</p>
+                                    <p>الشروط: ${quote.terms}</p>
+                                    <p>التكلفة: ${quote.cost}</p>
+                                    <p>الحالة: ${quote.status || 'No status available'}</p>
+                                </div>`;
                         });
                         detailsContainer.html(content);
                         detailsContainer.show();
@@ -653,51 +659,54 @@
                         detailsContainer.html('<p>Error loading details.</p>');
                         detailsContainer.show();
                     });
-                } else {
-                    detailsContainer.toggle();
+            } else {
+                detailsContainer.toggle();
+            }
+        });
+    
+        // Handle the accept and decline quote actions
+        $(document).on('click', '.accept-quote, .decline-quote', function () {
+            var quoteId = $(this).data('quote-id');
+            var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
+            $.ajax({
+                url: '/' + action + '/',
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                    quote_id: quoteId
+                },
+                success: function (response) {
+                    alert(response.message);
+                    // Remove buttons and update status after action is successful
+                    var parentDiv = $(this).closest('div');
+                    parentDiv.find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
+                    parentDiv.find('.accept-quote, .decline-quote').remove();
+                },
+                error: function (xhr) {
+                    alert('Error processing request: ' + xhr.responseText);
                 }
             });
-        
-            // Handle the accept and decline quote actions
-            $(document).on('click', '.accept-quote, .decline-quote', function() {
-                var quoteId = $(this).data('quote-id');
-                var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
-                $.ajax({
-                    url: '/' + action + '/',
-                    method: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                        quote_id: quoteId
-                    },
-                    success: function(response) {
-                        alert(response.message);
-                        // Remove buttons and update status after action is successful
-                        var parentDiv = $(this).closest('div');
-                        parentDiv.find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
-                        parentDiv.find('.accept-quote, .decline-quote').remove();
-                    },
-                    error: function(xhr) {
-                        alert('Error processing request: ' + xhr.responseText);
-                    }
-                });
-            });
-        // Toggle modal visibility
-    function toggleModal(modalId) {
-        var modal = document.getElementById(modalId);
-        if (modal.style.display === 'block') {
-            modal.style.display = 'none';
-        } else {
-            modal.style.display = 'block';
-        }
-    }
-
-    // Open the rating modal on button click
-    var rateButton = document.getElementById('rateButton');
-    rateButton.addEventListener('click', function () {
-        toggleModal('ratingModal');    });
-
+        });
+            // Function to toggle the visibility of the modal
+            function toggleModal(modalId) {
+                var modal = document.getElementById(modalId);
+                modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+            }
             
-</script>
-
+            // Event listener for the 'Rate' button
+            document.getElementById('rateButton').addEventListener('click', function() {
+                toggleModal('ratingModal');
+            });
+            
+            // Event listener for clicking outside the modal to close it
+            window.onclick = function(event) {
+                var modal = document.getElementById('ratingModal');
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            
+    
+    </script>
 
     {% endblock %}

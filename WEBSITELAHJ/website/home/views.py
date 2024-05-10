@@ -42,6 +42,10 @@ from .forms import OrderForm , MessageForm
 from .models import Quote , Message
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+from django.contrib import messages
+from django.http import HttpResponse
+from django.views.decorators.http import require_http_methods
+from django.db.models import Q
 
 def home(request):
     return render(request, 'home.html')
@@ -377,7 +381,7 @@ def submit_rating(request, professional_id):
         avg_rating = Rating.objects.filter(professional=professional).aggregate(Avg('rating'))['rating__avg']
         professional.avg_rating = avg_rating
         professional.save()
-        messages.success(request, "Rating submitted successfully.")
+        messages.success(request, "شكراً تم التقييم بنجاح")
         return redirect('professional_profile', professional_id=professional_id)
     else:
         return redirect('home')
@@ -589,7 +593,7 @@ def submit_quote(request, order_id):
     existing_quote = Quote.objects.filter(order=order, professional=professional).exists()
 
     if existing_quote:
-        messages.error(request, "لقد قمت بالفعل بتقديم عرض لهذا الطلب.")
+        messages.error(request, "لقد قمت بالفعل بتقديم عرض لهذا الطلب")
     else:
         if request.method == 'POST':
             terms = request.POST.get('terms')
@@ -630,9 +634,8 @@ def decline_quote(request):
     quote = get_object_or_404(Quote, pk=quote_id)
     quote.status = 'مرفوض'
     quote.save()
-    return JsonResponse({'message': 'Quote declined successfully'})
-from django.contrib import messages
-from django.http import HttpResponse
+    return HttpResponse(status=204)
+
 
 
 

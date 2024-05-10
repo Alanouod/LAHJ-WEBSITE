@@ -95,11 +95,12 @@ class Quote(models.Model):
     def __str__(self):
         return f"Quote #{self.pk} - {self.professional.user_profile.name}"
 
+
 class Message(models.Model):
-    sender = models.ForeignKey(UserProfile, related_name='sent_messages', on_delete=models.CASCADE)
-    recipient = models.ForeignKey(UserProfile, related_name='received_messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
     content = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Message from {self.sender.name} to {self.recipient.name}"
+        return f"Message from {self.sender.username} to {self.recipient.username}"

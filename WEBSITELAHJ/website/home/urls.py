@@ -48,7 +48,9 @@ urlpatterns = [
     path('accept_quote/', views.accept_quote, name='accept_quote'),
     path('decline_quote/', views.decline_quote, name='decline_quote'),
     path('get_quote_details/<int:order_id>/', views.get_quote_details, name='get_quote_details'),
-
+    path('professional_profile/<int:professional_id>/start_message/', views.start_message, name='start_message'),
+    path('DM/', views.DM, name='DM'),
+     path('message/<int:message_id>/', views.view_chat, name='view_chat'),
 ]
 
 

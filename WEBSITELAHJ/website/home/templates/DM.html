@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1 class="display-6" style=" padding: 20px; text-align: right;">الرسائل الخاصة</h1>
+<div class="container">
+    {% if chat_threads %}
+    {% for chat_thread in chat_threads %}
+    <div class="card mb-3">
+        <div class="card-body text-right">
+            <div class="d-flex justify-content-between align-items-start">
+                <p class="card-text" style="font-size: 10px;">
+                    {{ chat_thread.last_message.date }}
+                </p>
+                <h3 class="card-title text-right ml-auto">{{ chat_thread.partner.username }}</h3>
+            </div>
+            <p class="card-text text-right">{{ chat_thread.last_message.content }}</p>
+            <a href="{% url 'view_chat' chat_thread.last_message.id %}" class="btn btn-primary">اعرض المحادثة</a>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>لا يوجد لديك أي محادثة</p>
+    {% endif %}
+</div>
+{% endblock %}

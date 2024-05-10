@@ -3,6 +3,18 @@
 {% block title %}الملف الشخصي {% endblock %}
 {% block content %}
 <style>
+    .alert {
+        position: relative;
+        padding: 1px;
+        margin-bottom: 1px;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+        font-size: 20px;
+        width: 100%;
+        align-content: center;
+
+    }
+
     .profile-section-link {
         color: #1CAED0;
         text-decoration: none;
@@ -81,336 +93,394 @@
         direction: rtl;
     }
 </style>
+
+
 <div class="container mt-5 text-end">
-    <div class="row mt-3 text-end align-items-center justify-content-end">
-        <div class="col-mt-3 photo-container text-end">
-            <h6 class="display-4">
-                {% if is_owner %}
-                {% if request.user == professional.user %}
-                <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تحرير المللف</a>
-                {% endif %}
-                {% endif %}
-                <span>{{ professional.user.username }}</span>
-                <div class="d-flex align-items-center ">
-                    {% if not is_owner %}
-                    <button id="rateButton" class="btn btn-primary">قيَيم</button>
-                    <button id="requestServiceBtn" class="btn btn-primary" onclick="toggleOrderForm()">اطلب
-                        خدمة</button>
-                    <div id="orderFormContainer"
-                        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
-                        <div
-                            style="position: relative; margin: 10% auto; width: 50%; max-width: 500px; background-color: #ffffff; padding: 20px; border-radius: 5px;">
-                            <button class="btn btn-primary"
-                                style="position: absolute; top: 10px; right: 10px; font-size: 10px; background-color: red;"
-                                onclick="closeOrderForm()">X</button>
+    {% if messages %}
+    <div class="feedback-messages">
+        {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="row mt-3 text-end align-items-center justify-content-end">
+            <div class="col-mt-3 photo-container text-end">
+                <h6 class="display-4">
+                    {% if is_owner %}
+                    {% if request.user == professional.user %}
+                    <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تحرير المللف</a>
+                    {% endif %}
+                    {% endif %}
+                    <span>{{ professional.user.username }}</span>
+                    <div class="d-flex align-items-center ">
+                        {% if not is_owner %}
+
+
+                        <button id="rateButton" class="btn btn-primary">قيَيم</button>
+                        <button id="requestServiceBtn" class="btn btn-primary" onclick="toggleOrderForm()">اطلب
+                            خدمة</button>
+                        <button id="MessageBtn" class="btn btn-primary" onclick="toggleMessageForm()">تواصل مع
+                            المحترف</button>
+                        <div id="orderFormContainer"
+                            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+                            <div
+                                style="position: relative; margin: 10% auto; width: 50%; max-width: 500px; background-color: #ffffff; padding: 20px; border-radius: 5px;">
+                                <button class="btn btn-primary"
+                                    style="position: absolute; top: 10px; right: 10px; font-size: 10px; background-color: red;"
+                                    onclick="closeOrderForm()">X</button>
                                 <form method="POST" action="{% url 'submit_order' professional_id=professional.id %}">
                                     {% csrf_token %}
                                     <div class="form-group">
-                                        <label for="projectDescription" class="form-control-label" for="input-identifier" style="font-size: 25px;">وصف المشروع</label>
-                                        <textarea id="projectDescription" name="project_description" class="form-control"></textarea>
+                                        <label for="projectDescription" class="form-control-label"
+                                            for="input-identifier" style="font-size: 25px;">وصف المشروع</label>
+                                        <textarea id="projectDescription" name="project_description"
+                                            class="form-control"></textarea>
                                     </div>
                                     <div class="form-group">
-                                        <label for="budget" class="form-control-label" for="input-identifier" style="font-size: 25px">الميزانية</label>
+                                        <label for="budget" class="form-control-label" for="input-identifier"
+                                            style="font-size: 25px">الميزانية</label>
                                         <input type="text" id="budget" name="budget" class="form-control">
                                     </div>
                                     <button type="submit" class="btn btn-primary">ارسل الطلب</button>
                                 </form>
-                                
+                            </div>
+                        </div>
+                        <div id="messageFormContainer"
+                            style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 9999;">
+                            <div
+                                style="position: relative; margin: 10% auto; width: 50%; max-width: 500px; background-color: #ffffff; padding: 20px; border-radius: 5px;">
+                                <button class="btn btn-primary"
+                                    style="position: absolute; top: 10px; right: 10px; font-size: 10px; background-color: red;"
+                                    onclick="closeMessageForm()">X</button>
+                                <form method="post" action="{% url 'start_message' professional_id=professional.id %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="{{ form.message_content.id_for_label }}" class="form-control-label"
+                                            style="font-size: 25px;">محتوى الرسالة</label>
+                                        <textarea name="message_content" class="form-control" rows="3"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">إرسال الرسالة</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="rating ml-3 d-flex align-items-center">
+                            <div class="stars" style="display: inline-block; font-size: 14px;">
+                                {% for _ in "12345" %}
+                                {% if forloop.counter <= avg_rating|stringformat:"f" %} <span
+                                    class="fa fa-star checked">
+                                    </span>
+                                    {% else %}
+                                    <span class="fa fa-star"></span>
+                                    {% endif %}
+                                    {% endfor %}
+                            </div>
+                            <span style="font-size: 16px;">{{ avg_rating|default:"No ratings yet." }}</span>
+                            <span style="font-size: 16px;">({{ num_ratings }})</span>
+                            <span style="font-size: 16px;">تقييم</span>
                         </div>
                     </div>
-                    {% endif %}
 
-                    <div class="rating ml-3 d-flex align-items-center">
-                        <div class="stars" style="display: inline-block; font-size: 14px;">
-                            {% for _ in "12345" %}
-                            {% if forloop.counter <= avg_rating|stringformat:"f" %} <span class="fa fa-star checked">
-                                </span>
-                                {% else %}
-                                <span class="fa fa-star"></span>
-                                {% endif %}
-                                {% endfor %}
-                        </div>
-                        <span style="font-size: 16px;">{{ avg_rating|default:"No ratings yet." }}</span>
-                        <span style="font-size: 16px;">({{ num_ratings }})</span>
-                        <span style="font-size: 16px;">تقييم</span>
-                    </div>
-                </div>
-
-            </h6>
+                </h6>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- rating section -->
-<div id="ratingFormSection" style="display: none;">
-    <form id="ratingForm" method="post" action="{% url 'submit_rating' professional.id %}">
-        {% csrf_token %}
-        <label for="rating">قيم:</label>
-        <input type="number" name="rating" id="rating" min="1" max="5" required>
-        <label for="comment">تعليق:</label>
-        <textarea name="comment" id="comment" rows="4" required></textarea>
-        <button type="submit" class="btn btn-primary">أرسل</button>
-    </form>
-</div>
-<hr>
-<!-- Other professional profile content -->
-<div class="row mt-3 text-end section-column">
-    {% if is_owner %}
-    <!--  only if the user is the owner -->
-    <div class="col-md-3 text-end">
-        <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip"
-            data-placement="top" title="معلومات الرسائل">الرسائل</a>
+    <!-- rating section -->
+    <div id="ratingFormSection" style="display: none;">
+        <form id="ratingForm" method="post" action="{% url 'submit_rating' professional.id %}">
+            {% csrf_token %}
+            <label for="rating">قيم:</label>
+            <input type="number" name="rating" id="rating" min="1" max="5" required>
+            <label for="comment">تعليق:</label>
+            <textarea name="comment" id="comment" rows="4" required></textarea>
+            <button type="submit" class="btn btn-primary">أرسل</button>
+        </form>
+    </div>
+    <hr>
+    <!-- Other professional profile content -->
+    <div class="row mt-3 text-end section-column">
+        {% if is_owner %}
+        <!--  only if the user is the owner -->
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip"
+                data-placement="top" title="معلومات الرسائل">الرسائل</a>
+        </div>
+
+        <div class="col-md-3 text-end">
+            <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip"
+                data-placement="top" title="معلومات الطلبات">الطلبات</a>
+        </div>
+        {% endif %}
+
+        <div class="col-md-3 text-end ml-auto rtl-text"> <!--  المشاريع  -->
+            {% if professional %}
+            <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip"
+                data-placement="top" title="المشاريع">المشاريع</a>
+            {% else %}
+            <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top"
+                title="المشاريع">المشاريع</a>
+            {% endif %}
+        </div>
+
+        <div class="col-md-3 text-end ml-auto rtl-text"> <!--  من أنا  -->
+            <a href="#" class="profile-section-link" data-section="bioContent" data-toggle="tooltip"
+                data-placement="top" title="من أنا">من أنا</a>
+        </div>
+
+        <div class="col-md-3 text-end">
+            <div class="col mt-3 photo-box text-end">
+                {% if is_owner %}
+                {% if request.user == professional.user %}
+                <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل
+                    الصورة</button>
+                {% endif %}
+                {% endif %}
+                {% if professional.photo %}
+                <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle"
+                    id="professionalPhoto">
+                {% else %}
+                <!-- Default placeholder image -->
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo"
+                    class="img-fluid rounded-circle" id="professionalPhoto">
+                {% endif %}
+            </div>
+        </div>
+
     </div>
 
-    <div class="col-md-3 text-end">
-        <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top"
-            title="معلومات الطلبات">الطلبات</a>
+    <!-- Section contents -->
+    <div id="messagesContent" class="section-content mt-3">
+        معلومات الرسائل
     </div>
-    {% endif %}
 
-    <div class="col-md-3 text-end ml-auto rtl-text"> <!--  المشاريع  -->
-        {% if professional %}
-        <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip"
-            data-placement="top" title="المشاريع">المشاريع</a>
+    <div id="ordersContent" class="section-content mt-3">
+        <h6 class="profile-section-title">الطلبات</h6>
+        {% if orders %}
+        <ul>
+            {% for order in orders %}
+            <li>
+                #{{ order.id }} - الحالة: {{ order.status }} - تاريخ الطلب: {{ order.created_at|date:"Y-m-d H:i:s" }}
+                {% if order.status == 'في الانتظار' %}
+                <form method="post" action="{% url 'accept_order' order.id %}" style="display: inline-block;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success">قبول</button>
+                </form>
+                <form method="post" action="{% url 'decline_order' order.id %}" style="display: inline-block;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">رفض</button>
+                </form>
+                {% endif %}
+                <button class="btn btn-primary view-order-details-btn" data-order-id="{{ order.id }}">عرض
+                    التفاصيل</button>
+                {% if order.status == 'مقبول' %}
+                <button class="btn btn-primary submit-quote-btn" data-order-id="{{ order.id }}">تقديم عرض</button>
+                <button class="btn btn-info view-quote-details-btn" data-order-id="{{ order.id }}">تفاصيل العرض</button>
+                <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;">
+                    <!-- Details will be loaded here via JavaScript or server-rendered content -->
+                </div>
+                <div class="quote-form-container" id="quote-form-container-{{ order.id }}" style="display: none;">
+                    <form id="quoteForm-{{ order.id }}" method="POST"
+                        action="{% url 'submit_quote' order_id=order.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="terms" style="font-size: 15px">الشروط</label>
+                            <textarea id="terms" name="terms" class="form-control"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="cost" class="form-control-label" style="font-size: 15px">التكلفة</label>
+                            <input type="text" id="cost" name="cost" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">تقديم العرض</button>
+                    </form>
+                </div>
+                {% endif %}
+                <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
+                    <p>وصف الطلب: {{ order.project_description }}</p>
+                    <p>الميزانية: {{ order.budget }}</p>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
         {% else %}
-        <a href="{% url 'projects' %}" class="profile-section-link" data-toggle="tooltip" data-placement="top"
-            title="المشاريع">المشاريع</a>
+        <p>لا توجد طلبات حتى الآن.</p>
         {% endif %}
     </div>
 
-    <div class="col-md-3 text-end ml-auto rtl-text"> <!--  من أنا  -->
-        <a href="#" class="profile-section-link" data-section="bioContent" data-toggle="tooltip" data-placement="top"
-            title="من أنا">من أنا</a>
+
+
+
+    <div id="bioContent" class="section-content mt-3">
+        {% if professional.bio %}
+        {{ professional.bio }}
+        {% else %}
+        لا يوجد نبذة عن المحترف حتى الآن.
+        {% endif %}
     </div>
 
-    <div class="col-md-3 text-end">
-        <div class="col mt-3 photo-box text-end">
-            {% if is_owner %}
-            {% if request.user == professional.user %}
-            <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل
-                الصورة</button>
-            {% endif %}
-            {% endif %}
-            {% if professional.photo %}
-            <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle"
-                id="professionalPhoto">
-            {% else %}
-            <!-- Default placeholder image -->
-            <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle"
-                id="professionalPhoto">
-            {% endif %}
-        </div>
-    </div>
+    <!-- Customer Reviews -->
+    <div class="row mt-3 text-end reviews-container mt-5">
+        <div class="col-md-12">
+            <h3 class="profile-section-title">التعليقات</h3>
+            <div class="section-content mt-3 always-visible">
+                <!-- Display existing comments -->
+                {% for comment in comments %}
+                <div class="customer-review">
+                    <p>{{ comment.content }}</p>
+                    <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
+                </div>
+                <hr>
+                {% endfor %}
 
-</div>
-
-<!-- Section contents -->
-<div id="messagesContent" class="section-content mt-3">
-    معلومات الرسائل
-</div>
-
-<div id="ordersContent" class="section-content mt-3">
-    <h6 class="profile-section-title">الطلبات</h6>
-    {% if orders %}
-        <ul>
-            {% for order in orders %}
-                <li>
-                    #{{ order.id }} - الحالة: {{ order.status }} - تاريخ الطلب: {{ order.created_at|date:"Y-m-d H:i:s" }}
-                    {% if order.status == 'في الانتظار' %}
-                        <form method="post" action="{% url 'accept_order' order.id %}" style="display: inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-success">قبول</button>
-                        </form>
-                        <form method="post" action="{% url 'decline_order' order.id %}" style="display: inline-block;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">رفض</button>
-                        </form>
-                    {% endif %}
-                    <button class="btn btn-primary view-order-details-btn" data-order-id="{{ order.id }}">عرض التفاصيل</button>
-                    {% if order.status == 'مقبول' %}
-                    <button class="btn btn-primary submit-quote-btn" data-order-id="{{ order.id }}">تقديم عرض</button>
-                    <button class="btn btn-info view-quote-details-btn" data-order-id="{{ order.id }}">تفاصيل العرض</button>
-                    <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;">
-                        <!-- Details will be loaded here via JavaScript or server-rendered content -->
-                    </div>
-                    <div class="quote-form-container" id="quote-form-container-{{ order.id }}" style="display: none;">
-                        <form id="quoteForm-{{ order.id }}" method="POST" action="{% url 'submit_quote' order_id=order.id %}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="terms" style="font-size: 15px">الشروط</label>
-                                <textarea id="terms" name="terms" class="form-control"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="cost" class="form-control-label" style="font-size: 15px">التكلفة</label>
-                                <input type="text" id="cost" name="cost" class="form-control">
-                            </div>
-                            <button type="submit" class="btn btn-primary">تقديم العرض</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                    <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
-                        <p>وصف الطلب: {{ order.project_description }}</p>
-                        <p>الميزانية: {{ order.budget }}</p>
-                    </div>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>لا توجد طلبات حتى الآن.</p>
-    {% endif %}
-</div>
-
-
-
-
-<div id="bioContent" class="section-content mt-3">
-    {% if professional.bio %}
-    {{ professional.bio }}
-    {% else %}
-    لا يوجد نبذة عن المحترف حتى الآن.
-    {% endif %}
-</div>
-
-<!-- Customer Reviews -->
-<div class="row mt-3 text-end reviews-container mt-5">
-    <div class="col-md-12">
-        <h3 class="profile-section-title">التعليقات</h3>
-        <div class="section-content mt-3 always-visible">
-            <!-- Display existing comments -->
-            {% for comment in comments %}
-            <div class="customer-review">
-                <p>{{ comment.content }}</p>
-                <p class="customer-name">بواسطة: {{ comment.user.username }}</p>
-            </div>
-            <hr>
-            {% endfor %}
-
-            <!-- Add form for new comment -->
-            <form method="post" action="{% url 'add_comment' professional.id %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">إرسال</button>
-            </form>
-
-            {% if not user.is_authenticated %}
-            <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
-
-
-<!-- Edit Profile Modal -->
-<div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'edit_professional_profile' %}">
+                <!-- Add form for new comment -->
+                <form method="post" action="{% url 'add_comment' professional.id %}">
                     {% csrf_token %}
-                    <!-- Include fields like bio, job, etc. as needed -->
-                    {{ profile_form.as_p }}
-                    <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">إرسال</button>
                 </form>
+
+                {% if not user.is_authenticated %}
+                <p>يرجى تسجيل الدخول لإضافة تعليق.</p>
+                {% endif %}
             </div>
         </div>
     </div>
-</div>
-<!-- Edit Photo Modal -->
-<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <label for="photo">تحميل صورة جديدة:</label>
-                    <input type="file" name="photo">
-                    <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ
-                        التغييرات</button>
-                </form>
+
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">تعديل الملف الشخصي</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'edit_professional_profile' %}">
+                        {% csrf_token %}
+                        <!-- Include fields like bio, job, etc. as needed -->
+                        {{ profile_form.as_p }}
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<script>
-    var rateButton = document.getElementById('rateButton');
-    var ratingFormSection = document.getElementById('ratingFormSection');
+    <!-- Edit Photo Modal -->
+    <div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPhotoModalLabel">تعديل الصورة الشخصية</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="{% url 'edit_professional_photo' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="photo">تحميل صورة جديدة:</label>
+                        <input type="file" name="photo">
+                        <button type="submit" class="btn btn-primary" onclick="updateProfessionalPhoto()">حفظ
+                            التغييرات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var rateButton = document.getElementById('rateButton');
+        var ratingFormSection = document.getElementById('ratingFormSection');
 
-    if (rateButton && ratingFormSection) {
-        rateButton.addEventListener('click', function () {
-            // Open a new window with the rating form
-            var ratingWindow = window.open('', '_blank', 'width=400,height=400');
-            // Write the rating form HTML content to the new window
-            ratingWindow.document.write('<html><head><title>قييم</title></head><body>' + ratingFormSection.innerHTML + '</body></html>');
-            // Close the original rating form section
-            ratingFormSection.style.display = 'none';
+        if (rateButton && ratingFormSection) {
+            rateButton.addEventListener('click', function () {
+                // Open a new window with the rating form
+                var ratingWindow = window.open('', '_blank', 'width=400,height=400');
+                // Write the rating form HTML content to the new window
+                ratingWindow.document.write('<html><head><title>قييم</title></head><body>' + ratingFormSection.innerHTML + '</body></html>');
+                // Close the original rating form section
+                ratingFormSection.style.display = 'none';
 
-            // Add event listener to the form submit button in the new window
-            var submitButton = ratingWindow.document.getElementById('submitRatingButton');
-            if (submitButton) {
-                submitButton.addEventListener('click', function () {
-                    // Close the new window when the form is submitted
-                    ratingWindow.close();
-                });
+                // Add event listener to the form submit button in the new window
+                var submitButton = ratingWindow.document.getElementById('submitRatingButton');
+                if (submitButton) {
+                    submitButton.addEventListener('click', function () {
+                        // Close the new window when the form is submitted
+                        ratingWindow.close();
+                    });
+                }
+            });
+        }
+
+        // Function to toggle section content
+        function toggleSection(sectionId) {
+            // Hide all section contents
+            var allSectionContents = document.querySelectorAll('.section-content');
+            allSectionContents.forEach(function (content) {
+                content.classList.remove('active');
+            });
+
+            // Display the clicked section content
+            var sectionContent = document.getElementById(sectionId);
+            sectionContent.classList.add('active');
+        }
+
+        // Add click event listener to all section links
+        var sectionLinks = document.querySelectorAll('.profile-section-link');
+        sectionLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                var sectionId = this.getAttribute('data-section');
+                toggleSection(sectionId);
+            });
+        });
+        function toggleOrderForm() {
+            var orderFormContainer = document.getElementById("orderFormContainer");
+            var requestServiceBtn = document.getElementById("requestServiceBtn");
+
+            if (orderFormContainer.style.display === "" || orderFormContainer.style.display === "none") {
+                orderFormContainer.style.display = "block";
+                requestServiceBtn.style.visibility = "hidden";
+            } else {
+                orderFormContainer.style.display = "none";
+                requestServiceBtn.style.visibility = "visible";
             }
-        });
-    }
+        }
 
-    // Function to toggle section content
-    function toggleSection(sectionId) {
-        // Hide all section contents
-        var allSectionContents = document.querySelectorAll('.section-content');
-        allSectionContents.forEach(function (content) {
-            content.classList.remove('active');
-        });
+        function toggleMessageForm() {
+            var messageFormContainer = document.getElementById("messageFormContainer");
+            var messageBtn = document.getElementById("messageBtn");
 
-        // Display the clicked section content
-        var sectionContent = document.getElementById(sectionId);
-        sectionContent.classList.add('active');
-    }
+            if (messageFormContainer.style.display === "" || messageFormContainer.style.display === "none") {
+                messageFormContainer.style.display = "block";
+                messageBtn.style.visibility = "hidden";
+            } else {
+                messageFormContainer.style.display = "none";
+                messageBtn.style.visibility = "visible";
+            }
+        }
 
-    // Add click event listener to all section links
-    var sectionLinks = document.querySelectorAll('.profile-section-link');
-    sectionLinks.forEach(function (link) {
-        link.addEventListener('click', function (e) {
-            var sectionId = this.getAttribute('data-section');
-            toggleSection(sectionId);
-        });
-    });
-    function toggleOrderForm() {
-        var orderFormContainer = document.getElementById("orderFormContainer");
-        var requestServiceBtn = document.getElementById("requestServiceBtn");
+        function closeOrderForm() {
+            var orderFormContainer = document.getElementById("orderFormContainer");
+            var requestServiceBtn = document.getElementById("requestServiceBtn");
 
-        if (orderFormContainer.style.display === "" || orderFormContainer.style.display === "none") {
-            orderFormContainer.style.display = "block";
-            requestServiceBtn.style.visibility = "hidden";
-        } else {
             orderFormContainer.style.display = "none";
             requestServiceBtn.style.visibility = "visible";
         }
-    }
 
-    function closeOrderForm() {
-        var orderFormContainer = document.getElementById("orderFormContainer");
-        var requestServiceBtn = document.getElementById("requestServiceBtn");
+        function closeMessageForm() {
+            var messageFormContainer = document.getElementById("messageFormContainer");
+            var messageBtn = document.getElementById("messageBtn");
 
-        orderFormContainer.style.display = "none";
-        requestServiceBtn.style.visibility = "visible";
-    }
-    
+            messageFormContainer.style.display = "none";
+            messageBtn.style.visibility = "visible";
+        }
+
 
         // Add click event listener to all view order details buttons
         var viewOrderDetailsButtons = document.querySelectorAll('.view-order-details-btn');
@@ -426,85 +496,85 @@
                 }
             });
         });
-                    // Add click event listener to all submit quote buttons
-            var submitQuoteButtons = document.querySelectorAll('.submit-quote-btn');
-            submitQuoteButtons.forEach(function (button) {
+        // Add click event listener to all submit quote buttons
+        var submitQuoteButtons = document.querySelectorAll('.submit-quote-btn');
+        submitQuoteButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                var orderId = this.getAttribute('data-order-id');
+                var quoteFormContainer = document.getElementById('quote-form-container-' + orderId);
+                // Toggle the display of quote form container
+                if (quoteFormContainer.style.display === 'none') {
+                    quoteFormContainer.style.display = 'block';
+                } else {
+                    quoteFormContainer.style.display = 'none';
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle quote form
+            document.querySelectorAll('.submit-quote-btn').forEach(button => {
                 button.addEventListener('click', function () {
-                    var orderId = this.getAttribute('data-order-id');
-                    var quoteFormContainer = document.getElementById('quote-form-container-' + orderId);
-                    // Toggle the display of quote form container
-                    if (quoteFormContainer.style.display === 'none') {
-                        quoteFormContainer.style.display = 'block';
+                    const orderId = this.getAttribute('data-order-id');
+                    const formContainer = document.getElementById('quote-form-container-' + orderId);
+                    formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+
+            // Toggle quote details
+            document.querySelectorAll('.view-quote-details-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-order-id');
+                    const detailsContainer = document.getElementById('quote-details-' + orderId);
+                    if (detailsContainer.style.display === 'none' || !detailsContainer.style.display) {
+                        // Load quote details dynamically if not already loaded
+                        // This could be an AJAX call to the server to fetch quote details
+                        fetch(`/api/quotes/${orderId}`).then(response => response.json()).then(data => {
+                            detailsContainer.innerHTML = `Terms: ${data.terms}<br>Cost: ${data.cost}<br>Status: ${data.status}`;
+                            detailsContainer.style.display = 'block';
+                        }).catch(error => console.error('Error loading quote details:', error));
                     } else {
-                        quoteFormContainer.style.display = 'none';
+                        detailsContainer.style.display = 'none';
                     }
                 });
             });
-            document.addEventListener('DOMContentLoaded', function () {
-                // Toggle quote form
-                document.querySelectorAll('.submit-quote-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const orderId = this.getAttribute('data-order-id');
-                        const formContainer = document.getElementById('quote-form-container-' + orderId);
-                        formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
-                    });
-                });
-            
-                // Toggle quote details
-                document.querySelectorAll('.view-quote-details-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const orderId = this.getAttribute('data-order-id');
-                        const detailsContainer = document.getElementById('quote-details-' + orderId);
-                        if (detailsContainer.style.display === 'none' || !detailsContainer.style.display) {
-                            // Load quote details dynamically if not already loaded
-                            // This could be an AJAX call to the server to fetch quote details
-                            fetch(`/api/quotes/${orderId}`).then(response => response.json()).then(data => {
-                                detailsContainer.innerHTML = `Terms: ${data.terms}<br>Cost: ${data.cost}<br>Status: ${data.status}`;
-                                detailsContainer.style.display = 'block';
-                            }).catch(error => console.error('Error loading quote details:', error));
-                        } else {
-                            detailsContainer.style.display = 'none';
-                        }
-                    });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle quote form display
+            document.querySelectorAll('.submit-quote-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-order-id');
+                    const formContainer = document.getElementById('quote-form-container-' + orderId);
+                    formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
                 });
             });
-            document.addEventListener('DOMContentLoaded', function () {
-                // Toggle quote form display
-                document.querySelectorAll('.submit-quote-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const orderId = this.getAttribute('data-order-id');
-                        const formContainer = document.getElementById('quote-form-container-' + orderId);
-                        formContainer.style.display = formContainer.style.display === 'none' ? 'block' : 'none';
-                    });
+
+            // Toggle quote details display
+            document.querySelectorAll('.view-quote-details-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.getAttribute('data-order-id');
+                    const detailsContainer = document.getElementById('quote-details-' + orderId);
+                    if (detailsContainer.style.display === 'none' || !detailsContainer.style.display) {
+                        // Ideally, fetch details from the server if not already loaded
+                        fetch(`/api/quotes/${orderId}`).then(response => response.json()).then(data => {
+                            detailsContainer.innerHTML = `Terms: ${data.terms}<br>Cost: ${data.cost}<br>Status: ${data.status}`;
+                            detailsContainer.style.display = 'block';
+                        }).catch(error => console.error('Error loading quote details:', error));
+                    } else {
+                        detailsContainer.style.display = 'none';
+                    }
                 });
-            
-                // Toggle quote details display
-                document.querySelectorAll('.view-quote-details-btn').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const orderId = this.getAttribute('data-order-id');
-                        const detailsContainer = document.getElementById('quote-details-' + orderId);
-                        if (detailsContainer.style.display === 'none' || !detailsContainer.style.display) {
-                            // Ideally, fetch details from the server if not already loaded
-                            fetch(`/api/quotes/${orderId}`).then(response => response.json()).then(data => {
-                                detailsContainer.innerHTML = `Terms: ${data.terms}<br>Cost: ${data.cost}<br>Status: ${data.status}`;
-                                detailsContainer.style.display = 'block';
-                            }).catch(error => console.error('Error loading quote details:', error));
-                        } else {
-                            detailsContainer.style.display = 'none';
-                        }
-                    });
-                });
-            
-               
-            
-                
             });
-            $('.view-quote-details-btn').click(function() {
-                var orderId = $(this).data('order-id');
-                var detailsContainer = $('#quote-details-' + orderId);
-        
-                if (detailsContainer.is(':empty') || detailsContainer.is(':hidden')) {
-                    fetch(`/get_quote_details/${orderId}`)
+
+
+
+
+        });
+        $('.view-quote-details-btn').click(function () {
+            var orderId = $(this).data('order-id');
+            var detailsContainer = $('#quote-details-' + orderId);
+
+            if (detailsContainer.is(':empty') || detailsContainer.is(':hidden')) {
+                fetch(`/get_quote_details/${orderId}`)
                     .then(response => response.json())
                     .then(data => {
                         var content = '';
@@ -524,37 +594,37 @@
                         detailsContainer.html('<p>Error loading details.</p>');
                         detailsContainer.show();
                     });
-                } else {
-                    detailsContainer.toggle();
+            } else {
+                detailsContainer.toggle();
+            }
+        });
+
+        // Handle the accept and decline quote actions
+        $(document).on('click', '.accept-quote, .decline-quote', function () {
+            var quoteId = $(this).data('quote-id');
+            var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
+            $.ajax({
+                url: '/' + action + '/',
+                method: 'POST',
+                data: {
+                    csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+                    quote_id: quoteId
+                },
+                success: function (response) {
+                    alert(response.message);
+                    // Remove buttons and update status after action is successful
+                    var parentDiv = $(this).closest('div');
+                    parentDiv.find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
+                    parentDiv.find('.accept-quote, .decline-quote').remove();
+                },
+                error: function (xhr) {
+                    alert('Error processing request: ' + xhr.responseText);
                 }
             });
-        
-            // Handle the accept and decline quote actions
-            $(document).on('click', '.accept-quote, .decline-quote', function() {
-                var quoteId = $(this).data('quote-id');
-                var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
-                $.ajax({
-                    url: '/' + action + '/',
-                    method: 'POST',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
-                        quote_id: quoteId
-                    },
-                    success: function(response) {
-                        alert(response.message);
-                        // Remove buttons and update status after action is successful
-                        var parentDiv = $(this).closest('div');
-                        parentDiv.find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
-                        parentDiv.find('.accept-quote, .decline-quote').remove();
-                    },
-                    error: function(xhr) {
-                        alert('Error processing request: ' + xhr.responseText);
-                    }
-                });
-            });
-        
-            
-</script>
+        });
 
 
-{% endblock %}
+    </script>
+
+
+    {% endblock %}

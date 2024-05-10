@@ -4,15 +4,33 @@
 {% block title %}Edit Profile{% endblock %}
 
 {% block content %}
+<style>
+    .btn {
+        background-color: #1CAED0;
+        color: white;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #5ccfe7; 
+        color: white;
+    }
+
+    .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+        background-color: #1CAED0;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-danger:hover {
+        background-color: #5ccfe7;
+    }
+</style>
 <div class="container mt-5 text-end">
     <h1 class="display-4">تعديل الملف الشخصي</h1>
 
     <form method="post" action="{% url 'edit_profile' %}">
         {% csrf_token %}
-        
-        <!-- Render form fields -->
-        {{ form.as_p }}
-
+                {{ form.as_p }}
         <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
     </form>
 </div>

@@ -213,11 +213,7 @@ def edit_photo(request):
         if photo_form.is_valid():
             photo_form.save()
             return redirect('homeowner_profile')
-
-    else:
-        photo_form = HomeownerPhotoUploadForm(instance=homeowner)
-
-    return render(request, 'edit_photo.html', {'homeowner': homeowner, 'photo_form': photo_form})
+    return redirect('homeowner_profile')
 
 
 @login_required
@@ -334,6 +330,7 @@ def professional_profile(request, professional_id):
         'orders': orders,  
     })
 
+
 @login_required
 def add_comment(request, professional_id):
     professional = get_object_or_404(Professional, id=professional_id)
@@ -347,8 +344,9 @@ def add_comment(request, professional_id):
             # Redirect to the professional profile page after adding the comment
             return redirect('professional_profile', professional_id=professional_id)
     else:
-        form = CommentForm()  
-    return render(request, 'add_comment.html', {'form': form})
+        # Redirect to the profile page in case of GET request
+        return redirect('professional_profile', professional_id=professional_id)
+
 
 @login_required
 def submit_rating(request, professional_id):
@@ -413,7 +411,7 @@ def edit_professional_photo(request):
     else:
         form = PhotoUploadForm(instance=professional)
     
-    return render(request, 'edit_professional_photo.html', {'form': form, 'professional': professional})
+    return render(request, 'professional_profile.html', {'form': form, 'professional': professional})
 
 
 def user_profile(request):
@@ -542,7 +540,7 @@ def submit_order(request, professional_id):
             order = form.save(commit=False)
             order.homeowner = homeowner
             order.professional = professional 
-            order.status = 'في الانتظار'  # Set the default status here or extract it from the form if available
+            order.status = 'في الانتظار'  
             order.save()
             return redirect('homeowner_profile')  
     else:
@@ -568,7 +566,6 @@ def decline_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     order.status = 'مرفوض'
     order.save()
-    # Assuming you have a professional associated with the order
     professional_id = order.professional.id
     return redirect('professional_profile', professional_id=professional_id)
 
@@ -581,23 +578,30 @@ def order_details(request, order_id):
 
 def submit_quote(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    # Check if a quote already exists for this order
-    if Quote.objects.filter(order=order).exists():
-        messages.error(request, "A quote has already been submitted for this order.")
-        return redirect('order_details', order_id=order_id)
+    professional = request.user.professional
 
-    if request.method == 'POST':
-        terms = request.POST.get('terms')
-        cost = request.POST.get('cost')
-        # Create the quote
-        Quote.objects.create(
-            professional=request.user.professional,
-            order=order,
-            terms=terms,
-            cost=cost,
-            status='في الانتظار'
-        )
-        return redirect('order_details', order_id=order_id)
+    # Check if this professional already submitted a quote for this order
+    existing_quote = Quote.objects.filter(order=order, professional=professional).exists()
+
+    if existing_quote:
+        messages.error(request, "لقد قمت بالفعل بتقديم عرض لهذا الطلب.")
+    else:
+        if request.method == 'POST':
+            terms = request.POST.get('terms')
+            cost = request.POST.get('cost')
+
+            # Create the quote
+            Quote.objects.create(
+                professional=professional,
+                order=order,
+                terms=terms,
+                cost=cost,
+                status='في الانتظار'
+            )
+            messages.success(request, "تم تقديم عرضك بنجاح.")
+
+    # Redirect back to the professional profile page
+    return redirect('professional_profile', professional_id=professional.id)
 
 def get_quote_details(request, order_id):
     quotes = Quote.objects.filter(order__id=order_id)
@@ -607,14 +611,13 @@ def get_quote_details(request, order_id):
     else:
         return JsonResponse({'error': 'No quotes found for this order.'}, status=404)
 
-
 @require_http_methods(["POST"])
 def accept_quote(request):
     quote_id = request.POST.get('quote_id')
     quote = get_object_or_404(Quote, pk=quote_id)
     quote.status = 'مقبول'
     quote.save()
-    return JsonResponse({'message': 'Quote accepted successfully'})
+    return HttpResponse(status=204)
 
 @require_http_methods(["POST"])
 def decline_quote(request):
@@ -622,4 +625,4 @@ def decline_quote(request):
     quote = get_object_or_404(Quote, pk=quote_id)
     quote.status = 'مرفوض'
     quote.save()
-    return JsonResponse({'message': 'Quote declined successfully'})
+    return HttpResponse(status=204)

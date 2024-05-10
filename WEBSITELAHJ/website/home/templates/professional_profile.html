@@ -19,6 +19,9 @@
         border: 1px solid #ddd;
         border-radius: 10px;
         display: none;
+        direction: rtl;
+        text-align: right; 
+        animation: slide-in 0.5s forwards;
     }
 
     .section-content.active {
@@ -79,6 +82,70 @@
 
     .rtl-text {
         direction: rtl;
+    }
+    .btn {
+        background-color: #1CAED0;
+        color: white;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #5ccfe7;
+        color: white;
+    }
+
+    .btn-primary, .btn-secondary, .btn-success, .btn-danger, .btn-info {
+        background-color: #1CAED0;
+    }
+
+    .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-danger:hover, .btn-info:hover {
+        background-color: #5ccfe7;
+    }
+
+    .btn-edit-photo {
+        margin-top: 10px;
+        padding: 5px 10px;
+    }
+    @keyframes slide-in {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0%);
+            opacity: 1;
+        }
+    }
+    .rating-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+    .rating-modal-content {
+        position: relative;
+        margin: 10% auto;
+        width: 50%;
+        max-width: 500px;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 5px;
+        direction: rtl;
+        text-align: right;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 18px;
+        color: red;
+        cursor: pointer;
     }
 </style>
 <div class="container mt-5 text-end">
@@ -142,33 +209,36 @@
 </div>
 
 <!-- rating section -->
-<div id="ratingFormSection" style="display: none;">
-    <form id="ratingForm" method="post" action="{% url 'submit_rating' professional.id %}">
-        {% csrf_token %}
-        <label for="rating">قيم:</label>
-        <input type="number" name="rating" id="rating" min="1" max="5" required>
-        <label for="comment">تعليق:</label>
-        <textarea name="comment" id="comment" rows="4" required></textarea>
-        <button type="submit" class="btn btn-primary">أرسل</button>
-    </form>
+<div id="ratingModal" class="rating-modal">
+    <div class="rating-modal-content">
+        <span class="close-modal" onclick="toggleModal('ratingModal')">&times;</span>
+        <form method="post" action="{% url 'submit_rating' professional.id %}">
+            {% csrf_token %}
+            <label for="rating">قيم:</label>
+            <input type="number" name="rating" id="rating" min="1" max="5" required>
+            <label for="comment">تعليق:</label>
+            <textarea name="comment" id="comment" rows="4" required></textarea>
+            <button type="submit" class="btn btn-primary">إرسال</button>
+        </form>
+    </div>
 </div>
+
 <hr>
-<!-- Other professional profile content -->
+<!--  messages -->
 <div class="row mt-3 text-end section-column">
     {% if is_owner %}
-    <!--  only if the user is the owner -->
     <div class="col-md-3 text-end">
         <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip"
             data-placement="top" title="معلومات الرسائل">الرسائل</a>
     </div>
-
+<!--  orders -->
     <div class="col-md-3 text-end">
         <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top"
             title="معلومات الطلبات">الطلبات</a>
     </div>
     {% endif %}
-
-    <div class="col-md-3 text-end ml-auto rtl-text"> <!--  المشاريع  -->
+<!--  projects  -->
+    <div class="col-md-3 text-end ml-auto rtl-text"> 
         {% if professional %}
         <a href="{% url 'projects' professional.id %}" class="profile-section-link" data-toggle="tooltip"
             data-placement="top" title="المشاريع">المشاريع</a>
@@ -177,12 +247,12 @@
             title="المشاريع">المشاريع</a>
         {% endif %}
     </div>
-
-    <div class="col-md-3 text-end ml-auto rtl-text"> <!--  من أنا  -->
+<!--  bio -->
+    <div class="col-md-3 text-end ml-auto rtl-text"> 
         <a href="#" class="profile-section-link" data-section="bioContent" data-toggle="tooltip" data-placement="top"
             title="من أنا">من أنا</a>
     </div>
-
+<!-- edit photo -->
     <div class="col-md-3 text-end">
         <div class="col mt-3 photo-box text-end">
             {% if is_owner %}
@@ -195,7 +265,6 @@
             <img src="{{ professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle"
                 id="professionalPhoto">
             {% else %}
-            <!-- Default placeholder image -->
             <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle"
                 id="professionalPhoto">
             {% endif %}
@@ -204,11 +273,11 @@
 
 </div>
 
-<!-- Section contents -->
+<!-- messages -->
 <div id="messagesContent" class="section-content mt-3">
     معلومات الرسائل
 </div>
-
+<!-- orders -->
 <div id="ordersContent" class="section-content mt-3">
     <h6 class="profile-section-title">الطلبات</h6>
     {% if orders %}
@@ -231,7 +300,6 @@
                     <button class="btn btn-primary submit-quote-btn" data-order-id="{{ order.id }}">تقديم عرض</button>
                     <button class="btn btn-info view-quote-details-btn" data-order-id="{{ order.id }}">تفاصيل العرض</button>
                     <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;">
-                        <!-- Details will be loaded here via JavaScript or server-rendered content -->
                     </div>
                     <div class="quote-form-container" id="quote-form-container-{{ order.id }}" style="display: none;">
                         <form id="quoteForm-{{ order.id }}" method="POST" action="{% url 'submit_quote' order_id=order.id %}">
@@ -260,9 +328,6 @@
     {% endif %}
 </div>
 
-
-
-
 <div id="bioContent" class="section-content mt-3">
     {% if professional.bio %}
     {{ professional.bio }}
@@ -271,12 +336,11 @@
     {% endif %}
 </div>
 
-<!-- Customer Reviews -->
+<!--  Reviews -->
 <div class="row mt-3 text-end reviews-container mt-5">
     <div class="col-md-12">
         <h3 class="profile-section-title">التعليقات</h3>
         <div class="section-content mt-3 always-visible">
-            <!-- Display existing comments -->
             {% for comment in comments %}
             <div class="customer-review">
                 <p>{{ comment.content }}</p>
@@ -284,8 +348,6 @@
             </div>
             <hr>
             {% endfor %}
-
-            <!-- Add form for new comment -->
             <form method="post" action="{% url 'add_comment' professional.id %}">
                 {% csrf_token %}
                 {{ form.as_p }}
@@ -300,7 +362,7 @@
 </div>
 
 
-<!-- Edit Profile Modal -->
+<!-- Edit Profile  -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -322,7 +384,7 @@
         </div>
     </div>
 </div>
-<!-- Edit Photo Modal -->
+<!-- Edit Photo  -->
 <div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -390,6 +452,7 @@
             toggleSection(sectionId);
         });
     });
+    
     function toggleOrderForm() {
         var orderFormContainer = document.getElementById("orderFormContainer");
         var requestServiceBtn = document.getElementById("requestServiceBtn");
@@ -552,7 +615,21 @@
                     }
                 });
             });
-        
+        // Toggle modal visibility
+    function toggleModal(modalId) {
+        var modal = document.getElementById(modalId);
+        if (modal.style.display === 'block') {
+            modal.style.display = 'none';
+        } else {
+            modal.style.display = 'block';
+        }
+    }
+
+    // Open the rating modal on button click
+    var rateButton = document.getElementById('rateButton');
+    rateButton.addEventListener('click', function () {
+        toggleModal('ratingModal');    });
+
             
 </script>
 

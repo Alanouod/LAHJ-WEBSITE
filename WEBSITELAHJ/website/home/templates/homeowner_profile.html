@@ -25,6 +25,9 @@
         padding: 20px;
         border: 1px solid #ddd;
         border-radius: 10px;
+        direction: rtl;
+        text-align: right; 
+        animation: slide-in 0.5s forwards;
     }
 
     .section-content h3 {
@@ -55,7 +58,41 @@
         margin-top: 10px;
         padding: 5px 10px;
     }
+    .btn {
+    background-color: #1CAED0;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn:hover {
+    background-color: #5ccfe7;
+    color: white;
+}
+    .btn-primary, .btn-secondary, .btn-success, .btn-danger {
+    background-color: #1CAED0;
+}
+
+   .btn-primary:hover, .btn-secondary:hover, .btn-success:hover, .btn-danger:hover {
+    background-color: #5ccfe7;
+}
+
+   .btn-edit-photo {
+    margin-top: 10px;
+    padding: 5px 10px;
+}
+@keyframes slide-in {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0%);
+        opacity: 1;
+    }
+}
 </style>
+<!-- profile -->
 <div class="container mt-5 text-end">
     <div class="row mt-3 text-end">
         <h1 class="display-4">
@@ -64,7 +101,7 @@
         </h1>
     </div>
     <hr>
-
+    <!-- oreders and quotes -->
     <div class="row mt-3 text-end">
         <div class="col-md-3 text-end">
             <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top" title="معلومات الطلبات">الطلبات</a>
@@ -73,15 +110,20 @@
                     <div class="card order-card">
                         <div class="card-body">
                             {% for order in orders %}
-                                <p class="order-info">طلب #{{ order.id }} - تاريخ: {{ order.created_at|date:"Y-m-d H:i:s" }} - الحالة: {{ order.status }}</p>
+                                <p class="order-info">طلب #{{ order.id }} - تاريخ: {{ order.created_at|date:"Y-m-d H:i:s" }}</p>
+                                <button class="btn btn-secondary view-order-details" data-order-id="{{ order.id }}">تفاصيل الطلب</button>
                                 <div class="order-details" id="order-details-{{ order.id }}" style="display: none;">
-                                    <p>Order Description: {{ order.project_description }}</p>
-                                    <p>Budget: {{ order.budget }}</p>
-                                </div>
+                                    <p>الحالة: {{ order.status }}</p>
+                                    <p>المحترف: 
+                                        <a href="{% url 'professional_profile' order.professional.id %}">
+                                            {{ order.professional.user.username }}
+                                        </a>
+                                    </p></div>
                                 {% if order.status == 'مقبول' %}
                                     <button class="btn btn-primary view-quote-details" data-order-id="{{ order.id }}">تفاصيل العرض</button>
-                                    <div class="quote-details" id="quote-details-{{ order.id }}" style="display: none;"></div>
+                                    <div class="quote-details" id="quote-details-{{ order.id }}" style="margin-left: 20px; display: none;"></div>
                                 {% endif %}
+                                <hr>
                             {% endfor %}
                         </div>
                     </div>
@@ -91,7 +133,7 @@
             </div>
         </div>
     
-
+        <!-- messages -->
         <div class="col-md-3 text-end">
             <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip" data-placement="top"
                 title="معلومات الرسائل">الرسائل</a>
@@ -99,7 +141,7 @@
                 معلومات الرسائل
             </div>
         </div>
-
+        <!-- whish-list -->
         <div class="col-md-3 text-end">
             <a href="#" class="profile-section-link" data-section="wishlistContent" data-toggle="tooltip"
                 data-placement="top" title="معلومات المفضلة">المفضلة</a>
@@ -123,23 +165,21 @@
                 {% endif %}
             </div>
         </div>
-
+        <!-- profile image -->
         <div class="col mt-3 photo-box text-end">
             <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل
                 الصورة</button>
             {% if homeowner.photo %}
                 <img src="{{ homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
             {% else %}
-                <!-- Default placeholder image -->
+                <!-- Default image -->
                 <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
             {% endif %}
         </div>
     </div>
 </div>
-
-<!-- Edit Photo Modal -->
-<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel"
-    aria-hidden="true">
+<!-- Edit Photo  -->
+<div class="modal fade" id="editPhotoModal" tabindex="-1" role="dialog" aria-labelledby="editPhotoModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -151,30 +191,13 @@
                 <form method="post" action="{% url 'edit_photo' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <label for="photo">تحميل صورة جديدة:</label>
-                    <input type="file" name="photo">
+                    <input type="file" name="photo" id="photo">
                     <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                 </form>
-
-                <!-- Display photo if available -->
-                <div class="col mt-3 photo-box text-end">
-                    <button class="btn btn-secondary edit-photo-btn" data-toggle="modal"
-                        data-target="#editPhotoModal">تعديل الصورة</button>
-
-                    {% if homeowner.photo %}
-                    <!-- Update the image source in the photo-box -->
-                    <img src="{{ homeowner.photo.url }}" alt="User Photo" id="homeownerPhoto"
-                        class="img-fluid rounded-circle">
-
-                    <!-- Update the image source in the navigation bar -->
+                    <!-- Update the image in the icon nav -->
                     <script>
                         document.getElementById('homeownerPhotoNavbar').src = "{{ homeowner.photo.url }}";
                     </script>
-                    {% else %}
-                    <!-- Display default image or placeholder if no photo is available -->
-                    <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" id="homeownerPhoto"
-                        class="img-fluid rounded-circle">
-                    {% endif %}
-                </div>
             </div>
         </div>
     </div>
@@ -193,6 +216,12 @@
             var sectionId = $(this).data('section');
             toggleSection(sectionId);
         });
+        $(document).ready(function() {
+            $('.view-order-details').on('click', function() {
+                var orderId = $(this).data('order-id');
+                var detailsDiv = $('#order-details-' + orderId);
+                detailsDiv.toggle();  
+            });});
     
         $('.view-quote-details').on('click', function() {
             var detailsDivId = 'quote-details-' + $(this).data('order-id');
@@ -227,6 +256,9 @@
         $(document).on('click', '.accept-quote, .decline-quote', function() {
             var quoteId = $(this).data('quote-id');
             var action = $(this).hasClass('accept-quote') ? 'accept_quote' : 'decline_quote';
+            var statusText = action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض';
+        
+            //  AJAX to update the quote status
             $.ajax({
                 url: '/' + action + '/',
                 method: 'POST',
@@ -234,20 +266,17 @@
                     csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
                     quote_id: quoteId
                 },
-                success: function(response) {
-                    alert(response.message);
-                    $(this).closest('div').find('p:last').text('Status: ' + (action === 'accept_quote' ? 'العرض مقبول' : 'العرض مرفوض'));
-                    $(this).siblings('button').remove();
-                    $(this).remove();
+                success: function() {
+                    var parentDiv = $('button[data-quote-id="' + quoteId + '"]').closest('div');
+                    parentDiv.find('p:last').text('الحالة: ' + statusText);
+                    parentDiv.find('.accept-quote, .decline-quote').remove(); 
                 },
                 error: function(xhr) {
                     alert('Error processing request: ' + xhr.responseText);
                 }
             });
         });
+        
     });
     </script>
-    
-    
-
 {% endblock %}

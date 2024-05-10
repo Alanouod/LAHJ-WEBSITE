@@ -51,6 +51,7 @@ urlpatterns = [
     path('professional_profile/<int:professional_id>/start_message/', views.start_message, name='start_message'),
     path('DM/', views.DM, name='DM'),
      path('message/<int:message_id>/', views.view_chat, name='view_chat'),
+     path('reply-message/<int:partner_id>/', views.reply_message, name='reply_message'),
 ]
 
 

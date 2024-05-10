@@ -717,3 +717,27 @@ def view_chat(request, message_id):
     ).order_by('date')
 
     return render(request, 'chat_detail.html', {'partner': partner, 'messages': messages})
+
+@login_required
+def reply_message(request, partner_id):
+    partner = get_object_or_404(User, id=partner_id)
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message_content = form.cleaned_data['message_content']
+            message = Message.objects.create(
+                sender=request.user,
+                recipient=partner,
+                content=message_content
+            )
+            return redirect('view_chat', message_id=message.id)
+    else:
+        form = MessageForm()
+
+    messages = Message.objects.filter(
+        (Q(sender=request.user) & Q(recipient=partner)) |
+        (Q(sender=partner) & Q(recipient=request.user))
+    ).order_by('date')
+
+    return render(request, 'chat_detail.html', {'partner': partner, 'messages': messages, 'form': form})

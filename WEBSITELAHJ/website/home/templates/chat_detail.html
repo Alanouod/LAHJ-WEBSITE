@@ -28,5 +28,16 @@
     {% empty %}
     <p class="text-center">لا يوجد رسائل في هذه المحادثة</p>
     {% endfor %}
+
+
+    <form action="{% url 'reply_message' partner.id %}" method="post">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <input type="text" name="message_content" class="form-control" placeholder="اكتب رسالتك هنا">
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">إرسال</button>
+            </div>
+        </div>
+    </form>
 </div>
 {% endblock %}

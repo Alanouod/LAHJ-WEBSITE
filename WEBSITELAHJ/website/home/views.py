@@ -46,6 +46,7 @@ from django.contrib import messages
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 
 def home(request):
     return render(request, 'home.html')
@@ -271,6 +272,12 @@ def save_photo_changes(request):
 
     return redirect('edit_photo') 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Avg
+from .models import Professional, Comment, Rating, Order, Message
+from .forms import CommentForm, RatingForm, MessageForm
+
+
 def professional_profile(request, professional_id):
     try:
         professional = Professional.objects.get(id=professional_id)
@@ -287,7 +294,7 @@ def professional_profile(request, professional_id):
 
         # Retrieve orders associated with the professional
         orders = Order.objects.filter(professional=professional)
-
+        messages = Message.objects.filter(recipient=professional.user).order_by('-date')
     except Professional.DoesNotExist:
         return render(request, 'error.html', {'message': 'Professional profile not found'})
 
@@ -299,6 +306,7 @@ def professional_profile(request, professional_id):
 
     form = CommentForm()
     rating_form = RatingForm()
+    message_form = MessageForm()
 
     if request.method == 'POST':
         if 'comment' in request.POST:
@@ -333,10 +341,12 @@ def professional_profile(request, professional_id):
         'is_owner': is_owner,
         'form': form,
         'rating_form': rating_form,
+        'message_form': message_form,
         'comments': comments,
         'avg_rating': avg_rating,
         'num_ratings': num_ratings,
-        'orders': orders,  
+        'orders': orders,
+        'messages': messages,
     })
 
 
@@ -713,3 +723,27 @@ def view_chat(request, message_id):
     ).order_by('date')
 
     return render(request, 'chat_detail.html', {'partner': partner, 'messages': messages})
+
+@login_required
+def reply_message(request, partner_id):
+    partner = get_object_or_404(User, id=partner_id)
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            message_content = form.cleaned_data['message_content']
+            message = Message.objects.create(
+                sender=request.user,
+                recipient=partner,
+                content=message_content
+            )
+            return redirect('view_chat', message_id=message.id)
+    else:
+        form = MessageForm()
+
+    messages = Message.objects.filter(
+        (Q(sender=request.user) & Q(recipient=partner)) |
+        (Q(sender=partner) & Q(recipient=request.user))
+    ).order_by('date')
+
+    return render(request, 'chat_detail.html', {'partner': partner, 'messages': messages, 'form': form})

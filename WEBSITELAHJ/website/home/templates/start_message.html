@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Messaging Chat</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Homeowner</h2>
+            <div id="homeowner-chat" class="chat-box">
+                {% for message in homeowner.user.sent_messages.all %}
+                <div class="message">
+                    <p>{{ message.content }}</p>
+                    <small>{{ message.date }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            <form id="homeowner-message-form" method="post"
+                action="{% url 'send_message' recipient_id=professional.user.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea name="message_content" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <h2>Professional</h2>
+            <div id="professional-chat" class="chat-box">
+                {% for message in professional.user.received_messages.all %}
+                <div class="message">
+                    <p>{{ message.content }}</p>
+                    <small>{{ message.date }}</small>
+                </div>
+                {% endfor %}
+            </div>
+            <form id="professional-message-form" method="post"
+                action="{% url 'send_message' recipient_id=homeowner.user.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea name="message_content" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

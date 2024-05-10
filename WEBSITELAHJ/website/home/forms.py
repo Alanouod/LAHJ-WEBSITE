@@ -89,3 +89,6 @@ class QuoteForm(forms.ModelForm):
     class Meta:
         model = Quote
         fields = ['terms', 'cost']
+
+class MessageForm(forms.Form):
+    message_content = forms.CharField(widget=forms.Textarea)

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<h1 class="display-6 text-right py-4">المحادثة مع {{ partner.username }}</h1>
+<div class="container">
+    {% for message in messages %}
+    <div class="row">
+        {% if message.sender == request.user %}
+        <div class="col-md-6 offset-md-6">
+            <div class="card bg-primary text-white mb-3">
+                <div class="card-body">
+                    <p class="card-text">{{ message.content }}</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-md-6">
+            <div class="card bg-light mb-3">
+                <div class="card-body">
+                    <p class="card-text">{{ message.content }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p class="text-center">لا يوجد رسائل في هذه المحادثة</p>
+    {% endfor %}
+</div>
+{% endblock %}

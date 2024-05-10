@@ -38,9 +38,10 @@ from .forms import CommentForm, RatingForm
 from .models import Professional, Comment, Rating
 from django.db.models import Count
 from decimal import Decimal
-from .forms import OrderForm
-from .models import Quote
+from .forms import OrderForm , MessageForm
+from .models import Quote , Message
 from django.views.decorators.http import require_http_methods
+from django.db.models import Q
 
 def home(request):
     return render(request, 'home.html')
@@ -159,6 +160,8 @@ def user_login(request):
 def homeowner_profile(request):
     user = request.user
     homeowner = Homeowner.objects.get(user=user)
+    sent_messages = Message.objects.filter(sender=homeowner.user)
+    received_messages = Message.objects.filter(recipient=homeowner.user)
     wishlist_items = Wishlist.objects.filter(homeowner=homeowner)
     if request.method == 'POST':
         # Handle editing profile information
@@ -188,6 +191,8 @@ def homeowner_profile(request):
         'wishlist_items': wishlist_items,
         'orders': orders,
         'quotes': quotes, 
+        'sent_messages': sent_messages,
+        'received_messages': received_messages
 })
 
 @login_required
@@ -625,4 +630,83 @@ def decline_quote(request):
     quote = get_object_or_404(Quote, pk=quote_id)
     quote.status = 'مرفوض'
     quote.save()
-    return HttpResponse(status=204)
+    return JsonResponse({'message': 'Quote declined successfully'})
+from django.contrib import messages
+from django.http import HttpResponse
+
+
+
+@login_required
+def start_message(request, professional_id):
+    professional = get_object_or_404(Professional, pk=professional_id)
+    recipient = professional.user
+
+    if request.method == 'POST':
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['message_content']
+            message = Message.objects.create(
+                sender=request.user,
+                recipient=recipient,
+                content=content
+            )
+            messages.success(request, 'تم ارسال الرسالة بنجاح.. يمكنك الوصول للرسائل من ملفك الشخصي')
+            return redirect('professional_profile', professional_id=professional_id)
+        else:
+            messages.error(request, 'حدث خطأ اثناء ارسال الرسالة... حاول مره أخرى')
+    else:
+        form = MessageForm()
+
+    return render(request, 'professional_profile.html', {'professional': professional, 'form': form})
+
+@login_required
+def DM(request):
+    user = request.user
+    chat_threads = []  # List to store chat threads
+
+    # Retrieve all messages involving the user
+    sent_messages = Message.objects.filter(sender=user).order_by('-date')
+    received_messages = Message.objects.filter(recipient=user).order_by('-date')
+
+    # Group messages by recipient or sender
+    chat_partners = set()
+    for message in sent_messages:
+        chat_partner = message.recipient
+        if chat_partner not in chat_partners:
+            chat_partners.add(chat_partner)
+            chat_thread = {
+                'partner': chat_partner,
+                'last_message': message,
+            }
+            chat_threads.append(chat_thread)
+
+    for message in received_messages:
+        chat_partner = message.sender
+        if chat_partner not in chat_partners:
+            chat_partners.add(chat_partner)
+            chat_thread = {
+                'partner': chat_partner,
+                'last_message': message,
+            }
+            chat_threads.append(chat_thread)
+
+    return render(request, 'dm.html', {'chat_threads': chat_threads})
+
+@login_required
+def view_chat(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+    partner = None
+    if message.sender == request.user:
+        partner = message.recipient
+    elif message.recipient == request.user:
+        partner = message.sender
+
+    if partner is None:
+        raise PermissionDenied
+
+    messages = Message.objects.filter(
+        (Q(sender=request.user) & Q(recipient=partner)) |
+        (Q(sender=partner) & Q(recipient=request.user))
+    ).order_by('date')
+
+    return render(request, 'chat_detail.html', {'partner': partner, 'messages': messages})

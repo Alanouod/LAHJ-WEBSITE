@@ -50,8 +50,20 @@ urlpatterns = [
     path('get_quote_details/<int:order_id>/', views.get_quote_details, name='get_quote_details'),
     path('professional_profile/<int:professional_id>/start_message/', views.start_message, name='start_message'),
     path('DM/', views.DM, name='DM'),
-     path('message/<int:message_id>/', views.view_chat, name='view_chat'),
-     path('reply-message/<int:partner_id>/', views.reply_message, name='reply_message'),
+    path('message/<int:message_id>/', views.view_chat, name='view_chat'),
+    path('reply-message/<int:partner_id>/', views.reply_message, name='reply_message'),
+
+
+    path('findpro/interior_designers/', views.interior_designers, name='interiorDesigners'),
+    path('findpro/kitchen_design/', views.kitchen_design, name='kitchenDesign'),
+    path('findpro/contractors/', views.contractors, name='contractors'),
+    path('findpro/architects/', views.architects, name='architects'),
+
+    path('interior_designers/', views.interior_designers, name='interior_designers'),
+    path('kitchen_design/', views.kitchen_design, name='kitchen_design'),
+    path('contractors/', views.contractors, name='contractors'),
+    path('architects/', views.architects, name='architects'),
+
 ]
 
 

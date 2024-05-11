@@ -63,6 +63,22 @@ def resource(request):
 def findPro(request):
     return render(request, 'findPro.html')
 
+def interior_designers(request):
+    professionals = Professional.objects.filter(job='Interior-designer')
+    return render(request, 'interior_designers.html' , {'professionals': professionals} )
+
+
+def kitchen_design(request):
+    professionals = Professional.objects.filter(job='lighting-expert')
+    return render(request, 'kitchen_design.html')
+
+def contractors(request):
+     professionals = Professional.objects.filter(job='general-contractor')
+     return render(request, 'contractors.html')
+
+def architects(request):
+     professionals = Professional.objects.filter(job='architect')
+     return render(request, 'architects.html')
 
 
 def signup(request):

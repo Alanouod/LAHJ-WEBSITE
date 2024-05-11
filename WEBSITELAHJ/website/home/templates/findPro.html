@@ -10,11 +10,12 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-top: 20px;
   }
 
   .subtopic {
-    flex-basis: calc(25% - 20px); /* Adjust the width as needed */
-    margin-bottom: 20px;
+    flex-basis: calc(25% - 20px); 
+    margin-bottom: 20px; 
   }
      h2, h3, p {
     text-align: right;
@@ -22,6 +23,7 @@
   }
     .topic {
     margin-top: 30px; 
+    
   }
 
     body {
@@ -45,9 +47,14 @@
     font-weight: bold;}
  
     .card {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
+      flex-basis: calc(25% - 20px); /* Adjusts the width of each card */
+    margin-bottom: 20px; /* Adds vertical space between rows of cards */
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column; /* Ensures contents inside card are vertically stacked */
+    align-items: center; /* Centers the contents horizontally */
     }
   
     .category-image {
@@ -133,55 +140,59 @@
     font-size: 1rem; 
   }
 </style>
+
 <div class="topic">
     <h2>تصميم المنزل</h2>
     <div class="subtopics">
       <a href="" class="subtopic">
-        <div class="subtopic-icon">
-        </div>
-        <div class="col-lg-3 mb-4">
+        
+        <div class="col-lg-3 mb-4"> <!-- start of interior desginers card  --> 
             <div class="card h-100">
+              <a href="{% url 'interior_designers' %}"> 
+                <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
+                <div class="card-body">
+                 <h4 class="card-title">  مصممين داخليين </h4>
+              </div>
+            </a>
+          </div>
+        </div> <!-- end of interior desginers card  --> 
+      
+    
+          <div class="col-lg-3 mb-4"> <!-- start of kitchen desginers card  --> 
+            <div class="card h-100">
+              <a href="{% url 'kitchen_design' %}"> 
+              <img src="{% static 'images/contractor.jpg' %}" alt="Engineer Image" class="category-image">
               <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-                  مصممين داخليين</a></h4>
-                  <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
-                </a>
+                <h4 class="card-title">  شركات تنسيق المطابخ </h4>
+                 
               </div>
             </div>
-          </div>
-          <div class="col-lg-3 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-                  مقاوليين</a></h4>
-                  <img src="{% static 'images/contractor.jpg' %}" alt="Engineer Image" class="category-image">
-                </a>
-              </div>
-            </div>
-          </div>
+          </div>  <!-- end of kitchen desginers card  --> 
     
           
-          <div class="col-lg-3 mb-4">
+          <div class="col-lg-3 mb-4"> <!-- start of contractors card  --> 
             <div class="card h-100">
+              <a href="{% url 'contractors' %}"> 
+              <img src="{% static 'images/garden.jpg' %}" alt="Engineer Image" class="category-image">
               <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-                شركات تنسيق المطابخ </a></h4>
-                  <img src="{% static 'images/garden.jpg' %}" alt="Engineer Image" class="category-image">
-                </a>
+               <h4 class="card-title"> مقاولين </h4>
+                  
               </div>
             </div>
-          </div>
+          </div> <!-- end of contractors desginers card  --> 
     
-          <div class="col-lg-3 mb-4">
+          <div class="col-lg-3 mb-4"> <!-- start of architects card  --> 
             <div class="card h-100">
-              <div class="card-body">
-                <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-                  المهندسين المعماريين</a></h4>
-                  <img src="{% static 'images/eng.jpg' %}" alt="Engineer Image" class="category-image">
-                </a>
+              <a href="{% url 'architects' %}"> 
+              <img src="{% static 'images/eng.jpg' %}" alt="Engineer Image" class="category-image">
+               <div class="card-body">
+                 <h4 class="card-title"> المهندسين المعماريين</h4>
+
               </div>
             </div>
-          </div>
+          </div> <!-- end of contractors desginers card  --> 
+         </div> <!-- end of subtopics  --> 
+        </div> <!-- end of topic card  --> 
     
     
   <div class="topic">
@@ -189,7 +200,7 @@
     <div class="subtopics">
       <a href=" " class="subtopic">
         <div class="subtopic-icon">
-          <!-- Add an icon for the subtopic if desired -->
+          
         </div>
         <div class="col-lg-3 mb-4">
             <div class="card h-100">

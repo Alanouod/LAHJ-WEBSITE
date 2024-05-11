@@ -278,10 +278,33 @@
 <!--  messages -->
 <div class="row mt-3 text-end section-column">
     {% if is_owner %}
+    <!-- only if the user is the owner -->
+    {% if is_owner %}
     <div class="col-md-3 text-end">
         <a href="#" class="profile-section-link" data-section="messagesContent" data-toggle="tooltip"
             data-placement="top" title="معلومات الرسائل">الرسائل</a>
+        <div id="messagesContent" class="section-content mt-3">
+            <h4>الرسائل</h4>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="recipient-container">
+                <div class="message-box">
+                    <div class="message-content">
+                        <div class="message-sender">{{ message.sender.username }}</div>
+                        <div class="message-date">{{ message.date }}</div>
+                        <div class="message-text">{{ message.content }}</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <a href="{% url 'DM' %}">عرض جميع الرسائل</a>
+            {% else %}
+            <p>لا يوجد رسائل</p>
+            {% endif %}
+        </div>
     </div>
+    {% endif %}
+
 <!--  orders -->
     <div class="col-md-3 text-end">
         <a href="#" class="profile-section-link" data-section="ordersContent" data-toggle="tooltip" data-placement="top"

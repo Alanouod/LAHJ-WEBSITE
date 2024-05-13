@@ -44,8 +44,6 @@ from django.views.decorators.http import require_http_methods
 from django.db.models import Q
 from django.contrib import messages
 from django.http import HttpResponse
-from django.views.decorators.http import require_http_methods
-from django.db.models import Q
 from django.core.exceptions import PermissionDenied
 
 def home(request):
@@ -287,11 +285,6 @@ def save_photo_changes(request):
             messages.error(request, 'Error saving changes to the photo. Please check the form.')
 
     return redirect('edit_photo') 
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.db.models import Avg
-from .models import Professional, Comment, Rating, Order, Message
-from .forms import CommentForm, RatingForm, MessageForm
 
 
 def professional_profile(request, professional_id):
@@ -763,3 +756,5 @@ def reply_message(request, partner_id):
     ).order_by('date')
 
     return render(request, 'chat_detail.html', {'partner': partner, 'messages': messages, 'form': form})
+
+

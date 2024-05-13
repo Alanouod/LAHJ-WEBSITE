@@ -192,12 +192,13 @@
             <button class="btn btn-secondary edit-photo-btn" data-toggle="modal" data-target="#editPhotoModal">تعديل
                 الصورة</button>
             {% if homeowner.photo %}
-            <img src="{{ homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
+                <img src="{{ homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle">
             {% else %}
                 <!-- Default image -->
                 <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle">
             {% endif %}
         </div>
+        
     </div>
 </div>
 <!-- Edit Photo  -->
@@ -217,9 +218,16 @@
                     <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
                 </form>
                     <!-- Update the image in the icon nav -->
+                    {% if homeowner.photo %}
                     <script>
                         document.getElementById('homeownerPhotoNavbar').src = "{{ homeowner.photo.url }}";
                     </script>
+                {% else %}
+                    <script>
+                        document.getElementById('homeownerPhotoNavbar').src = "{% static 'path/to/default/image.jpg' %}";
+                    </script>
+                {% endif %}
+                
             </div>
         </div>
     </div>

@@ -159,6 +159,18 @@
         color: red;
         cursor: pointer;
     }
+    .message-box {
+        border: 1px solid #ddd;
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .view-all-link {
+        display: block;
+        text-align: right;
+        margin-top: 10px;
+    }
 </style>
 
 
@@ -285,18 +297,9 @@
             data-placement="top" title="معلومات الرسائل">الرسائل</a>
         <div id="messagesContent" class="section-content mt-3">
             <h4>الرسائل</h4>
+            <!-- Display only if there are messages -->
             {% if messages %}
-            {% for message in messages %}
-            <div class="recipient-container">
-                <div class="message-box">
-                    <div class="message-content">
-                        <div class="message-sender">{{ message.sender.username }}</div>
-                        <div class="message-date">{{ message.date }}</div>
-                        <div class="message-text">{{ message.content }}</div>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+            <!-- Display just the link to view all messages -->
             <a href="{% url 'DM' %}">عرض جميع الرسائل</a>
             {% else %}
             <p>لا يوجد رسائل</p>

@@ -99,7 +99,7 @@ def signup(request):
                 return render(request, 'signup.html', {'form': form, 'error_message': 'Username or email already exists. Please choose a different one.'})
             # Create Homeowner profile
             homeowner = Homeowner.objects.create(user=user)
-            # Log in the user
+            # Login the user
             user = authenticate(request, username=username, password=password)
             login(request, user)
             # Redirect to the homeowner profile
@@ -108,6 +108,7 @@ def signup(request):
         form = HomeownerSignupForm()
 
     return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
+
 
 def joinAsPro(request):
     form = ProfessionalSignupForm()
@@ -164,7 +165,7 @@ def user_login(request):
             elif getattr(user, 'professional', None):
                 # Check if the user is a professional and get their professional ID
                 professional_id = user.professional.id
-                # Redirect to the professional_profile with the professional ID included in the URL
+                # Redirect to the professional_profile 
                 return redirect(reverse('professional_profile', kwargs={'professional_id': professional_id}))
 
             else:
@@ -183,12 +184,12 @@ def homeowner_profile(request):
     received_messages = Message.objects.filter(recipient=homeowner.user)
     wishlist_items = Wishlist.objects.filter(homeowner=homeowner)
     if request.method == 'POST':
-        # Handle editing profile information
+        #  editing profile info
         profile_form = HomeownerProfileForm(request.POST, instance=homeowner)
         if profile_form.is_valid():
             profile_form.save()
 
-        # Handle uploading/editing a profile photo
+        #  uploading/editing profile photo
         photo_form = PhotoUploadForm(request.POST, request.FILES, instance=homeowner)
         if photo_form.is_valid():
             photo_form.save()
@@ -196,7 +197,7 @@ def homeowner_profile(request):
         return redirect('homeowner_profile')
 
     else:
-        # For displaying the profile and handling form submissions
+        #  displaying the profile and handling form submissions
         profile_form = HomeownerProfileForm(instance=homeowner)
         photo_form = PhotoUploadForm(instance=homeowner)
     # Fetch orders and quotes associated with the homeowner
@@ -301,7 +302,7 @@ def professional_profile(request, professional_id):
         # Calculate the number of ratings
         num_ratings = ratings.count()
 
-        # Retrieve orders associated with the professional
+        # Retrieve orders and messages associated with the professional
         orders = Order.objects.filter(professional=professional)
         messages = Message.objects.filter(recipient=professional.user).order_by('-date')
     except Professional.DoesNotExist:
@@ -331,7 +332,7 @@ def professional_profile(request, professional_id):
             if rating_form.is_valid():
                 rating_value = rating_form.cleaned_data['rating']
                 comment = rating_form.cleaned_data['comment']
-                # Save the rating here
+                # Save 
                 rating = Rating.objects.create(
                     user=request.user,
                     professional=professional,
@@ -342,7 +343,7 @@ def professional_profile(request, professional_id):
                 # Recalculate the average rating including the new rating
                 ratings = Rating.objects.filter(professional=professional)
                 avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
-                # Redirect to the professional profile page after adding the rating
+                # Redirect to the pro profile  after adding the rating
                 return redirect('professional_profile', professional_id=professional_id)
 
     return render(request, 'professional_profile.html', {
@@ -369,10 +370,10 @@ def add_comment(request, professional_id):
             comment.user = request.user
             comment.professional = professional
             comment.save()
-            # Redirect to the professional profile page after adding the comment
+            # Redirect to the pro profile  after adding the comment
             return redirect('professional_profile', professional_id=professional_id)
     else:
-        # Redirect to the profile page in case of GET request
+        # Redirect to the profile in case of GET request
         return redirect('professional_profile', professional_id=professional_id)
 
 
@@ -409,7 +410,7 @@ def submit_rating(request, professional_id):
 @login_required
 def edit_professional_profile(request):
     if not hasattr(request.user, 'professional'):
-        raise Http404("You do not have permission to access this page.")
+        raise Http404("ليس لديك الإذن للوصل لهذه الصفحة")
         
     professional = Professional.objects.get(user=request.user)
 
@@ -427,7 +428,7 @@ def edit_professional_profile(request):
 @login_required
 def edit_professional_photo(request):
     if not hasattr(request.user, 'professional'):
-        raise Http404("You do not have permission to access this page.")
+        raise Http404("ليس لديك الإذن للوصل لهذه الصفحة")
         
     professional = Professional.objects.get(user=request.user)
     
@@ -449,13 +450,13 @@ def user_profile(request):
         homeowner = Homeowner.objects.get(user=user)
         return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
     except Homeowner.DoesNotExist:
-        # If Homeowner does not exist, check if the user is a Professional
+        # If Homeowner doesn't exist,check if it a Pro
         try:
             professional = Professional.objects.get(user=user)
             return render(request, 'professional_profile.html', {'professional': professional})
         except Professional.DoesNotExist:
-            # If neither Homeowner nor Professional, show a message to register
-            return render(request, 'error.html', {'message': 'You are not registered. Please register first.'})
+            # If neither Homeowner nor Pro, show a message to register
+            return render(request, 'error.html', {'message': 'لست مسجل بالفعل ،قم بالتسجيل أولاً'})
 
 def projects(request, professional_id=None):
     if professional_id:
@@ -496,7 +497,7 @@ def add_project(request):
             if professional.previous_work:
                 registration_photo = ProjectImage.objects.create(project=project, image=professional.previous_work)
                 registration_photo.save()
-            return redirect('projects')  # Redirect to the projects page after adding the project
+            return redirect('projects')  
     else:
         # If it's a GET request, just render the form
         detail_form = ProjectDetailForm()
@@ -524,10 +525,6 @@ def delete_project_image(request, image_id):
     return JsonResponse({'success': False}, status=400)
 
 
-
-
-def services(request):
-    return render(request, 'services.html')
 
 def reso1(request):
     return render(request, 'reso1.html')

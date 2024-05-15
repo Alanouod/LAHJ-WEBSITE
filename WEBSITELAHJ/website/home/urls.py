@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, services, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist,submit_rating,wishlist_photos,view_orders,submit_order, accept_order, decline_order, accept_quote,decline_quote,get_quote_details
+from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist,submit_rating,wishlist_photos,view_orders,submit_order, accept_order, decline_order, accept_quote,decline_quote,get_quote_details
 from . import views
 from .views import view_orders
 
@@ -11,7 +11,6 @@ urlpatterns = [
     path('signup/', signup, name='signup'),
     path('user_login/', user_login, name='user_login'),  
     path('joinAsPro/', joinAsPro, name='joinAsPro'),
-    path('services/', services, name='services'),
     path('reso1/', reso1, name='reso1'),
     path('refe/', refe, name='refe'),
     path('tips/', tips, name='tips'),

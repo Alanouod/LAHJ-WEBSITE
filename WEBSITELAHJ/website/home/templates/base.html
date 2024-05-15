@@ -10,7 +10,7 @@
     <meta name="author" content="" />
     <title>لهج</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Font Awesome icons (free version)-->
+    <!-- Font Awesome icons -->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -97,7 +97,7 @@
                     {% if user.homeowner.photo %}
                         <img src="{{ user.homeowner.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 10px;">
                     {% else %}
-                        <!-- Default image or placeholder if no photo is available -->
+                        <!-- Default image  -->
                         <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 10px;">
                     {% endif %}
                     {{ user.username }}
@@ -110,19 +110,17 @@
                     {% if user.professional.photo %}
                         <img src="{{ user.professional.photo.url }}" alt="User Photo" class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 10px;">
                     {% else %}
-                        <!-- Default image or placeholder if no photo is available -->
+                        <!-- Default image  -->
                         <img src="{% static 'images/default_profile.png' %}" alt="Default Photo" class="img-fluid rounded-circle" style="width: 30px; height: 30px; margin-right: 10px;">
                     {% endif %}
                     {{ user.username }}
                 </a>
             </li>
         {% endif %}
-        <!-- Add more logic for other user types if needed -->
         <li class="nav-item">
             <a class="nav-link" href="{% url 'logout_view' %}">تسجيل خروج</a>
         </li>
     {% else %}
-        <!-- Add logic for non-authenticated users -->
         <li class="nav-item">
             <a class="nav-link" href="{% url 'signup' %}?user_type=homeowner">التسجيل</a>
         </li>
@@ -135,7 +133,7 @@
     {% endif %}
 </ul>
 
-<!-- Other navbar links -->
+<!--  navbar links -->
 <ul class="navbar-nav ml-auto">
     <li class="nav-item"><a class="nav-link" href="{% url 'resource' %}">المصادر</a></li>
     <li class="nav-item"><a class="nav-link" href="{% url 'inspiration' %}">الإلهام</a></li>
@@ -162,6 +160,7 @@
             </div>
             <div class="col-lg-4 text-lg-end">
                 <a class="link-dark text-decoration-none me-3" href="{% url 'privacy_policy' %}">سياسية الخصوصية</a>
+
                 <a class="link-dark text-decoration-none" href="{% url 'terms_of_use' %}">شروط الاستخدام</a>
             </div>
         </div>

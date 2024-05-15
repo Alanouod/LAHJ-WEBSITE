@@ -2,6 +2,7 @@ from django.urls import path
 from .views import home, resource, inspiration, findPro, signup, user_login, joinAsPro, reso1,refe, tips, privacy_policy, terms_of_use, logout_view, professional_profile, homeowner_profile,cost,classic,edit_profile, edit_photo, save_photo_changes,edit_professional_profile, edit_professional_photo,Scandinavian,projects,add_project,project_details , save_to_wishlist,submit_rating,wishlist_photos,view_orders,submit_order, accept_order, decline_order, accept_quote,decline_quote,get_quote_details
 from . import views
 from .views import view_orders
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', home, name='home'),
@@ -62,6 +63,11 @@ urlpatterns = [
     path('kitchen_design/', views.kitchen_design, name='kitchen_design'),
     path('contractors/', views.contractors, name='contractors'),
     path('architects/', views.architects, name='architects'),
+    
+   path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
 ]
 

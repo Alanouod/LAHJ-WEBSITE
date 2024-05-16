@@ -5,23 +5,52 @@
 
 {% block content %}
 <style>
-
 .subtopics {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-wrap: nowrap; 
+    overflow: hidden; 
     margin-top: 20px;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+    position: relative; 
 }
 
 .subtopic {
-    flex-basis: calc(25% - 20px); 
+    flex: 0 0 auto; 
+    width: 23%; 
     margin-bottom: 20px; 
 }
+
+.scroll-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1CAED0;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000;
+}
+
+.scroll-button:hover {
+    background-color: #5ccfe7;
+}
+
+.scroll-left {
+    left: 10px;
+}
+
+.scroll-right {
+    right: 10px;
+}
+
 h2, h3, p {
     text-align: right;
     direction: rtl;
 }
 .topic {
+    position: relative; 
     margin-top: 30px; 
 }
 
@@ -47,23 +76,22 @@ h4.my-3, h4.style-name {
 }
 
 .card {
-    flex-basis: calc(25% - 20px); /* Adjusts the width of each card */
-    margin-bottom: 20px; /* Adds vertical space between rows of cards */
     border: 1px solid #ddd;
     border-radius: 10px;
     overflow: hidden;
     display: flex;
-    flex-direction: column; /* Ensures contents inside card are vertically stacked */
-    align-items: center; /* Centers the contents horizontally */
+    flex-direction: column; 
+    align-items: center; 
+    margin-bottom: 20px; 
+    padding: 0; /* Ensure no padding in the card */
 }
 
 .category-image {
-    max-width: 100%;
-    max-height: 100%;
-    height: 150px; 
-    object-fit: cover;
+    width: 100%; /* Ensures the image fills the width of the card */
+    height: auto; /* Adjust height automatically */
+    object-fit: cover; /* Ensures the image covers the card area */
     display: block;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .card-body {
@@ -144,13 +172,31 @@ p.text-muted, div.answer {
 }
 </style>
 
+<script>
+function scrollSubtopicsLeft() {
+    document.querySelector('.subtopics').scrollBy({
+        left: -200,
+        behavior: 'smooth'
+    });
+}
+
+function scrollSubtopicsRight() {
+    document.querySelector('.subtopics').scrollBy({
+        left: 200,
+        behavior: 'smooth'
+    });
+}
+</script>
+
 <div class="topic">
-    <h2>تصميم المنزل</h2>
+    <h2>خدمات المنزل</h2>
+    <button class="scroll-button scroll-left" onclick="scrollSubtopicsLeft()">&#9664;</button>
+    <button class="scroll-button scroll-right" onclick="scrollSubtopicsRight()">&#9654;</button>
     <div class="subtopics">
-        <div class="col-lg-3 mb-4"> <!-- start of interior designers card  --> 
+        <div class="col-lg-3 mb-4 subtopic"> <!-- start of interior designers card  --> 
             <div class="card h-100">
                 <a href="{% url 'interior_designers' %}"> 
-                    <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
+                    <img src="{% static 'images/interior designer card.jpg' %}" alt="Engineer Image" class="category-image">
                     <div class="card-body">
                         <h4 class="card-title"><a href="{% url 'interior_designers' %}">مصممين داخليين</a></h4>
                     </div>
@@ -158,10 +204,10 @@ p.text-muted, div.answer {
             </div>
         </div> <!-- end of interior designers card  --> 
 
-        <div class="col-lg-3 mb-4"> <!-- start of kitchen designers card  --> 
+        <div class="col-lg-3 mb-4 subtopic"> <!-- start of kitchen designers card  --> 
             <div class="card h-100">
                 <a href="{% url 'kitchen_design' %}"> 
-                    <img src="{% static 'images/contractor.jpg' %}" alt="Engineer Image" class="category-image">
+                    <img src="{% static 'images/kitchen designer card.jpg' %}" alt="Engineer Image" class="category-image">
                     <div class="card-body">
                         <h4 class="card-title"><a href="{% url 'kitchen_design' %}">شركات تنسيق المطابخ</a></h4>
                     </div>
@@ -169,10 +215,10 @@ p.text-muted, div.answer {
             </div>
         </div> <!-- end of kitchen designers card  --> 
 
-        <div class="col-lg-3 mb-4"> <!-- start of contractors card  --> 
+        <div class="col-lg-3 mb-4 subtopic"> <!-- start of contractors card  --> 
             <div class="card h-100">
                 <a href="{% url 'contractors' %}"> 
-                    <img src="{% static 'images/garden.jpg' %}" alt="Engineer Image" class="category-image">
+                    <img src="{% static 'images/contracter card.jpg' %}" alt="Engineer Image" class="category-image">
                     <div class="card-body">
                         <h4 class="card-title"><a href="{% url 'contractors' %}">مقاولين</a></h4>
                     </div>
@@ -180,10 +226,21 @@ p.text-muted, div.answer {
             </div>
         </div> <!-- end of contractors designers card  --> 
 
-        <div class="col-lg-3 mb-4"> <!-- start of architects card  --> 
+        <div class="col-lg-3 mb-4 subtopic"> <!-- start of lighting experts card  --> 
+            <div class="card h-100">
+                <a href="{% url 'lighting_expert' %}"> 
+                    <img src="{% static 'images/lighting expert card.jpg' %}" alt="Engineer Image" class="category-image">
+                    <div class="card-body">
+                        <h4 class="card-title"><a href="{% url 'lighting_expert' %}">خبراء اضاءة</a></h4>
+                    </div>
+                </a>
+            </div>
+        </div> <!-- end of lighting experts card  --> 
+
+        <div class="col-lg-3 mb-4 subtopic"> <!-- start of architects card  --> 
             <div class="card h-100">
                 <a href="{% url 'architects' %}"> 
-                    <img src="{% static 'images/eng.jpg' %}" alt="Engineer Image" class="category-image">
+                    <img src="{% static 'images/artcheicture card.jpg' %}" alt="Engineer Image" class="category-image">
                     <div class="card-body">
                         <h4 class="card-title"><a href="{% url 'architects' %}">المهندسين المعماريين</a></h4>
                     </div>
@@ -192,44 +249,6 @@ p.text-muted, div.answer {
         </div> <!-- end of architects card  --> 
     </div> <!-- end of subtopics  --> 
 </div> <!-- end of topic card  --> 
-
-<div class="topic">
-    <h2>الحدائق والفناء الخارجي</h2>
-    <div class="subtopics">
-        <div class="col-lg-3 mb-4"> <!-- start of garden designers card  --> 
-            <div class="card h-100">
-                <a href="{% url 'findPro' %}"> 
-                    <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
-                    <div class="card-body">
-                        <h4 class="card-title"><a href="{% url 'findPro' %}">منسق الحدائق</a></h4>
-                    </div>
-                </a>
-            </div>
-        </div> <!-- end of garden designers card  --> 
-
-        <div class="col-lg-3 mb-4"> <!-- start of pool builders card  --> 
-            <div class="card h-100">
-                <a href="{% url 'findPro' %}"> 
-                    <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
-                    <div class="card-body">
-                        <h4 class="card-title"><a href="{% url 'findPro' %}">بناء المسابح</a></h4>
-                    </div>
-                </a>
-            </div>
-        </div> <!-- end of pool builders card  --> 
-
-        <div class="col-lg-3 mb-4"> <!-- start of tiling and flooring card  --> 
-            <div class="card h-100">
-                <a href="{% url 'findPro' %}"> 
-                    <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
-                    <div class="card-body">
-                        <h4 class="card-title"><a href="{% url 'findPro' %}">البلاط والارضيات</a></h4>
-                    </div>
-                </a>
-            </div>
-        </div> <!-- end of tiling and flooring card  --> 
-    </div> <!-- end of subtopics  --> 
-</div> <!-- end of topic  --> 
 
 <header></header>
 

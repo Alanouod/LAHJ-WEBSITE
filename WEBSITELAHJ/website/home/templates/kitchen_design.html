@@ -1,67 +1,87 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %} تنسيق المطابخ {% endblock %}
+{% block title %}تنسيق المطابخ{% endblock %}
 
 {% block content %}
 
 <style>
 
-     .container {
-       margin-top: 10px;   
-       display: grid;
-       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-       gap: 20px;
-       padding: 50px;
-       margin-bottom: 10px;
-       margin-top: 10px; 
-       
-      
-        
-     }
-    .card {
-        display: flex;
-        flex-direction: column; /* Stack the info vertically */
-        align-items: center; /* Center align the content */
-        background-color: white;
-        padding: 15px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        margin-top: 100px; /* to add sapce above the cards to be fully visible */
-       
-    }
-    .profile-image img {
-        width: 150px; /* Adjust based on your preference */
-        height: 150px;
-        border-radius: 50%;
-        margin-bottom: 10px; /* Space between image and text */
-    }
-    h2, p, .location {
-        text-align: center; /* Centering text */
-        width: 100%; /* Full width */
-    }
-    h2 {
-        margin: 10px 0 5px; /* Spacing for heading */
-        color: #333;
-    }
-    p {
-        font-size: 16px;
-        color: #666;
-    }
-    .location {
-        font-size: 14px;
-        color: #999;
-    }
+.container {
+    margin-top: 10px;   
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 50px;
+    margin-bottom: 10px;
+    margin-top: 10px; 
+}
+
+.card {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-top: 100px; 
+}
+
+.profile-image img {
+    width: 150px; 
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+h2, p, .location {
+    text-align: center; 
+    width: 100%; 
+}
+
+h2 {
+    margin: 10px 0 5px; 
+    color: #333;
+}
+
+p {
+    font-size: 16px;
+    color: #666;
+}
+
+.location {
+    font-size: 14px;
+    color: #999;
+}
+
+.card-title a {
+    text-decoration: none;
+    color: #1CAED0; 
+    font-size:  1.25rem;
+    display: block;
+    margin-bottom: 10px;
+    transition: color 0.3s ease;
+}
+
+.card-title a:hover {
+    color: #5ccfe7; 
+    text-decoration: none; 
+}
 </style>
 
 <div class="container">
     {% for professional in professionals %}
     <div class="card">
         <div class="profile-image">
-            <img src="{{ professional.previous_work }}" alt="{{ professional.id }}">
+            {% if professional.photo %}
+                <img src="{{ professional.photo.url }}" alt="{{ professional.user.username }}">
+            {% else %}
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo">
+            {% endif %}
         </div>
         <div class="profile-info">
-            <h2>{{ professional.name }}</h2>
+            <h2 class="card-title"><a href="{% url 'professional_profile' professional.id %}">{{ professional.user.username }}</a></h2>
             <p>{{ professional.bio }}</p>
-            <span class="location">{{ professional.location }}</span>
+            <span class="location">{{ professional.address }}</span>
         </div>
     </div>
     {% endfor %}

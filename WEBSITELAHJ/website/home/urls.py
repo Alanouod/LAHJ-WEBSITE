@@ -58,11 +58,14 @@ urlpatterns = [
     path('findpro/kitchen_design/', views.kitchen_design, name='kitchenDesign'),
     path('findpro/contractors/', views.contractors, name='contractors'),
     path('findpro/architects/', views.architects, name='architects'),
+    path('findpro/lighting_expert/', views.lighting_expert, name='lighting_expert'),
 
     path('interior_designers/', views.interior_designers, name='interior_designers'),
     path('kitchen_design/', views.kitchen_design, name='kitchen_design'),
     path('contractors/', views.contractors, name='contractors'),
     path('architects/', views.architects, name='architects'),
+    path('lighting_expert/', views.lighting_expert, name='lighting_expert'),
+
     
    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),

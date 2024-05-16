@@ -15,105 +15,104 @@
     font-size: 2rem; 
     color: #495057;
     font-weight: bold;
-  }
-  h4.my-3, h4.style-name {
-    font-size:  1.25rem; 
+}
+
+h4.my-3, h4.style-name, .card-title {
+    font-size: 1.25rem; 
     color: #495057;
     font-weight: bold;
-  }
-  .text-muted{
-    font-size:  1.25rem; 
-    color: #495057;
-    font-weight: bold;}
- 
-    .card {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-  
-    .category-image {
-      max-width: 100%;
-      max-height: 100%;
-      height: 150px; 
-    object-fit: cover;
-      display: block;
-      margin: 0 auto;
-    }
-  
-    .card-body {
-      padding: 20px;
-      text-align: center;
-    }
-    .card-body a {
-      color: #495057;
-      text-decoration: none;
-    }
-    
-    .card-body a:hover {
-      color: #1CAED0;
-    }
-  
-    .card-title a {
-      text-decoration: none;
-      color: #495057; 
-      font-size:  1.25rem;
-      display: block;
-      margin-bottom: 10px;
-    }
-  
-    .card-title a:hover {
-      color: #1CAED0; 
-      text-decoration: none; 
-    }
-    
-    .more-link {
-      text-decoration: underline;
-      color: #495057;
-      font-size: 0.9rem;
-    }
-  
-    .more-link:hover {
-      color: #1CAED0;
-    }
-    .question{
-      font-size:  1.25rem; 
-      color: #495057;
-      font-weight: bold;
-    }
-    .answer{
-      font-size:  1rem; 
-      color: #fff;
-    }
-    #contact {
-      margin-bottom: 0; 
-    }
-    
-    #contact .container-fluid {
-      padding-bottom: 0; 
-    }
+}
 
-      #contactForm .row {
-        direction: rtl; 
-      }
-    
-      #contactForm .form-group {
-        text-align: left;
-      }
-    
-      #submitButton {
-        background-color: #fff; 
-        color: #495057; 
-        transition: color 0.3s ease, background-color 0.3s ease; 
-      }
-    
-      #submitButton:hover {
-        background-color: #1CAED0; 
-        color: #fff; //
-      }
-      p.text-muted, div.answer {
+.text-muted {
+    font-size: 1.25rem; 
+    color: #495057;
+    font-weight: bold;
+}
+
+.card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.category-image {
+    width: 100%; 
+    height: 150px; 
+    object-fit: cover; 
+    display: block;
+    margin: 0;
+}
+
+.card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.card-body a, .card-title a {
+    color: #1CAED0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.card-body a:hover, .card-title a:hover {
+    color: #5ccfe7;
+}
+
+.more-link {
+    text-decoration: underline;
+    color: #1CAED0;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.more-link:hover {
+    color: #5ccfe7;
+}
+
+.question {
+    font-size: 1.25rem; 
+    color: #495057;
+    font-weight: bold;
+}
+
+.answer {
     font-size: 1rem; 
-  }
+    color: #fff;
+}
+
+#contact {
+    margin-bottom: 0; 
+}
+
+#contact .container-fluid {
+    padding-bottom: 0; 
+}
+
+#contactForm .row {
+    direction: rtl; 
+}
+
+#contactForm .form-group {
+    text-align: left;
+}
+
+#submitButton {
+    background-color: #1CAED0; 
+    color: #fff; 
+    transition: color 0.3s ease, background-color 0.3s ease; 
+}
+
+#submitButton:hover {
+    background-color: #5ccfe7; 
+    color: #fff;
+}
+
+p.text-muted, div.answer {
+    font-size: 1rem; 
+}
+
   .btn {
     background-color: #1CAED0;
     color: white;
@@ -125,6 +124,13 @@
     background-color: #5ccfe7;
     color: white;
   }
+  .category-image {
+    width: 100%;
+    height: 150px; 
+    object-fit: cover;
+    display: block;
+}
+
 </style>
 <header class="masthead">
   <div class="container">
@@ -285,8 +291,7 @@
               البوهيمي</a>
           </h4>
           <div class="answer">
-            التصميم الاسكندنافي هو تصميم بسيط يجمع بين الوظيفة والجمال، يتميز بقطع الأثاث البسيطة والعملية في نفس الوقت، ويستخدم الاثاث لتكملة المساحات الخالية من الفوضى والمليئة بالضوء الطبيعي
-          </div>
+            نمط ديكور يعكس أجواء حيوية على سكان المنزل، ومناسب لمحبي السفر والشخصيات القوية          </div>
       </div>
     </div>
   </section>
@@ -295,60 +300,53 @@
 <section id="find-professional" class="page-section">
   <div class="container">
     <h2 class="section-heading text-end">ابحث عن محترف
-      <a href="{% url 'findPro' %}" class="more-link">
-        للمزيد 
-    </a>
+      <a href="{% url 'findPro' %}" class="more-link"> للمزيد </a>
     </h2>
     <div class="row">
-     
       <div class="col-lg-3 mb-4">
         <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-              مصممين داخليين</a></h4>
-              <img src="{% static 'images/interior.jpg' %}" alt="Engineer Image" class="category-image">
-            </a>
-          </div>
+          <a href="{% url 'interior_designers' %}">
+            <img src="{% static 'images/interior designer card.jpg' %}" alt="Engineer Image" class="category-image">
+            <div class="card-body">
+              <h4 class="card-title">مصممين داخليين</h4>
+            </div>
+          </a>
         </div>
       </div>
-     
       <div class="col-lg-3 mb-4">
         <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-              مقاوليين</a></h4>
-              <img src="{% static 'images/contractor.jpg' %}" alt="Engineer Image" class="category-image">
-            </a>
-          </div>
+          <a href="{% url 'contractors' %}">
+            <img src="{% static 'images/contracter card.jpg' %}" alt="Engineer Image" class="category-image">
+            <div class="card-body">
+              <h4 class="card-title">مقاوليين</h4>
+            </div>
+          </a>
         </div>
       </div>
-
-      
       <div class="col-lg-3 mb-4">
         <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-              شركات تنسيق حدائق</a></h4>
-              <img src="{% static 'images/garden.jpg' %}" alt="Engineer Image" class="category-image">
-            </a>
-          </div>
+          <a href="{% url 'lighting_expert' %}">
+            <img src="{% static 'images/lighting expert card.jpg' %}" alt="Engineer Image" class="category-image">
+            <div class="card-body">
+              <h4 class="card-title">خبراءاضاءة</h4>
+            </div>
+          </a>
         </div>
       </div>
-
       <div class="col-lg-3 mb-4">
         <div class="card h-100">
-          <div class="card-body">
-            <h4 class="card-title"><a href="{% url 'findPro'  %}" >
-              مهندسين</a></h4>
-              <img src="{% static 'images/eng.jpg' %}" alt="Engineer Image" class="category-image">
-            </a>
-          </div>
+          <a href="{% url 'architects' %}">
+            <img src="{% static 'images/artcheicture card.jpg' %}" alt="Engineer Image" class="category-image">
+            <div class="card-body">
+              <h4 class="card-title">مهندسين</h4>
+            </div>
+          </a>
         </div>
       </div>
-
     </div>
   </div>
 </section>
+
 <!-- الاسئلة الشائعة -->
 <section class="page-section" id="faq">
   <div class="container">

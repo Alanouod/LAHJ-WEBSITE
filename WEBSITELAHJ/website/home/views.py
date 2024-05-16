@@ -67,7 +67,7 @@ def interior_designers(request):
 
 def contractors(request):
     professionals = Professional.objects.filter(job='general-contractor')
-    return render(request, 'contractors.html' , {'professionals': professionals} )
+    return render(request, 'contractors.html', {'professionals': professionals})
 
 def kitchen_design(request):
     professionals = Professional.objects.filter(job='lighting-expert')

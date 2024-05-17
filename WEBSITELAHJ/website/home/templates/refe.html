@@ -1,87 +1,72 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}ريفي  {% endblock %}
+{% block title %}ريفي{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        text-align: right;
+    }
+    .container {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+    .text-container {
+        max-width: 800px;
+        margin-left: 20px;
+    }
+    .text-container h1, .text-container h4, .text-container h5 {
+        margin: 0 0 20px 0;
+        color: #495057;
+    }
+    .image-container img {
+        width: 100%;
+        max-width: 500px; /* Make the image slightly bigger */
+        height: auto;
+        border-radius: 10px; /* Add rounded edges */
+    }
+    .return-button {
+        background: #1CAED0;
+        color: #fff;
+        font-size: 20px;
+        padding: 10px 20px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        margin-top: 40px;
+        cursor: pointer;
+    }
+    .return-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ريفي</title>
-
-    <style>
-        body {
-            font-family: 'Inter';
-            text-align: right;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .text-container {
-            flex: 1;
-            margin-left: 20px;
-        }
-
-        .text-container h1,
-        .text-container h4,
-        .text-container h5 {
-            margin: 0;
-            color: #495057;
-        }
-
-        .image-container img {
-            width: 212px;
-            height: 1194px;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-
-<body>
-    
-    <br>
-    <div class="container">
-        <div class="text-container" >
-            <h1 style="text-align: center; color: #495057;">ريفي</h1>
-            <br>
-            <br>
-            <br>
-            <h4>الأثاث الريفي هو نوع من الأثاث يتميز بالطابع التقليدي والبساطة</h4>
-            <h4>مصنوع عادةً من الخشب الطبيعي ويعكس جوًا دافئاً ومريحاً مستوحى من الحياة الريفية القديم</h4>
-            <h4>الأبيض النقي الذي يمنح الإشراق والنضارة، والبيج الكريمي الذي يعكس الدفء والهدوء، والأخضر الزيتي الذي يضيف لمسة من الطبيعة والانسجام. إضافةً إلى ذلك، يمكن أيضًا الاعتماد على الألوان الطبيعية الأخرى مثل البني والرمادي والأزرق الفاتح لتكملة ديكورات المنازل بطريقة تناسب الطابع الريفي وتجعل المساحات تبدو أكثر دفئًا </h4>
-            
-            <br>
-            <br>
-            <h4>اين اجدها؟</h4>
-           
-            <h5>بوتيك ريفي</h5>
-           
-           <h5>أبيات</h5>
-      
-            <h5>اشلي</h5>
-
-            <br>
-            <br>
-            <br>
-            <a href="{% url 'reso1' %}" style="color:#495057 ;display: flex;justify-content: center;align-items: center; font-size: 30px;"><button style="background: #1CAED0;width: 234px;height: 70px;" > عودة</button></a>
-        </div>
-        <div class="image-container">
-            <img src="{% static 'images\Rustic.jpeg' %}" alt="Lahj Logo">
+<div class="container">
+    <div class="text-container">
+        <h1 style="text-align: center;">ريفي</h1>
+        <h4>الأثاث الريفي هو نوع من الأثاث يتميز بالطابع التقليدي والبساطة مصنوع عادةً من الخشب الطبيعي ويعكس جوًا دافئاً ومريحاً مستوحى من الحياة الريفية القديمة. الأبيض النقي الذي يمنح الإشراق والنضارة، والبيج الكريمي الذي يعكس الدفء والهدوء، والأخضر الزيتي الذي يضيف لمسة من الطبيعة والانسجام. إضافةً إلى ذلك، يمكن أيضًا الاعتماد على الألوان الطبيعية الأخرى مثل البني والرمادي والأزرق الفاتح لتكملة ديكورات المنازل بطريقة تناسب الطابع الريفي وتجعل المساحات تبدو أكثر دفئًا.</h4>
+        <h4>اين اجدها؟</h4>
+        <h5>بوتيك ريفي</h5>
+        <h5>أبيات</h5>
+        <h5>اشلي</h5>
+        <div class="return-link">
+            <a href="{% url 'reso1' %}">
+                <button class="return-button">عودة</button>
+            </a>
         </div>
     </div>
-</body>
-
-</html>
-
-
-
+    <div class="image-container">
+        <img src="{% static 'images/Rustic.jpeg' %}" alt="Rustic Style">
+    </div>
+</div>
 
 {% endblock %}

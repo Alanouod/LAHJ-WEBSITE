@@ -72,7 +72,11 @@ p {
     {% for professional in professionals %}
     <div class="card">
         <div class="profile-image">
-            <img src="{{ professional.photo.url }}" alt="{{ professional.user.username }}">
+            {% if professional.photo %}
+                <img src="{{ professional.photo.url }}" alt="{{ professional.user.username }}">
+            {% else %}
+                <img src="{% static 'images/default_profile.png' %}" alt="Default Photo">
+            {% endif %}
         </div>
         <div class="profile-info">
             <h2 class="card-title"><a href="{% url 'professional_profile' professional.id %}">{{ professional.user.username }}</a></h2>

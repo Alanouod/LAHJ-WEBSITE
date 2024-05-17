@@ -543,6 +543,10 @@ def tips(request):
 
 def classic(request):
     return render(request, 'classic.html')
+
+def bohemian(request):
+    return render(request, 'bohemian.html')
+
 def Scandinavian(request):
     logout(request)
     return render(request,'Scandinavian.html')

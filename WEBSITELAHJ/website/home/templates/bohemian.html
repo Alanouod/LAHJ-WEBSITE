@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}بوهيمي{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+        text-align: center;
+    }
+    .bohemian-title {
+        color: #495057;
+        text-align: center;
+    }
+    .bohemian-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+    .bohemian-image {
+        width: 100%;
+        max-width: 600px; /* Make the first image slightly bigger */
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 10px; /* Add rounded edges */
+    }
+    .bohemian-text {
+        color: #495057;
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto; /* Center the text */
+    }
+    .bohemian-elements {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-top: 40px;
+    }
+    .bohemian-element {
+        text-align: center;
+    }
+    .bohemian-element img {
+        width: 100%;
+        height: 300px; /* Ensure all images are the same size */
+        object-fit: cover; /* Maintain aspect ratio */
+        border-radius: 10px;
+    }
+    .bohemian-element p {
+        margin-top: 10px;
+        color: #495057;
+    }
+    .return-button {
+        background: #1CAED0;
+        color: #fff;
+        font-size: 20px;
+        padding: 10px 20px;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        margin-top: 40px;
+        cursor: pointer;
+    }
+    .return-link {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<h1 class="bohemian-title mt-5">النمط البوهيمي</h1>
+
+<div class="container">
+    <div class="bohemian-section">
+        <img src="{% static 'images/bohemian.jpg' %}" alt="Bohemian Style" class="bohemian-image">
+        <div class="bohemian-text">
+            <h4>يرجع أصل النمط البوهيمي، أو كما يُعرف بالبوهو أو البوهو شيك، إلى عام ١٨٠٠ في فرنسا، وهو أسلوب انتقائي ليس له قيود بسبب فكرته غير التقليدية والحرة، وهو من أنماط الديكور القديمة والعصرية في آنٍ واحد، فهو يقوم على حرية الفرد التامة في اختيار عناصر مسكنه، ويمتاز باللمسات المفعمة بالألوان الجريئة والحيوية، كما يُتيح الخلط بين الثقافات المختلفة. باختصار، هو نمط ديكور يعكس أجواء حيوية على سكان المنزل، ومناسب لمحبي السفر والشخصيات القوية.</h4>
+        </div>
+    </div>
+
+    <div class="bohemian-text">
+        <h5>عناصر الديكور البوهيمي</h5>
+        <div class="bohemian-elements">
+            <div class="bohemian-element">
+                <h5>قطع الأثاث</h5>
+                <img src="{% static 'images/bohodecor.jpg' %}" alt="Bohemian decor">
+                <p>غالباً ما يكون أثاث التصميم البوهيمي عتيق، أو يضم قطع أثاث مصنوعة حسب الذوق الخاص، إذ يجب أن تكون كل قطعة أثاث مميزة وتحكي قصة. غالباً ما يكون أثاث بوهو ستايل من الخشب أو الخيزران، كما ويجب أن تكون جميع قطع الأثاث مريحة وبسيطة.</p>
+            </div>
+            <div class="bohemian-element">
+                <h5>الألوان البوهيمية</h5>
+                <img src="{% static 'images/bohocolors.jpg' %}" alt="Bohemian Colors">
+                <p>حينما نُفكر في الديكور البوهيمي، فإن الألوان الزاهية وتلك الجريئة تتبادر إلى الذهن في كثير من الأحيان، ولا سيّما الوردي والبرتقالي والأزرق والأخضر، مع الإشارة إلى أن الفيروزي هو الأكثر شهرة عند تعداد ألوان الطراز البوهيمي.</p>
+            </div>
+            <div class="bohemian-element">
+                <h5>النباتات</h5>
+                <img src="{% static 'images/bohoplants.jpg' %}" alt="Bohemian Plants">
+                <p>تركز افكار تصميم على النمط البوهيمي على ضرورة تواصل الإنسان مع الطبيعة. بغض النظر عن الزخارف النباتية واللوحات التي تعرض صور نباتات، تُستخدم النباتات الحقيقية بشكل كبير في ديكور المنزل البوهيمي</p>
+            </div>
+            <div class="bohemian-element">
+                <h5>الإضاءة</h5>
+                <img src="{% static 'images/boholight.jpg' %}" alt="Bohemian Lighting">
+                <p>أما الإضاءة بعناصرها البسيطة وأنوارها الخافتة والناعمة كما نراها في الصورة أعلاه، تمنح المكان أجواءً خاصة، إذ تعتمد فكرة الإضاءة البوهيمية على الثريات والشمعدانات القديمة، أو الفوانيس ذات الزجاج الملوّن.</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="page-section">
+        <div class="container text-center">
+            <img src="https://cdn.porch.com/bootstrap/0web/home-page/paths/path-3.svg" alt="Between Sections" class="img-fluid">
+        </div>
+    </section>
+
+    <div class="bohemian-text">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightbulb" viewBox="0 0 16 16">
+            <path d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1"/>
+        </svg>
+        <h4>اين اجدها؟</h4>
+        <h5>ايكيا</h5>
+        <h5>هوم سنتر</h5>
+        <h5>هوم بوكس</h5>
+        <h5>بوتري بارن</h5>
+    </div>
+
+    <div class="return-link">
+        <a href="{% url 'reso1' %}">
+            <button class="return-button">عودة</button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

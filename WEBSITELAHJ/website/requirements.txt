@@ -48,7 +48,6 @@ PyQt5
 PyQt5-Qt5
 PyQt5-sip
 python-dateutil
-pywin32
 pyzmq
 six
 soupsieve

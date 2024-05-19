@@ -18,6 +18,7 @@ import sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+DEBUG = True
 
 
 
@@ -29,12 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-0y***8yxxm5^fclz($x4&j^b-i^zok#d9y-rwtuu59s&-3$_e_')
+SECRET_KEY = 'django-insecure-0y***8yxxm5^fclz($x4&j^b-i^zok#d9y-rwtuu59s&-3$_e_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = []
 
 LOGIN_URL = 'user_login'  # Adjust this to match the name of your login URL pattern
 
@@ -48,12 +49,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
-    'gunicorn',
+    
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -159,9 +159,6 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -174,7 +171,9 @@ AUTHENTICATION_BACKENDS = [
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 # Emailing settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-mail.outlook.com'

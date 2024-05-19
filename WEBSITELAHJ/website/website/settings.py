@@ -15,8 +15,8 @@ import os
 import dj_database_url
 import sys
 
-BASE_DIR = Path(__file__).resolve().parent.parent
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
@@ -31,12 +31,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-0y***8yxxm5^fclz($x4&j^b-i^zok#d9y-rwtuu59s&-3$_e_')
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','lahj-website-production.up.railway.app']
-CSRF_TRUSTED_ORGINS=['lahj-website-production.up.railway.app']
+ALLOWED_HOSTS = ['*']
 
 LOGIN_URL = 'user_login'  # Adjust this to match the name of your login URL pattern
 
@@ -50,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'gunicorn',
 ]
 
 MIDDLEWARE = [
@@ -89,11 +88,11 @@ WSGI_APPLICATION = 'website.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('DB_NAME', 'postgres'),
-        'USER': os.getenv('DB_USER', 'postgres.pfqebpzknbltitkvixes'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'Seee2324@aa'),
-        'HOST': os.getenv('DB_HOST', 'aws-0-ap-south-1.pooler.supabase.com'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': 'postgres',
+        'USER': 'postgres.pfqebpzknbltitkvixes',
+        'PASSWORD': 'Seee2324@aa',
+        'HOST': 'aws-0-ap-south-1.pooler.supabase.com',
+        'PORT': '5432',
     },
     'test': { 
         'ENGINE': 'django.db.backends.postgresql_psycopg2', 
@@ -155,10 +154,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -184,3 +183,4 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'lahj.ksa@outlook.com'
 EMAIL_HOST_PASSWORD = 'Lahj1212@a'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+

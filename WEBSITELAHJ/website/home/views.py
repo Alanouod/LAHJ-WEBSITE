@@ -89,7 +89,6 @@ def signup(request):
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-
             if User.objects.filter(username=username).exists():
                 messages.error(request, 'اسم المستخدم موجود بالفعل')
                 return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
@@ -105,11 +104,9 @@ def signup(request):
             # Login the user
             user = authenticate(request, username=username, password=password)
             login(request, user)
-            # Redirect to the homeowner profile
             return redirect('homeowner_profile')
     else:
         form = HomeownerSignupForm()
-
     return render(request, 'signup.html', {'form': form, 'user_type': 'homeowner'})
 
 
@@ -270,8 +267,13 @@ def wishlist_photos(request):
 
 def inspiration(request):
     previous_works = PreviousWork.objects.all()
-    print(previous_works) 
-    return render(request, 'inspiration.html', {'previous_works': previous_works})
+    is_professional = False
+    if request.user.is_authenticated and hasattr(request.user, 'professional'):
+        is_professional = True
+    return render(request, 'inspiration.html', {
+        'previous_works': previous_works,
+        'is_professional': is_professional
+    })
 
 
 @login_required

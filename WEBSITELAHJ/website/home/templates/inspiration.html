@@ -47,11 +47,11 @@
                 <div class="card-body">
                     <p class="text-end">بواسطة : <a href="{% url 'professional_profile' professional_id=work.professional.id %}">
                             {{work.professional.user.username }}</a></p>
-                    {% if not request.user.is_authenticated %}
-                    <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>
-                    {% else %}
-                    <button class="btn btn-primary" onclick="saveToWishlist('{{ work.id }}')">حفظ للمفضلة</button>
-                    {% endif %}
+                            {% if not request.user.is_authenticated %}
+                            <button class="btn btn-primary" onclick="alert('يجب أن تسجل أولا')">حفظ للمفضلة</button>
+                        {% elif not is_professional %}
+                            <button class="btn btn-primary" onclick="saveToWishlist('{{ work.id }}')">حفظ للمفضلة</button>
+                        {% endif %}
                 </div>
             </div>
         </div>

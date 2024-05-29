@@ -169,10 +169,10 @@ def user_login(request):
                 return redirect(reverse('professional_profile', kwargs={'professional_id': professional_id}))
 
             else:
-                error_message = 'Invalid user type.'
+                error_message = 'حدث خطأ.'
                 return render(request, 'user_login.html', {'error_message': error_message})
         else:
-            error_message = 'Invalid email or password.'
+            error_message = "اسم المستخدم او كلمة المرور خاطئة"
             return render(request, 'user_login.html', {'error_message': error_message})
     else:
         return render(request, 'user_login.html')

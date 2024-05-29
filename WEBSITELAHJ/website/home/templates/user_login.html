@@ -39,6 +39,9 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="login-box">
+                    {% if error_message %}
+                    <div class="alert alert-danger">{{ error_message }}</div>
+                    {% endif %}
                     <div class="text-center">
                         <h1>تسجيل الدخول</h1>
                     </div>

@@ -137,7 +137,6 @@ def joinAsPro(request):
                     professional=professional,
                     description="Description of the previous work",
                 )
-                # Associate the uploaded previous work with the new project
                 ProjectImage.objects.create(project=project, image=professional.previous_work)
                 user = authenticate(request, username=user.username, password=form.cleaned_data['password'])
                 login(request, user)
@@ -146,26 +145,21 @@ def joinAsPro(request):
 
 def user_login(request):
     if request.method == 'POST':
-        identifier = request.POST.get('identifier')  # 'identifier' can be either email or username
+        identifier = request.POST.get('identifier') 
         password = request.POST.get('password')
 
-        # Try to authenticate with email
         user = authenticate(request, email=identifier, password=password)
 
-        # If not authenticated with email, try with username
         if user is None:
             user = authenticate(request, username=identifier, password=password)
 
         if user is not None:
             auth_login(request, user)  
 
-            # Redirect to the correct profile page based on user type
             if getattr(user, 'homeowner', None):
                 return redirect('homeowner_profile')
             elif getattr(user, 'professional', None):
-                # Check if the user is a professional and get their professional ID
                 professional_id = user.professional.id
-                # Redirect to the professional_profile 
                 return redirect(reverse('professional_profile', kwargs={'professional_id': professional_id}))
 
             else:
@@ -184,12 +178,10 @@ def homeowner_profile(request):
     received_messages = Message.objects.filter(recipient=homeowner.user)
     wishlist_items = Wishlist.objects.filter(homeowner=homeowner)
     if request.method == 'POST':
-        #  editing profile info
         profile_form = HomeownerProfileForm(request.POST, instance=homeowner)
         if profile_form.is_valid():
             profile_form.save()
 
-        #  uploading/editing profile photo
         photo_form = PhotoUploadForm(request.POST, request.FILES, instance=homeowner)
         if photo_form.is_valid():
             photo_form.save()
@@ -197,10 +189,8 @@ def homeowner_profile(request):
         return redirect('homeowner_profile')
 
     else:
-        #  displaying the profile and handling form submissions
         profile_form = HomeownerProfileForm(instance=homeowner)
         photo_form = PhotoUploadForm(instance=homeowner)
-    # Fetch orders and quotes associated with the homeowner
     orders = homeowner.orders.all()
     quotes = Quote.objects.filter(order__homeowner=homeowner)
     
@@ -282,10 +272,7 @@ def save_photo_changes(request):
         photo_form = PhotoUploadForm(request.POST, request.FILES)
 
         if photo_form.is_valid():
-            # Save the changes to the user's photo
-            # Example: request.user.profile.photo = photo_form.cleaned_data['photo']
-            # Save the user's profile
-            # request.user.profile.save()
+
             messages.success(request, 'Changes to the photo were saved successfully.')
         else:
             messages.error(request, 'Error saving changes to the photo. Please check the form.')
@@ -297,17 +284,12 @@ def professional_profile(request, professional_id):
     try:
         professional = Professional.objects.get(id=professional_id)
         comments = Comment.objects.filter(professional=professional)
-        # Fetch all ratings associated with the professional
         ratings = Rating.objects.filter(professional=professional)
-        # Calculate the average rating
         avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
-        # Round the average rating to two decimal places
         if avg_rating is not None:
             avg_rating = round(avg_rating, 2)
-        # Calculate the number of ratings
         num_ratings = ratings.count()
 
-        # Retrieve orders and messages associated with the professional
         orders = Order.objects.filter(professional=professional)
         messages = Message.objects.filter(recipient=professional.user).order_by('-date')
     except Professional.DoesNotExist:
@@ -345,10 +327,8 @@ def professional_profile(request, professional_id):
                     comment=comment
                 )
                 rating.save()
-                # Recalculate the average rating including the new rating
                 ratings = Rating.objects.filter(professional=professional)
                 avg_rating = ratings.aggregate(Avg('rating'))['rating__avg']
-                # Redirect to the pro profile  after adding the rating
                 return redirect('professional_profile', professional_id=professional_id)
 
     return render(request, 'professional_profile.html', {
@@ -375,10 +355,8 @@ def add_comment(request, professional_id):
             comment.user = request.user
             comment.professional = professional
             comment.save()
-            # Redirect to the pro profile  after adding the comment
             return redirect('professional_profile', professional_id=professional_id)
     else:
-        # Redirect to the profile in case of GET request
         return redirect('professional_profile', professional_id=professional_id)
 
 
@@ -389,11 +367,9 @@ def submit_rating(request, professional_id):
         comment = request.POST.get('comment', '')
         professional = Professional.objects.get(pk=professional_id)
         user = request.user
-        # Validate rating value
         if rating_value < 1 or rating_value > 5:
             messages.error(request, "Invalid rating value. Please select a rating between 1 and 5.")
             return redirect('professional_profile', professional_id=professional_id)
-        # Handle non-AJAX request
         existing_rating = Rating.objects.filter(user=user, professional=professional).first()
         if existing_rating:
             existing_rating.rating = rating_value
@@ -402,7 +378,6 @@ def submit_rating(request, professional_id):
         else:
             new_rating = Rating.objects.create(user=user, professional=professional, rating=rating_value, comment=comment)
             new_rating.save()
-        # Recalculate the average rating including all ratings
         avg_rating = Rating.objects.filter(professional=professional).aggregate(Avg('rating'))['rating__avg']
         professional.avg_rating = avg_rating
         professional.save()
@@ -455,27 +430,21 @@ def user_profile(request):
         homeowner = Homeowner.objects.get(user=user)
         return render(request, 'homeowner_profile.html', {'homeowner': homeowner})
     except Homeowner.DoesNotExist:
-        # If Homeowner doesn't exist,check if it a Pro
         try:
             professional = Professional.objects.get(user=user)
             return render(request, 'professional_profile.html', {'professional': professional})
         except Professional.DoesNotExist:
-            # If neither Homeowner nor Pro, show a message to register
             return render(request, 'error.html', {'message': 'لست مسجل بالفعل ،قم بالتسجيل أولاً'})
 
 def projects(request, professional_id=None):
     if professional_id:
-        # Filter PreviousWork objects by the professional's ID
         previous_works = PreviousWork.objects.filter(professional_id=professional_id)
-        # Check if the logged-in user is the owner of the professional profile
         is_owner = request.user.is_authenticated and \
                    hasattr(request.user, 'professional') and \
                    request.user.professional.id == professional_id
     else:
-        # If no professional ID is provided, retrieve all PreviousWork objects
         previous_works = PreviousWork.objects.all()
-        is_owner = False  # Since no professional_id is provided, there's no specific owner
-
+        is_owner = False  
     context = {
         'previous_works': previous_works,
         'is_owner': is_owner,
@@ -485,11 +454,9 @@ def projects(request, professional_id=None):
 @login_required
 def add_project(request):
     if request.method == 'POST':
-        # If the form is submitted, process the data
         detail_form = ProjectDetailForm(request.POST)
         photo_form = ProjectPhotoUploadForm(request.POST, request.FILES)
         if detail_form.is_valid() and photo_form.is_valid():
-            # Save the project details
             project = detail_form.save(commit=False)
             project.professional = request.user.professional  
             project.save()
@@ -504,7 +471,6 @@ def add_project(request):
                 registration_photo.save()
             return redirect('projects')  
     else:
-        # If it's a GET request, just render the form
         detail_form = ProjectDetailForm()
         photo_form = ProjectPhotoUploadForm()
     return render(request, 'add_project.html', {'detail_form': detail_form, 'photo_form': photo_form})
@@ -517,16 +483,11 @@ def project_details(request, project_id):
 @login_required
 def delete_project_image(request, image_id):
     if request.method == 'POST':
-        # Retrieve the project image object
         project_image = get_object_or_404(ProjectImage, id=image_id)
-        # Check if the logged-in user is the owner of the image
         if project_image.project.professional.user == request.user:
-            # Delete the associated PreviousWork object
             previous_work = project_image.project
             previous_work.delete()
-            # Return success response
             return JsonResponse({'success': True})
-    # Return failure response
     return JsonResponse({'success': False}, status=400)
 
 
@@ -614,7 +575,6 @@ def submit_quote(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     professional = request.user.professional
 
-    # Check if this professional already submitted a quote for this order
     existing_quote = Quote.objects.filter(order=order, professional=professional).exists()
 
     if existing_quote:
@@ -624,7 +584,6 @@ def submit_quote(request, order_id):
             terms = request.POST.get('terms')
             cost = request.POST.get('cost')
 
-            # Create the quote
             Quote.objects.create(
                 professional=professional,
                 order=order,
@@ -634,7 +593,6 @@ def submit_quote(request, order_id):
             )
             messages.success(request, "تم تقديم عرضك بنجاح.")
 
-    # Redirect back to the professional profile page
     return redirect('professional_profile', professional_id=professional.id)
 
 def get_quote_details(request, order_id):

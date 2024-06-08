@@ -194,7 +194,7 @@
         <h6 class="display-4">
             {% if is_owner %}
             {% if request.user == professional.user %}
-            <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تحرير المللف</a>
+            <a href="{% url 'edit_professional_profile' %}" class="btn btn-primary">تعديل الملف الشخصي</a>
             {% endif %}
             {% endif %}
             <span>{{ professional.user.username }}</span>

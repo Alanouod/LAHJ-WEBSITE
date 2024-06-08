@@ -10,18 +10,6 @@ from .models import Order
 from .models import Quote
 
 
-
-class RatingForm(forms.Form):
-    rating = forms.IntegerField(label='Rating', min_value=1, max_value=5)
-    comment = forms.CharField(label='Comment', widget=forms.Textarea)
-
-
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['content']
-
-
 class HomeownerSignupForm(forms.Form):
     username = forms.CharField()
     email = forms.EmailField()
@@ -79,6 +67,17 @@ class ProjectDetailForm(forms.ModelForm):
     class Meta:
         model = PreviousWork
         fields = ['project_name', 'products_used', 'location', 'description']
+
+
+class RatingForm(forms.Form):
+    rating = forms.IntegerField(label='Rating', min_value=1, max_value=5)
+    comment = forms.CharField(label='Comment', widget=forms.Textarea)
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
 
 class OrderForm(forms.ModelForm):
     class Meta:
